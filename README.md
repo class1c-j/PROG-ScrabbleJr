@@ -1,1 +1,1 @@
-# PROG-ScrabbleJr
+# PROG-ScrabbleJr Julia e kat, máquinas forever
