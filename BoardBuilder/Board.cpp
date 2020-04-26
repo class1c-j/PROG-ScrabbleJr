@@ -22,9 +22,7 @@ Board::Board(unsigned rows, unsigned cols) {
             board.at(i).at(j) = '0';
         }
     }
-    board.at(4).at(6) = 'A';
-    board.at(3).at(6) = 'A';
-    board.at(4).at(7) = 'A';
+
 }
 
 void Board::showBoard() {
@@ -38,15 +36,15 @@ void Board::showBoard() {
     }
 
     std::cout << '\n';
-    std::cout << std::setfill('_') << std::setw(numCols * W + numCols + W) << std::left << "   " << "_\n";
+    std::cout << std::setfill('_') << std::setw(numCols * W + numCols + W) << std::left << "    " << "\n";
 
     for (int i = 0; i < numLines; i ++) {
 
-        std::cout << std::setfill(' ') << std::left << std::setw(W) << char(i + 65) << "| ";   // uppercase letters
+        std::cout << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |";   // uppercase letters
 
         for (int j = 0; j < numCols; j ++) {
             if (board.at(i).at(j) == '0') {  // do not show the 0 in empty positions
-                std::cout << std::left << std::setw(W) << ' ';
+                std::cout << std::left << std::setw(W + 1) << " ";
             } else {
                 std::cout << std::left << std::setw(W) << board.at(i).at(j) << ' ';
             }
@@ -55,4 +53,29 @@ void Board::showBoard() {
         std::cout << '\n';
     }
 
+}
+
+// coords -> {linha, coluna} -> {maiuscula, minuscula}
+void Board::insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation) {
+    if (orientation == 'V') {  // a coluna é sempre a mesma, apenas iterar a linha
+        for (int i = coords.first; i < coords.first + word.size(); i ++) {
+            board.at(i).at(coords.second) = word.at(i - coords.first);
+        }
+    } else if (orientation == 'H') {  // linha é sempre a mesma, apenas iterar a coluna
+        for (int i = coords.second; i < coords.second + word.size(); i ++) {
+            board.at(coords.first).at(i) = word.at(i - coords.second);
+        }
+    }
+}
+
+std::vector<char> Board::getLine(unsigned int line) {
+    return board.at(line);
+}
+
+std::vector<char> Board::getCol(unsigned int col) {
+    std::vector<char> column;
+    for (auto line : board) {
+        column.push_back(line.at(col));
+    }
+    return column;
 }

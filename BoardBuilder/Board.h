@@ -13,9 +13,12 @@ class Board {
 public:
     Board(unsigned lines, unsigned cols);
     void showBoard();
+    void insertWord(const std::string &word, std::pair<char, char>, const char &orientation);
 private:
     unsigned numLines, numCols;
     std::vector< std::vector<char> > board;
+    std::vector<char> getLine(unsigned line);
+    std::vector<char> getCol(unsigned col);
 };
 
 
