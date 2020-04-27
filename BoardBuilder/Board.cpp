@@ -132,10 +132,10 @@ std::vector<char> Board::getCol(unsigned int col) {
 }
 
 
-bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
+bool Board::verifyWord(const std::string& word, std::pair<char, char> coords, const char& dir) {
 
     bool check = true;
-    unsigned wLen = word.size(), brdL = coords.first, brdC = coords.second;
+    unsigned wLen = word.size(), brdL = coords.first, brdC = coords.second, counter = 0;
 
     std::vector<char> line = getLine(brdL);
     std::vector<char> col = getCol(brdC);
@@ -148,26 +148,65 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
         check = false;
         std::cout << "ERROR: Out of board limits\n";
 
-    } else if (dir == 'H') {
+    }
+    else if (dir == 'H') {
 
-        for (unsigned i = brdC; i <= wLen; i++) {
-            if (line.at(i) != '0' && word.at(i - brdC) != line.at(i)) {
-                std::cout << "ERROR: Bad intersection\n";
-                check = false;
-                break;
+        for (unsigned i = brdC; i < wLen; i++) {
+            if (line.at(i) != '0') {
+                counter++; //counter to check if the word is not inside a word that was already inserted
+                if (word.at(i - brdC) != line.at(i)) {
+                    std::cout << "ERROR: Bad intersection\n";
+                    check = false;
+                    break;
+                }
             }
         }
-
-    } else if (dir == 'V') {
-
-        for (unsigned i = brdL; i <= wLen; i++) {
-            if (col.at(i) != '0' && word.at(i - brdL) != col.at(i)) {
-                std::cout << "ERROR: Bad intersection\n";
-                check = false;
-                break;
-            }
+        //se ambas as extremidades estiverem nos limites verticais do tabuleiro (previne a existência de excessões nas outras condições)
+        if (brdC == 0 && (brdC + wLen) == numCols){
+            
+        }
+        //condição para verificar as 2 extremidades horizontais se uma delas estiver nos limites do horizontais do tabuleiro
+        else if ((brdC == 0 && line.at(brdC + wLen) != '0') || ((brdC + wLen) == numCols && line.at(brdC - 1) != '0')) {
+            std::cout << "ERROR: Word already next to this word\n";
+            check = false;
+        }
+        //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
+        else if (brdC != 0 && (brdC + wLen) != numCols && line.at(brdC + wLen) != '0' && line.at(brdC - 1) != '0') {
+            std::cout << "ERROR: Word already next to this word\n";
+            check = false;
         }
     }
 
+    else if (dir == 'V') {
+        for (unsigned i = brdL; i < wLen; i++) {
+            if (col.at(i) != '0') {
+                counter++; //counter to check if the word is not inside a word that was already inserted
+                if (word.at(i - brdL) != col.at(i)) {
+                    std::cout << "ERROR: Bad intersection\n";
+                    check = false;
+                    break;
+                    }
+                }
+            }
+        //se ambas as extremidades estiverem nos limites verticais do tabuleiro (previne a existência de excessões nas outras condições)
+        if (brdL == 0 && (brdL + wLen) == numLines) {
+            
+        }
+        //condição para verificar as 2 extremidades verticais se uma delas estiver nos limites do vertcias do tabuleiro
+        else if ((brdL == 0 && col.at(brdL + wLen) != '0') || ((brdL + wLen) == numLines && col.at(brdL - 1) != '0')){
+            std::cout << "ERROR: Word already next to this word\n";
+            check = false;
+        }
+        //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
+        else if (brdL != 0 && (brdL + wLen) != numLines && col.at(brdL + wLen) != '0' && col.at(brdL - 1) != '0') {
+            std::cout << "ERROR: Word already next to this word\n";
+            check = false;
+        }
+    }
+    
+    if (check == true && counter == wLen) {
+        check = false;
+        std::cout << "ERROR: Word already in that location\n";
+    }
     return check;
 }
