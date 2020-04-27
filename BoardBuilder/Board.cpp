@@ -161,19 +161,18 @@ bool Board::verifyWord(const std::string& word, std::pair<char, char> coords, co
                 }
             }
         }
-        //se ambas as extremidades estiverem nos limites verticais do tabuleiro (previne a existência de excessões nas outras condições)
-        if (brdC == 0 && (brdC + wLen) == numCols){
-            
-        }
-        //condição para verificar as 2 extremidades horizontais se uma delas estiver nos limites do horizontais do tabuleiro
-        else if ((brdC == 0 && line.at(brdC + wLen) != '0') || ((brdC + wLen) == numCols && line.at(brdC - 1) != '0')) {
-            std::cout << "ERROR: Word already next to this word\n";
-            check = false;
-        }
-        //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
-        else if (brdC != 0 && (brdC + wLen) != numCols && line.at(brdC + wLen) != '0' && line.at(brdC - 1) != '0') {
-            std::cout << "ERROR: Word already next to this word\n";
-            check = false;
+        if (brdC != 0 || (brdC + wLen) != numCols) {
+
+            //condição para verificar as 2 extremidades horizontais se uma delas estiver nos limites do horizontais do tabuleiro
+            if ((brdC == 0 && line.at(brdC + wLen) != '0') || ((brdC + wLen) == numCols && line.at(brdC - 1) != '0')) {
+                std::cout << "ERROR: Word already next to this word\n";
+                check = false;
+            }
+            //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
+            else if (brdC != 0 && (brdC + wLen) != numCols && line.at(brdC + wLen) != '0' && line.at(brdC - 1) != '0') {
+                std::cout << "ERROR: Word already next to this word\n";
+                check = false;
+            }
         }
     }
 
@@ -188,19 +187,18 @@ bool Board::verifyWord(const std::string& word, std::pair<char, char> coords, co
                     }
                 }
             }
-        //se ambas as extremidades estiverem nos limites verticais do tabuleiro (previne a existência de excessões nas outras condições)
-        if (brdL == 0 && (brdL + wLen) == numLines) {
-            
-        }
-        //condição para verificar as 2 extremidades verticais se uma delas estiver nos limites do vertcias do tabuleiro
-        else if ((brdL == 0 && col.at(brdL + wLen) != '0') || ((brdL + wLen) == numLines && col.at(brdL - 1) != '0')){
-            std::cout << "ERROR: Word already next to this word\n";
-            check = false;
-        }
-        //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
-        else if (brdL != 0 && (brdL + wLen) != numLines && col.at(brdL + wLen) != '0' && col.at(brdL - 1) != '0') {
-            std::cout << "ERROR: Word already next to this word\n";
-            check = false;
+        if (brdL != 0 || (brdL + wLen) != numLines) {
+
+            //condição para verificar as 2 extremidades verticais se uma delas estiver nos limites do vertcias do tabuleiro
+            if ((brdL == 0 && col.at(brdL + wLen) != '0') || ((brdL + wLen) == numLines && col.at(brdL - 1) != '0')) {
+                std::cout << "ERROR: Word already next to this word\n";
+                check = false;
+            }
+            //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
+            else if (brdL != 0 && (brdL + wLen) != numLines && col.at(brdL + wLen) != '0' && col.at(brdL - 1) != '0') {
+                std::cout << "ERROR: Word already next to this word\n";
+                check = false;
+            }
         }
     }
     
