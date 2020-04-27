@@ -1,10 +1,8 @@
-//
-// Created by ritam on 25/04/20.
-//
-
 #include "Board.h"
 #include <iostream>
 #include <iomanip>
+
+Board::Board() = default;
 
 Board::Board(unsigned rows, unsigned cols) {
     numLines = rows;
@@ -27,7 +25,7 @@ Board::Board(unsigned rows, unsigned cols) {
 Board::Board(std::ifstream &f_in) {
 
     std::string line;
-    std::getline(f_in, line);
+    getline(f_in, line);
     std::istringstream s_in1(line);
     char sep;
     s_in1 >> numLines >> sep >> numCols;
@@ -100,6 +98,15 @@ void Board::showBoard() {
 }
 
 
+unsigned Board::getnLines() const {
+    return numLines;
+}
+
+unsigned Board::getnCols() const {
+    return numCols;
+}
+
+
 // coords -> {linha, coluna} -> {maiuscula, minuscula}
 void Board::insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation) {
 
@@ -132,7 +139,7 @@ std::vector<char> Board::getCol(unsigned int col) {
 }
 
 
-bool Board::verifyWord(const std::string& word, std::pair<char, char> coords, const char& dir) {
+bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
 
     bool check = true;
     unsigned wLen = word.size(), brdL = coords.first, brdC = coords.second, counter = 0;
@@ -148,8 +155,7 @@ bool Board::verifyWord(const std::string& word, std::pair<char, char> coords, co
         check = false;
         std::cout << "ERROR: Out of board limits\n";
 
-    }
-    else if (dir == 'H') {
+    } else if (dir == 'H') {
 
         for (unsigned i = brdC; i < wLen; i++) {
             if (line.at(i) != '0') {
@@ -168,15 +174,13 @@ bool Board::verifyWord(const std::string& word, std::pair<char, char> coords, co
                 std::cout << "ERROR: Word already next to this word\n";
                 check = false;
             }
-            //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
+                //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
             else if (brdC != 0 && (brdC + wLen) != numCols && line.at(brdC + wLen) != '0' && line.at(brdC - 1) != '0') {
                 std::cout << "ERROR: Word already next to this word\n";
                 check = false;
             }
         }
-    }
-
-    else if (dir == 'V') {
+    } else if (dir == 'V') {
         for (unsigned i = brdL; i < wLen; i++) {
             if (col.at(i) != '0') {
                 counter++; //counter to check if the word is not inside a word that was already inserted
@@ -184,9 +188,9 @@ bool Board::verifyWord(const std::string& word, std::pair<char, char> coords, co
                     std::cout << "ERROR: Bad intersection\n";
                     check = false;
                     break;
-                    }
                 }
             }
+        }
         if (brdL != 0 || (brdL + wLen) != numLines) {
 
             //condição para verificar as 2 extremidades verticais se uma delas estiver nos limites do vertcias do tabuleiro
@@ -194,17 +198,19 @@ bool Board::verifyWord(const std::string& word, std::pair<char, char> coords, co
                 std::cout << "ERROR: Word already next to this word\n";
                 check = false;
             }
-            //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
+                //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
             else if (brdL != 0 && (brdL + wLen) != numLines && col.at(brdL + wLen) != '0' && col.at(brdL - 1) != '0') {
                 std::cout << "ERROR: Word already next to this word\n";
                 check = false;
             }
         }
     }
-    
-    if (check == true && counter == wLen) {
+
+    if (check && counter == wLen) {
         check = false;
         std::cout << "ERROR: Word already in that location\n";
     }
     return check;
+}
+
 }

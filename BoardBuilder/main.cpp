@@ -1,39 +1,52 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "Board.h"
+#include "Menu.h"
+#include "editIO.h"
 
-void createBoard() {
-    // for testing purposes, far from complete!!
-    unsigned l, c;
-    std::string wrd;
-    char li, ci, di;
-    std::cout << "Number of lines: "; std::cin >> l;
-    std::cout << "Number of columns: "; std::cin >> c;
+void showName() {
+    std::cout << "  ___                         _     ___          _   _      _             \n"
+                 " | _ )  ___   __ _   _ _   __| |   | _ )  _  _  (_) | |  __| |  ___   _ _ \n"
+                 " | _ \\ / _ \\ / _` | | '_| / _` |   | _ \\ | || | | | | | / _` | / -_) | '_|\n"
+                 " |___/ \\___/ \\__,_| |_|   \\__,_|   |___/  \\_,_| |_| |_| \\__,_| \\___| |_|  \n"
+                 "                                                                          \n";
+}
 
-    Board b(l, c);
+void createBoard(Board &board) {
 
-    b.showBoard();
+    unsigned numLines, numCols;
+    readDimentions(numLines, numCols);
+    board = Board(numLines, numCols);
 
-    std::cout << "insert word: "; std::cin >> wrd;
-    std::cout << "Lc Dir: "; std::cin >> li >> ci >> di;
-    std::cout << li-65 << " " << ci-97 << '\n';
-    std::cout << b.verifyWord(wrd, {li-65, ci-97}, di);
-    b.insertWord(wrd, {li-65, ci-97}, di);
-    b.showBoard();
+    board.showBoard();
+
+    char l{}, c{}, orientation{};
+    auto coords = std::make_pair(l, c);
+
+    std::string word{};
+
+    const Menu createMenu{"This is edit mode. Choose from the options below to create your board.\n",
+                          "Invalid choice! ",
+                          {{"Insert", [&board, &coords, &orientation, &word] {
+                              readWord(word);
+                              readCoordinates(coords, board);
+                              readOrientation(orientation);
+                              board.insertWord(word, coords, orientation);
+                          }}}
+    };
+    createMenu();
+
+    board.showBoard();
 }
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    //std::ifstream f1("test1.txt");
-    //testing
-    //Board Board(f1);
-    //Board.insertWord("Sorocoffo", {0, 3}, 'V');  //AdV
-    //Board.insertWord("Sardou", {2, 6}, 'H');    //CgH
-    //Board.insertWord("Canss", {1, 14}, 'V');  //BoV
-    //Board.showBoard();
-    //Board.saveBoard("test1.txt");
+    Board board;
+    showName();
+    const Menu mainMenu{"Welcome to the Board Builder Programme. Here you can build boards for ScrabbleJr.\n",
+                        "Invalid choice! ",
+                        {{"Create", [&board] { createBoard(board); }}}
+    };
+    mainMenu();
 
-    createBoard();
-
-    return 0;
 }
