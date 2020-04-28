@@ -156,7 +156,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
 
     } else if (dir == 'H') {
 
-        for (unsigned i = brdC; i < wLen; i++) {
+        for (unsigned i = brdC; i < (wLen + brdC); i++) {
             if (line.at(i) != '0') {
                 counter++; //counter to check if the word is not inside a word that was already inserted
                 if (word.at(i - brdC) != line.at(i)) {
@@ -180,7 +180,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
             }
         }
     } else if (dir == 'V') {
-        for (unsigned i = brdL; i < wLen; i++) {
+        for (unsigned i = brdL; i < (wLen + brdL); i++) {
             if (col.at(i) != '0') {
                 counter++; //counter to check if the word is not inside a word that was already inserted
                 if (word.at(i - brdL) != col.at(i)) {
