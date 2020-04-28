@@ -16,4 +16,8 @@ void readOrientation(char &orientation);
 
 void readWord(std::string &word);
 
+void readFileName(std::string &fileName);
+
+void clearScreen();
+
 #endif //BOARDBUILDER_EDITIO_H

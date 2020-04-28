@@ -16,7 +16,7 @@ public:
 
     void showBoard();
 
-    void saveBoard(const std::string &name);
+    void save(const std::string &name);
 
     void insertWord(const std::string &word, std::pair<char, char>, const char &orientation);
 
@@ -31,9 +31,12 @@ private:
     std::vector<std::string> words;
     std::vector<std::vector<char> > board;
 
+    void saveWord(const std::string &word, std::pair<char, char>, const char &orientation);
+
     std::vector<char> getLine(unsigned line);
 
     std::vector<char> getCol(unsigned col);
+
 };
 
 

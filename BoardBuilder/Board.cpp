@@ -55,16 +55,12 @@ Board::Board(std::ifstream &f_in) {
     }
 }
 
-void Board::saveBoard(const std::string &name) {
+void Board::save(const std::string &name) {
     std::ifstream test(name);
-    if (!test) {
-        std::ofstream f_out(name);
-        f_out << numLines << " x " << numCols << '\n';
-        for (const std::string &word : words) {
-            f_out << word << '\n';
-        }
-    } else {
-        std::cout << "File already exists!!1";
+    std::ofstream f_out(name);
+    f_out << numLines << " x " << numCols << '\n';
+    for (const std::string &word : words) {
+        f_out << word << '\n';
     }
 }
 
@@ -110,11 +106,6 @@ unsigned Board::getnCols() const {
 // coords -> {linha, coluna} -> {maiuscula, minuscula}
 void Board::insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation) {
 
-    //std::string pos = std::string() + (char) (coords.first + 65) + (char) (coords.second + 97);
-    //std::string info = pos + ' ' + orientation + ' ' + word;
-    //words.push_back(info);
-    // TODO: put this in a separate method or something. This should be done after manually inserting a word
-
     if (orientation == 'V') {  // a coluna é sempre a mesma, apenas iterar a linha
         for (int i = coords.first; i < coords.first + word.size(); i++) {
             board.at(i).at(coords.second) = word.at(i - coords.first);
@@ -124,6 +115,8 @@ void Board::insertWord(const std::string &word, std::pair<char, char> coords, co
             board.at(coords.first).at(i) = word.at(i - coords.second);
         }
     }
+
+    saveWord(word, coords, orientation);
 }
 
 std::vector<char> Board::getLine(unsigned int line) {
@@ -136,6 +129,12 @@ std::vector<char> Board::getCol(unsigned int col) {
         column.push_back(line.at(col));
     }
     return column;
+}
+
+void Board::saveWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
+    std::string pos = std::string() + (char) (coords.first + 65) + (char) (coords.second + 97);
+    std::string info = pos + ' ' + dir + ' ' + word;
+    words.push_back(info);
 }
 
 
@@ -211,6 +210,4 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
         std::cout << "ERROR: Word already in that location\n";
     }
     return check;
-}
-
 }

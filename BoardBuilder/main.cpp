@@ -5,6 +5,17 @@
 #include "Menu.h"
 #include "editIO.h"
 
+void showMainMenu(Board board);
+void saveBoard(std::string &filename, Board board);
+void createBoard(Board &board);
+
+int main() {
+    Board board;
+    showMainMenu(board);
+}
+
+
+
 void showName() {
     std::cout << "  ___                         _     ___          _   _      _             \n"
                  " | _ )  ___   __ _   _ _   __| |   | _ )  _  _  (_) | |  __| |  ___   _ _ \n"
@@ -13,35 +24,10 @@ void showName() {
                  "                                                                          \n";
 }
 
-void createBoard(Board &board) {
+void showMainMenu(Board board) {
 
-    unsigned numLines, numCols;
-    readDimentions(numLines, numCols);
-    board = Board(numLines, numCols);
+    clearScreen();
 
-    board.showBoard();
-
-    char l{}, c{}, orientation{};
-    auto coords = std::make_pair(l, c);
-
-    std::string word{};
-
-    const Menu createMenu{"This is edit mode. Choose from the options below to create your board.\n",
-                          "Invalid choice! ",
-                          {{"Insert", [&board, &coords, &orientation, &word] {
-                              readWord(word);
-                              readCoordinates(coords, board);
-                              readOrientation(orientation);
-                              board.insertWord(word, coords, orientation);
-                          }}}
-    };
-    createMenu();
-
-    board.showBoard();
-}
-
-int main() {
-    Board board;
     showName();
     const Menu mainMenu{"Welcome to the Board Builder Programme. Here you can build boards for ScrabbleJr.\n",
                         "Invalid choice! ",
@@ -50,3 +36,62 @@ int main() {
     mainMenu();
 
 }
+
+
+void createBoard(Board &board) {
+
+    unsigned numLines, numCols;
+    readDimentions(numLines, numCols);
+    board = Board(numLines, numCols);
+
+    char l{}, c{}, orientation{};
+    auto coords = std::make_pair(l, c);
+
+    std::string word{}, name{};
+
+    bool running = true;
+
+
+    const Menu createMenu{"This is edit mode. Choose from the options below to create your board.\n",
+                          "Invalid choice! ",
+                          {{"Insert", [&board, &coords, &orientation, &word] {
+                              readWord(word);
+                              readCoordinates(coords, board);
+                              readOrientation(orientation);
+                              if (board.verifyWord(word, coords, orientation)) {
+                                  board.insertWord(word, coords, orientation);
+                              }
+                          }}, {"Quit", [&running] {
+                              running = false;
+                          }},
+                           {"Save", [&name, &board] {
+                               saveBoard(name, board);
+                           }}}
+    };
+
+    while (running) {
+        clearScreen();
+        board.showBoard();
+        createMenu();
+    }
+
+}
+
+
+
+void saveBoard(std::string &fileName, Board board) {
+    readFileName(fileName);
+    board.save(fileName);
+    const Menu saveMenu{"File saved successfully. Do you want to quit or continue editing?\n",
+                        "Invalid choice! ",
+                        {{"Main menu", [&board] { showMainMenu(board); }},
+                         {"Continue editing", [] { }}}
+    };
+    saveMenu();
+}
+
+
+
+
+
+
