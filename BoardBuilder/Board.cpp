@@ -174,7 +174,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
                 check = false;
             }
                 //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
-            else if (brdC != 0 && (brdC + wLen) != numCols && line.at(brdC + wLen) != '0' && line.at(brdC - 1) != '0') {
+            else if ((brdC != 0 && (brdC + wLen) != numCols) && (line.at(brdC + wLen) != '0' || line.at(brdC - 1) != '0')) {
                 std::cout << "ERROR: Word already next to this word\n";
                 check = false;
             }
@@ -198,7 +198,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
                 check = false;
             }
                 //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
-            else if (brdL != 0 && (brdL + wLen) != numLines && col.at(brdL + wLen) != '0' && col.at(brdL - 1) != '0') {
+            else if ((brdL != 0 && (brdL + wLen) != numLines) && (col.at(brdL + wLen) != '0' || col.at(brdL - 1) != '0')) {
                 std::cout << "ERROR: Word already next to this word\n";
                 check = false;
             }
