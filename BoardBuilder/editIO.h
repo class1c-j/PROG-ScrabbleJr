@@ -8,7 +8,7 @@
 #include <vector>
 #include "Board.h"
 
-void readDimentions(unsigned &col, unsigned &lines);
+void readDimensions(unsigned &lines, unsigned &cols);
 
 void readCoordinates(std::pair<char, char> &coords, const Board &board);
 

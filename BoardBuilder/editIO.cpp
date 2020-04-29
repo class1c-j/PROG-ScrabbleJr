@@ -32,16 +32,16 @@ void clearScreen() {
 
 
 
-void readDimentions(unsigned &col, unsigned &lines) {
+void readDimensions(unsigned &lines, unsigned &cols) {
+    bool eof = false;
     std::cout << "Number of lines ? ";
     std::cin >> lines;
-    while (std::cin.fail() || lines < 0 || lines > 20) {
-        if (std::cin.fail()) {
+    while (std::cin.fail() || lines < 0 || lines > 20 || (std::cin.peek() != '\n' && !isdigit(std::cin.peek()))) {
+        if (std::cin.fail() || std::cin.peek() != '\n') {
             if (std::cin.eof()) {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "User chose to close the input.\n";
-                break;
             } else {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -57,35 +57,36 @@ void readDimentions(unsigned &col, unsigned &lines) {
     }
 
     std::cout << "Number of columns ? ";
-    std::cin >> col;
-    while (std::cin.fail() || col < 0 || col > 20) {
-        if (std::cin.fail()) {
+    std::cin >> cols;
+    while (std::cin.fail() || cols < 0 || cols > 20 || (std::cin.peek() != '\n' && !isdigit(std::cin.peek()))) {
+        if (std::cin.fail() || std::cin.peek() != '\n') {
             if (std::cin.eof()) {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "User chose to close the input.\n";
-                break;
             } else {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Failed to read number. Try again: ";
-                std::cin >> col;
+                std::cin >> cols;
             }
         } else {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "That is not a valid number of columns. Remember, maximum allowed is 20. Try again: ";
-            std::cin >> col;
+            std::cin >> cols;
         }
     }
-
+    if (eof) {  // ignore for now
+        lines = cols = 1;
+    }
 }
 
 
 void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     std::cout << "Starting position line ? ";
     std::cin >> coords.first;
-    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 > board.getnLines()) {
+    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 > board.getnLines() || std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -99,7 +100,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
 
     std::cout << "Starting position column ? ";
     std::cin >> coords.second;
-    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 > board.getnCols()) {
+    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 > board.getnCols() || std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

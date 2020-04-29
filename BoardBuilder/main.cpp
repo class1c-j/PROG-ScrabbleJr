@@ -84,6 +84,7 @@ void editBoard(Board &board) {
     bool running = true;
 
     while (running) {
+        clearScreen();
         board.showBoard();
         showEditMenu(board, running);
     }
@@ -94,7 +95,7 @@ void editBoard(Board &board) {
 void createBoard(Board &board) {
 
     unsigned numLines, numCols;
-    readDimentions(numLines, numCols);
+    readDimensions(numLines, numCols);
     board = Board(numLines, numCols);
 
     bool running = true;
