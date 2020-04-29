@@ -1,15 +1,12 @@
-//
-// Created by ritam on 27/04/20.
-//
-
 
 #include "editIO.h"
 #include <limits>
 #include <iostream>
 
-#ifdef _WIN32
+#ifdef _WIN32  // Windows compatibility
 #include <windows.h>
 #include <cstdlib>
+#define NOMINMAX
 #endif
 
 
@@ -130,6 +127,8 @@ void readOrientation(char &orientation) {
             std::cout << "User chose to close input.\n";
             break;
         } else {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid orientation. Insert V for vertical or H for horizontal. Try again: ";
             std::cin >> orientation;
         }
@@ -185,5 +184,23 @@ void readFileName(std::string &fileName) {
             break;
         }
     }
+}
 
+void searchFile(std::string &fileName) {
+
+    std::cout << "Search for board (without file extention) : ";
+    std::cin >> fileName;
+
+    while (true) {
+        fileName += ".txt";
+        std::ifstream file(fileName);
+        if (!file.good()) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Board not found. Try again : ";
+            std::cin >> fileName;
+        } else {
+            break;
+        }
+    }
 }

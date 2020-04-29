@@ -1,6 +1,8 @@
 #include "Board.h"
 #include <iostream>
 #include <iomanip>
+#include <sstream>
+#include <algorithm>
 
 Board::Board() = default;
 
@@ -24,13 +26,14 @@ Board::Board(unsigned rows, unsigned cols) {
 
 Board::Board(std::ifstream &f_in) {
 
+    // read dimentions
     std::string line;
     getline(f_in, line);
     std::istringstream s_in1(line);
     char sep;
     s_in1 >> numLines >> sep >> numCols;
     while (std::getline(f_in, line)) {
-        words.push_back(line);
+        words.insert(line);
     }
 
     board.resize(numLines);
@@ -45,7 +48,7 @@ Board::Board(std::ifstream &f_in) {
         }
     }
 
-    std::cout << words.size();
+    // read words
     for (auto &i : words) {
         std::stringstream str_stream(i);
         char x, y, d;
@@ -56,7 +59,7 @@ Board::Board(std::ifstream &f_in) {
 }
 
 void Board::save(const std::string &name) {
-    std::ifstream test(name);
+
     std::ofstream f_out(name);
     f_out << numLines << " x " << numCols << '\n';
     for (const std::string &word : words) {
@@ -65,6 +68,7 @@ void Board::save(const std::string &name) {
 }
 
 void Board::showBoard() {
+
 
     const int W = 2;  // edit to change how close together the letters are in the board
 
@@ -103,7 +107,6 @@ unsigned Board::getnCols() const {
 }
 
 
-// coords -> {linha, coluna} -> {maiuscula, minuscula}
 void Board::insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation) {
 
     if (orientation == 'V') {  // a coluna é sempre a mesma, apenas iterar a linha
@@ -134,7 +137,10 @@ std::vector<char> Board::getCol(unsigned int col) {
 void Board::saveWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
     std::string pos = std::string() + (char) (coords.first + 65) + (char) (coords.second + 97);
     std::string info = pos + ' ' + dir + ' ' + word;
-    words.push_back(info);
+    if (std::find(startingPoints.begin(), startingPoints.end(), pos) == startingPoints.end()) {
+        startingPoints.insert(pos);
+        words.insert(info);
+    }
 }
 
 
@@ -156,7 +162,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
 
     } else if (dir == 'H') {
 
-        for (unsigned i = brdC; i < wLen; i++) {
+        for (unsigned i = brdC; i < (wLen + brdC); i++) {
             if (line.at(i) != '0') {
                 counter++; //counter to check if the word is not inside a word that was already inserted
                 if (word.at(i - brdC) != line.at(i)) {
@@ -174,13 +180,13 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
                 check = false;
             }
                 //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
-            else if (brdC != 0 && (brdC + wLen) != numCols && line.at(brdC + wLen) != '0' && line.at(brdC - 1) != '0') {
+            else if ((brdC != 0 && (brdC + wLen) != numCols) && (line.at(brdC + wLen) != '0' || line.at(brdC - 1) != '0')) {
                 std::cout << "ERROR: Word already next to this word\n";
                 check = false;
             }
         }
     } else if (dir == 'V') {
-        for (unsigned i = brdL; i < wLen; i++) {
+        for (unsigned i = brdL; i < (wLen + brdL); i++) {
             if (col.at(i) != '0') {
                 counter++; //counter to check if the word is not inside a word that was already inserted
                 if (word.at(i - brdL) != col.at(i)) {
@@ -198,7 +204,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
                 check = false;
             }
                 //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
-            else if (brdL != 0 && (brdL + wLen) != numLines && col.at(brdL + wLen) != '0' && col.at(brdL - 1) != '0') {
+            else if ((brdL != 0 && (brdL + wLen) != numLines) && (col.at(brdL + wLen) != '0' || col.at(brdL - 1) != '0')) {
                 std::cout << "ERROR: Word already next to this word\n";
                 check = false;
             }

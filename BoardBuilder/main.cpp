@@ -5,12 +5,14 @@
 #include "Menu.h"
 #include "editIO.h"
 
+
 void showMainMenu(Board board);
 void saveBoard(std::string &filename, Board board);
 void createBoard(Board &board);
+void editBoard(Board &board);
 
 int main() {
-    Board board;
+    Board board = Board();
     showMainMenu(board);
 }
 
@@ -31,28 +33,22 @@ void showMainMenu(Board board) {
     showName();
     const Menu mainMenu{"Welcome to the Board Builder Programme. Here you can build boards for ScrabbleJr.\n",
                         "Invalid choice! ",
-                        {{"Create", [&board] { createBoard(board); }}}
+                        {{"Create a new board", [&board] { createBoard(board); }},
+                         {"Edit existing board", [&board] { editBoard(board); },}}
     };
     mainMenu();
 
 }
 
-
-void createBoard(Board &board) {
-
-    unsigned numLines, numCols;
-    readDimentions(numLines, numCols);
-    board = Board(numLines, numCols);
+void showEditMenu(Board &board, bool &running) {
 
     char l{}, c{}, orientation{};
     auto coords = std::make_pair(l, c);
 
     std::string word{}, name{};
 
-    bool running = true;
 
-
-    const Menu createMenu{"This is edit mode. Choose from the options below to create your board.\n",
+    const Menu editMenu{"This is edit mode. Choose from the options below to create your board.\n",
                           "Invalid choice! ",
                           {{"Insert", [&board, &coords, &orientation, &word] {
                               readWord(word);
@@ -64,15 +60,49 @@ void createBoard(Board &board) {
                           }}, {"Quit", [&running] {
                               running = false;
                           }},
-                           {"Save", [&name, &board] {
+                           {"Save", [&name, &board, &running] {
+                               running = false;
                                saveBoard(name, board);
                            }}}
     };
 
+    editMenu();
+
+    clearScreen();
+
+}
+
+
+void editBoard(Board &board) {
+
+    std::string fileName;
+    searchFile(fileName);
+
+    std::ifstream file(fileName);
+    board = Board(file);
+
+    bool running = true;
+
+    while (running) {
+        board.showBoard();
+        showEditMenu(board, running);
+    }
+
+}
+
+
+void createBoard(Board &board) {
+
+    unsigned numLines, numCols;
+    readDimentions(numLines, numCols);
+    board = Board(numLines, numCols);
+
+    bool running = true;
+
     while (running) {
         clearScreen();
         board.showBoard();
-        createMenu();
+        showEditMenu(board, running);
     }
 
 }

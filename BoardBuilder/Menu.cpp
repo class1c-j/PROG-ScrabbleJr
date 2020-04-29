@@ -6,15 +6,15 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <limits>
 
 
 Menu::Menu(const std::string &msg, const std::string &invalid,
-           const std::unordered_map<std::string, std::function<void()>> &commands) {
+           const std::map<std::string, std::function<void()>> &commands) {
 
     message_ = msg;
     invalidMessage_ = invalid;
     commands_ = commands;
-
 
 }
 

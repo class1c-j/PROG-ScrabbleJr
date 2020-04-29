@@ -5,6 +5,7 @@
 
 #include <fstream>
 #include <vector>
+#include <set>
 
 class Board {
 public:
@@ -28,7 +29,7 @@ public:
 
 private:
     unsigned numLines{}, numCols{};
-    std::vector<std::string> words;
+    std::set<std::string> words;
     std::vector<std::vector<char> > board;
 
     void saveWord(const std::string &word, std::pair<char, char>, const char &orientation);
@@ -36,6 +37,8 @@ private:
     std::vector<char> getLine(unsigned line);
 
     std::vector<char> getCol(unsigned col);
+
+    std::set<std::string> startingPoints;
 
 };
 

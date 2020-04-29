@@ -20,4 +20,6 @@ void readFileName(std::string &fileName);
 
 void clearScreen();
 
+void searchFile(std::string &fileName);
+
 #endif //BOARDBUILDER_EDITIO_H
