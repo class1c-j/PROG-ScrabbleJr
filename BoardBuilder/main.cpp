@@ -7,16 +7,17 @@
 
 
 void showMainMenu(Board board);
+
 void saveBoard(std::string &filename, Board board);
+
 void createBoard(Board &board);
+
 void editBoard(Board &board);
 
 int main() {
     Board board = Board();
     showMainMenu(board);
 }
-
-
 
 void showName() {
     std::cout << "  ___                         _     ___          _   _      _             \n"
@@ -49,26 +50,30 @@ void showEditMenu(Board &board, bool &running) {
 
 
     const Menu editMenu{"This is edit mode. Choose from the options below to create your board.\n",
-                          "Invalid choice! ",
-                          {{"Insert", [&board, &coords, &orientation, &word] {
-                              readWord(word);
-                              readCoordinates(coords, board);
-                              readOrientation(orientation);
-                              if (board.verifyWord(word, coords, orientation)) {
-                                  board.insertWord(word, coords, orientation);
-                              }
-                          }}, {"Quit", [&running] {
-                              running = false;
-                          }},
-                           {"Save", [&name, &board, &running] {
-                               running = false;
-                               saveBoard(name, board);
-                           }}}
+                        "Invalid choice! ",
+                        {{"Insert word", [&board, &coords, &orientation, &word] {
+                            readWord(word);
+                            readCoordinates(coords, board);
+                            readOrientation(orientation);
+                            if (board.verifyWord(word, coords, orientation)) {
+                                board.insertWord(word, coords, orientation);
+                            } else {
+                                printMessage(board.error, 1);
+                            }
+                        }}, {"Remove word", [&board, &coords, &orientation] {
+                            readCoordinates(coords, board);
+                            readOrientation(orientation);
+                            board.removeWord(coords, orientation);
+                        }}, {"Save", [&name, &board, &running] {
+                            running = false;
+                            saveBoard(name, board);
+                        }},
+                         {"Quit", [&running] {
+                             running = false;
+                         }}}
     };
 
     editMenu();
-
-    clearScreen();
 
 }
 
@@ -88,7 +93,6 @@ void editBoard(Board &board) {
         board.showBoard();
         showEditMenu(board, running);
     }
-
 }
 
 
@@ -103,11 +107,10 @@ void createBoard(Board &board) {
     while (running) {
         clearScreen();
         board.showBoard();
+        printMessage(board.error, 1);
         showEditMenu(board, running);
     }
-
 }
-
 
 
 void saveBoard(std::string &fileName, Board board) {
@@ -116,7 +119,7 @@ void saveBoard(std::string &fileName, Board board) {
     const Menu saveMenu{"File saved successfully. Do you want to quit or continue editing?\n",
                         "Invalid choice! ",
                         {{"Main menu", [&board] { showMainMenu(board); }},
-                         {"Continue editing", [] { }}}
+                         {"Continue editing", [] {}}}
     };
     saveMenu();
 }

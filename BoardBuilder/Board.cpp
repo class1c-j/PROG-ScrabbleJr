@@ -85,12 +85,9 @@ void Board::showBoard() {
 
         std::cout << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |";   // uppercase letters
 
-        for (int j = 0; j < numCols; j++) {
-            if (board.at(i).at(j) == '0') {  // do not show the 0 in empty positions
-                std::cout << std::left << std::setw(W + 1) << " ";
-            } else {
-                std::cout << std::left << std::setw(W) << board.at(i).at(j) << ' ';
-            }
+        for (size_t j = 0; j < numCols; j++) {
+            board.at(i).at(j) == '0' ? std::cout << std::left << std::setw(W + 1) << " " : std::cout << std::left
+            << std::setw(W) << board.at(i).at(j) << ' ';
         }
 
         std::cout << '\n';
@@ -109,12 +106,12 @@ unsigned Board::getnCols() const {
 
 void Board::insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation) {
 
-    if (orientation == 'V') {  // a coluna é sempre a mesma, apenas iterar a linha
-        for (int i = coords.first; i < coords.first + word.size(); i++) {
+    if (orientation == 'V') {
+        for (int i = coords.first; i < coords.first + word.length(); i++) {
             board.at(i).at(coords.second) = word.at(i - coords.first);
         }
-    } else if (orientation == 'H') {  // linha é sempre a mesma, apenas iterar a coluna
-        for (int i = coords.second; i < coords.second + word.size(); i++) {
+    } else if (orientation == 'H') {
+        for (int i = coords.second; i < coords.second + word.length(); i++) {
             board.at(coords.first).at(i) = word.at(i - coords.second);
         }
     }
@@ -147,7 +144,7 @@ void Board::saveWord(const std::string &word, std::pair<char, char> coords, cons
 bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
 
     bool check = true;
-    unsigned wLen = word.size(), brdL = coords.first, brdC = coords.second, counter = 0;
+    unsigned long wLen = word.size(), brdL = coords.first, brdC = coords.second, counter = 0;
 
     std::vector<char> line = getLine(brdL);
     std::vector<char> col = getCol(brdC);
@@ -158,7 +155,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
     if ((dir == 'H' && (numCols - brdC) < wLen) || (dir == 'V' && (numLines - brdL) < wLen)) {
 
         check = false;
-        std::cout << "ERROR: Out of board limits\n";
+        error = errors.at(0);  // board limits
 
     } else if (dir == 'H') {
 
@@ -166,7 +163,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
             if (line.at(i) != '0') {
                 counter++; //counter to check if the word is not inside a word that was already inserted
                 if (word.at(i - brdC) != line.at(i)) {
-                    std::cout << "ERROR: Bad intersection\n";
+                    error = errors.at(1);  // bad intersection
                     check = false;
                     break;
                 }
@@ -176,12 +173,13 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
 
             //condição para verificar as 2 extremidades horizontais se uma delas estiver nos limites do horizontais do tabuleiro
             if ((brdC == 0 && line.at(brdC + wLen) != '0') || ((brdC + wLen) == numCols && line.at(brdC - 1) != '0')) {
-                std::cout << "ERROR: Word already next to this word\n";
+                error = errors.at(2);  // word exists next to this
                 check = false;
             }
                 //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
-            else if ((brdC != 0 && (brdC + wLen) != numCols) && (line.at(brdC + wLen) != '0' || line.at(brdC - 1) != '0')) {
-                std::cout << "ERROR: Word already next to this word\n";
+            else if ((brdC != 0 && (brdC + wLen) != numCols) &&
+                     (line.at(brdC + wLen) != '0' || line.at(brdC - 1) != '0')) {
+                error = errors.at(2);  // word exists next to this
                 check = false;
             }
         }
@@ -190,7 +188,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
             if (col.at(i) != '0') {
                 counter++; //counter to check if the word is not inside a word that was already inserted
                 if (word.at(i - brdL) != col.at(i)) {
-                    std::cout << "ERROR: Bad intersection\n";
+                    error = errors.at(1);  // bad intersection
                     check = false;
                     break;
                 }
@@ -200,12 +198,13 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
 
             //condição para verificar as 2 extremidades verticais se uma delas estiver nos limites do vertcias do tabuleiro
             if ((brdL == 0 && col.at(brdL + wLen) != '0') || ((brdL + wLen) == numLines && col.at(brdL - 1) != '0')) {
-                std::cout << "ERROR: Word already next to this word\n";
+                error = errors.at(2);  // existing word next to this location
                 check = false;
             }
                 //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
-            else if ((brdL != 0 && (brdL + wLen) != numLines) && (col.at(brdL + wLen) != '0' || col.at(brdL - 1) != '0')) {
-                std::cout << "ERROR: Word already next to this word\n";
+            else if ((brdL != 0 && (brdL + wLen) != numLines) &&
+                     (col.at(brdL + wLen) != '0' || col.at(brdL - 1) != '0')) {
+                error = errors.at(2);  // exististing word next to this location
                 check = false;
             }
         }
@@ -213,7 +212,43 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
 
     if (check && counter == wLen) {
         check = false;
-        std::cout << "ERROR: Word already in that location\n";
+        error = errors.at(3);  // word already here
     }
     return check;
+}
+
+void Board::removeWord(std::pair<char, char> coords, const char dir) {
+    std::string word = getWord(coords, dir);
+
+    if (dir == 'V') {
+        for (size_t i = coords.first; i <= coords.first + word.length(); i++) {
+            board.at(i).at(coords.second) = 0;
+        }
+    } else if (dir == 'H') {
+        for (size_t i = coords.second; i < coords.second + word.length(); i++) {
+            board.at(coords.first).at(i) = 0;
+        }
+    }
+    unsaveWord(coords, dir);
+}
+
+std::string Board::getWord(std::pair<char, char> coords, const char &dir) {
+    char line = coords.first + 65;
+    char col = coords.second + 97;
+    for (const auto &entry : words) {
+        if (line == entry.at(0) && entry.at(1) == col && entry.at(3) == dir) {
+            return entry.substr(5);
+        }
+    }
+    return std::string();
+}
+
+void Board::unsaveWord(std::pair<char, char> coords, const char &dir) {
+    char line = coords.first + 65;
+    char col = coords.second + 97;
+    for (const auto &entry : words) {
+        if (entry.at(0) == line && entry.at(1) == col and entry.at(4) == dir) {
+            words.erase(entry);
+        }
+    }
 }

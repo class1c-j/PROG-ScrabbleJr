@@ -24,16 +24,16 @@ void Menu::operator()() const {
 
     std::cout << message_;
     for (const auto &cmd : commands_) {
-        std::cout << '[' << count << ']' << " " << cmd.first  << '\n';
-        count ++;
+        std::cout << '[' << count << ']' << " " << cmd.first << '\n';
+        count++;
     }
 
 
-    int choiceNum;  // user choice number
+    size_t choiceNum{};  // user choice number
     std::string userChoice;  // user choice name
     std::vector<std::string> options{};
 
-    for (const auto& i : commands_) {  // get keys from map
+    for (const auto &i : commands_) {  // get keys from map
         options.push_back(i.first);
     }
 

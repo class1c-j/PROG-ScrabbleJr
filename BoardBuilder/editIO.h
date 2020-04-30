@@ -22,4 +22,6 @@ void clearScreen();
 
 void searchFile(std::string &fileName);
 
+void printMessage(const std::string& message, unsigned colour);
+
 #endif //BOARDBUILDER_EDITIO_H

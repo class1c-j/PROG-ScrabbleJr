@@ -9,7 +9,6 @@
 #define NOMINMAX
 #endif
 
-
 void clearScreen() {
 #ifdef _WIN32
     COORD coordScreen = { 0, 0 };  // upper left corner
@@ -30,10 +29,7 @@ void clearScreen() {
 #endif
 }
 
-
-
 void readDimensions(unsigned &lines, unsigned &cols) {
-    bool eof = false;
     std::cout << "Number of lines ? ";
     std::cin >> lines;
     while (std::cin.fail() || lines < 0 || lines > 20 || (std::cin.peek() != '\n' && !isdigit(std::cin.peek()))) {
@@ -64,6 +60,7 @@ void readDimensions(unsigned &lines, unsigned &cols) {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "User chose to close the input.\n";
+                break;
             } else {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -77,16 +74,14 @@ void readDimensions(unsigned &lines, unsigned &cols) {
             std::cin >> cols;
         }
     }
-    if (eof) {  // ignore for now
-        lines = cols = 1;
-    }
 }
 
 
 void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     std::cout << "Starting position line ? ";
     std::cin >> coords.first;
-    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 > board.getnLines() || std::cin.peek() != '\n') {
+    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 > board.getnLines() ||
+           std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -100,7 +95,8 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
 
     std::cout << "Starting position column ? ";
     std::cin >> coords.second;
-    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 > board.getnCols() || std::cin.peek() != '\n') {
+    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 > board.getnCols() ||
+           std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -115,6 +111,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
 
     coords.first -= 65;
     coords.second -= 97;
+
 
 }
 
@@ -174,7 +171,6 @@ void readFileName(std::string &fileName) {
     fileName += ".txt";
 
 
-
     while (true) {
         std::ofstream test(fileName);
         if (std::cin.fail() || !test) {
@@ -204,4 +200,22 @@ void searchFile(std::string &fileName) {
             break;
         }
     }
+}
+
+void printMessage(const std::string& message, unsigned colour) {
+#ifdef _WIN32
+    // YELLOY -> 14, // READ -> 4, // WHITE -> 15
+    std::vector<int> colours = {15, 14, 4};
+    HANDLE hcon= GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hcon, colours.at(colour));
+
+    std::cout << message;
+
+    SetConsoleTextAttribute(hcon, colours.at(0));
+#else
+    std::vector<std::string> colours = {"\033[1;37m", "\033[1;33m", "\033[0;31m"};
+    std::cout << colours.at(colour);
+    std::cout << message;
+    std::cout << colours.at(0);
+#endif
 }
