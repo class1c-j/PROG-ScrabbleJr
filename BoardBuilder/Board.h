@@ -34,6 +34,10 @@ public:
     void unsaveWord(std::pair<char, char> coords, const char &dir);
 
     std::string error{};
+    
+    void file();
+
+    std::vector<std::string> vFile;
 
 private:
     unsigned numLines{}, numCols{};
@@ -50,9 +54,13 @@ private:
 
     std::vector<std::string> errors = {
             "ERROR: Out of board limits\n", "ERROR: Bad intersection\n", "ERROR: Word already next to this word\n",
-            "ERROR: Word already in that location\n"
+            "ERROR: Word is not in the dictionary\n"
     };
-
+    bool wordInFile(const std::string& word);
+    
+    bool checkLine(std::vector<char> col);
+    
+    bool checkCol(std::vector<char> nextLine);
 };
 
 
