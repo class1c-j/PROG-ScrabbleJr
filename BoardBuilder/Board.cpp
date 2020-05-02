@@ -140,32 +140,34 @@ void Board::saveWord(const std::string &word, std::pair<char, char> coords, cons
 }
 
 
-bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
+bool Board::verifyWord(const std::string & word, std::pair<char, char> coords, const char& dir) {
 
     bool check = true;
-    unsigned long wLen = word.size(), brdL = coords.first, brdC = coords.second, counter = 0;
+    unsigned int wLen = word.size(), brdL = coords.first, brdC = coords.second;
 
     std::vector<char> line = getLine(brdL);
     std::vector<char> col = getCol(brdC);
 
+    file();
+
     std::string lStr(line.begin(), line.end());
     std::string cStr(col.begin(), col.end());
 
-    if ((dir == 'H' && (numCols - brdC) < wLen) || (dir == 'V' && (numLines - brdL) < wLen)) {
-
+    if (!wordInFile(word)) {
+        error = errors.at(3); //ERROR: Word is not in the dictionary
+        check = false;
+    }
+    else if ((dir == 'H' && (numCols - brdC) < wLen) || (dir == 'V' && (numLines - brdL) < wLen)) {
         check = false;
         error = errors.at(0);  // board limits
+    }
+    else if (dir == 'H') {
 
-    } else if (dir == 'H') {
-
-        for (unsigned i = brdC; i < (wLen + brdC); i++) {
-            if (line.at(i) != '0') {
-                counter++; //counter to check if the word is not inside a word that was already inserted
-                if (word.at(i - brdC) != line.at(i)) {
-                    error = errors.at(1);  // bad intersection
-                    check = false;
-                    break;
-                }
+        for (unsigned i = brdC; i < brdC + wLen; i++) {
+            if ((line.at(i) != '0') && (word.at(i - brdC) != line.at(i))) {
+                 error = errors.at(1);  // bad intersection
+                 check = false;
+                 break;
             }
         }
         if (brdC != 0 || (brdC + wLen) != numCols) {
@@ -175,22 +177,35 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
                 error = errors.at(2);  // word exists next to this
                 check = false;
             }
-                //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
-            else if ((brdC != 0 && (brdC + wLen) != numCols) &&
-                     (line.at(brdC + wLen) != '0' || line.at(brdC - 1) != '0')) {
+            //condição para verificar as 2 extremidades horizontais se nenhuma delas estiver nos limites horizontais do tabuleiro
+            else if ((brdC != 0 && (brdC + wLen) != numCols) && (line.at(brdC + wLen) != '0' || line.at(brdC - 1) != '0')) {
                 error = errors.at(2);  // word exists next to this
                 check = false;
             }
         }
-    } else if (dir == 'V') {
-        for (unsigned i = brdL; i < (wLen + brdL); i++) {
-            if (col.at(i) != '0') {
-                counter++; //counter to check if the word is not inside a word that was already inserted
-                if (word.at(i - brdL) != col.at(i)) {
-                    error = errors.at(1);  // bad intersection
-                    check = false;
-                    break;
+        //para verificar a vizinhança superior e inferior da palavra
+        if ((brdL != 0 || (brdL + wLen) != numLines) && check) {
+            for (int i = brdC; i < brdC + wLen; i++) {
+                std::vector<char> wordCol = getCol(i);
+                if (check) {
+                    char a = wordCol.at(brdL);
+                    wordCol.at(brdL) = word.at(i - brdC);
+                    check = checkCol(wordCol);
+                    wordCol.at(i) = a;
+                    if (!check) {
+                        error = errors.at(2);
+                    }
                 }
+            }
+        }
+    }
+
+    else if (dir == 'V') {
+        for (unsigned i = brdL; i < brdL+wLen; i++) {
+            if ((col.at(i) != '0') && (word.at(i - brdL) != col.at(i))){
+                 error = errors.at(1);  // bad intersection
+                 check = false;
+                 break;
             }
         }
         if (brdL != 0 || (brdL + wLen) != numLines) {
@@ -200,20 +215,77 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
                 error = errors.at(2);  // existing word next to this location
                 check = false;
             }
-                //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
-            else if ((brdL != 0 && (brdL + wLen) != numLines) &&
-                     (col.at(brdL + wLen) != '0' || col.at(brdL - 1) != '0')) {
-                error = errors.at(2);  // exististing word next to this location
+            //condição para verificar as 2 extremidades verticais se nenhuma delas estiver nos limites verticais do tabuleiro
+            else if ((brdL != 0 && (brdL + wLen) != numLines) && (col.at(brdL + wLen) != '0' || col.at(brdL - 1) != '0')) {
+                error = errors.at(2);  // existing word next to this location
                 check = false;
             }
         }
+       //para verificar a vizinhança lateral da palavra
+        if (brdC != 0 || ((brdC + wLen) != numCols)) {
+            for (int i = brdL; i < brdL + wLen; i++) {
+                std::vector<char> wordLine = getLine(i);
+                if (check) {
+                    char a = wordLine.at(brdC);
+                    wordLine.at(brdC) = word.at(i - brdL);
+                    check = checkLine(wordLine);
+                    wordLine.at(i) = a;
+                    if (!check) {
+                        error = errors.at(2);
+                    }
+                }
+            }
+        
+        }
     }
 
-    if (check && counter == wLen) {
-        check = false;
-        error = errors.at(3);  // word already here
-    }
     return check;
+}
+
+bool Board::checkLine(std::vector<char> line) {
+    int i = 0;
+    while (i < numCols) {
+        std::string newWord;
+        while (line.at(i) != '0') {
+            newWord += line.at(i);
+            if (i == numCols - 1) {
+                break;
+            }
+            else {
+                i++;
+            }
+        }
+        if (newWord.size() > 1) { //palavra tem de ter mais de que 1 letra
+            if (!(wordInFile(newWord))) {
+                return false;
+            }
+        }
+        i++;
+    }
+    return true;
+}
+    
+bool Board::checkCol(std::vector<char> col) {
+    int i = 0;
+    while (i < numLines) {
+        std::string newWord;
+        while (col.at(i) != '0') {
+            newWord += col.at(i);
+            if (i = numLines - 1) {
+                break;
+            }
+            else {
+                i++;
+            }
+        }
+        if (newWord.size() > 1) { //palavra tem de ter mais de que 1 letra
+            if (!(wordInFile(newWord))) {
+                return false;
+            }
+        }
+        i++;
+    }
+    return true;
 }
 
 void Board::removeWord(std::pair<char, char> coords, const char dir) {
@@ -250,4 +322,23 @@ void Board::unsaveWord(std::pair<char, char> coords, const char &dir) {
             words.erase(entry);
         }
     }
+}
+
+void Board::file() {
+    std::string word;
+    std::ifstream myfile("WORDS.txt");
+
+    if (myfile.is_open()) {
+        while (myfile >> word) {
+            vFile.push_back(word);
+        }
+        myfile.close();
+    }
+    else {
+        std::cout << "File not found!" << std::endl;
+    }
+}
+
+bool Board::wordInFile(const std::string& word){
+    return (std::binary_search(vFile.begin(), vFile.end(), word));
 }

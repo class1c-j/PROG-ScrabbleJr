@@ -2,11 +2,10 @@
 #include "editIO.h"
 #include <limits>
 #include <iostream>
-
+#define NOMINMAX
 #ifdef _WIN32  // Windows compatibility
 #include <windows.h>
 #include <cstdlib>
-#define NOMINMAX
 #endif
 
 void clearScreen() {
