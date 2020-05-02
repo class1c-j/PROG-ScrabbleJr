@@ -69,7 +69,6 @@ void Board::save(const std::string &name) {
 
 void Board::showBoard() {
 
-
     const int W = 2;  // edit to change how close together the letters are in the board
 
     // lowercase letters
