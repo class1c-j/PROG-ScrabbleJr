@@ -1,7 +1,5 @@
 
-#ifndef BOARDBUILDER_BOARD_H
-#define BOARDBUILDER_BOARD_H
-
+#pragma once
 
 #include <fstream>
 #include <vector>
@@ -15,15 +13,17 @@ public:
 
     explicit Board(std::ifstream &file);
 
-    void showBoard();
+    void readDictionary();
 
     void save(const std::string &name);
 
+    void showBoard();
+
     void insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation);
 
-    bool verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir);
-
     void removeWord(std::pair<char, char>, char dir);
+
+    bool verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir);
 
     unsigned getnLines() const;
 
@@ -31,37 +31,39 @@ public:
 
     std::string getWord(std::pair<char, char> coords, const char &dir);
 
-    void unsaveWord(std::pair<char, char> coords, const char &dir);
+    std::vector<std::string> getWordList();
 
     std::string error{};
-    
-    void file();
 
-    std::vector<std::string> vFile;
+    std::vector<std::string> dictWords;
 
 private:
-    unsigned numLines{}, numCols{};
-    std::set<std::string> words;
-    std::vector<std::vector<char> > board;
 
     void saveWord(const std::string &word, std::pair<char, char>, const char &orientation);
+
+    void unsaveWord(std::pair<char, char> coords, const char &dir);
 
     std::vector<char> getLine(unsigned line);
 
     std::vector<char> getCol(unsigned col);
 
+    bool checkCol(std::vector<char> col);
+
+    bool checkLine(std::vector<char> line);
+
+    bool isInDictionary(const std::string &word);
+
     std::set<std::string> startingPoints;
 
     std::vector<std::string> errors = {
             "ERROR: Out of board limits\n", "ERROR: Bad intersection\n", "ERROR: Word already next to this word\n",
-            "ERROR: Word is not in the dictionary\n"
+            "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found."
     };
-    bool wordInFile(const std::string& word);
-    
-    bool checkLine(std::vector<char> col);
-    
-    bool checkCol(std::vector<char> nextLine);
+
+    unsigned numLines{}, numCols{};
+
+    std::set<std::string> words;
+
+    std::vector<std::vector<char> > board;
+
 };
-
-
-#endif //BOARDBUILDER_BOARD_H

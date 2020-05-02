@@ -1,22 +1,26 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "Board.h"
-#include "Menu.h"
+#include "../CommonFiles/Board.h"
+#include "../CommonFiles/Menu.h"
 #include "editIO.h"
 
+void showMainMenu(Board board, bool &running);
 
-void showMainMenu(Board board);
+void showEditMenu(Board &board, bool &running);
 
-void saveBoard(std::string &filename, Board board);
+void saveBoard(std::string &fileName, Board board, bool running);
 
 void createBoard(Board &board);
 
 void editBoard(Board &board);
 
 int main() {
+    bool running = true;
     Board board = Board();
-    showMainMenu(board);
+    while (running) {
+        showMainMenu(board, running);
+    }
 }
 
 void showName() {
@@ -27,15 +31,20 @@ void showName() {
                  "                                                                          \n";
 }
 
-void showMainMenu(Board board) {
+void showMainMenu(Board board, bool &running) {
 
     clearScreen();
 
     showName();
     const Menu mainMenu{"Welcome to the Board Builder Programme. Here you can build boards for ScrabbleJr.\n",
                         "Invalid choice! ",
-                        {{"Create a new board", [&board] { createBoard(board); }},
-                         {"Edit existing board", [&board] { editBoard(board); },}}
+                        {{"Create a new board", [&board] {
+                            createBoard(board);
+                        }}, {"Edit existing board", [&board] {
+                            editBoard(board);
+                        }}, {"Quit board builder", [&running] {
+                            running = false;
+                        }}}
     };
     mainMenu();
 
@@ -57,16 +66,13 @@ void showEditMenu(Board &board, bool &running) {
                             readOrientation(orientation);
                             if (board.verifyWord(word, coords, orientation)) {
                                 board.insertWord(word, coords, orientation);
-                            } else {
-                                printMessage(board.error, 1);
                             }
                         }}, {"Remove word", [&board, &coords, &orientation] {
                             readCoordinates(coords, board);
                             readOrientation(orientation);
                             board.removeWord(coords, orientation);
                         }}, {"Save", [&name, &board, &running] {
-                            running = false;
-                            saveBoard(name, board);
+                            saveBoard(name, board, running);
                         }},
                          {"Quit", [&running] {
                              running = false;
@@ -82,9 +88,9 @@ void editBoard(Board &board) {
 
     std::string fileName;
     searchFile(fileName);
-
     std::ifstream file(fileName);
     board = Board(file);
+    board.readDictionary();
 
     bool running = true;
 
@@ -101,31 +107,33 @@ void createBoard(Board &board) {
     unsigned numLines, numCols;
     readDimensions(numLines, numCols);
     board = Board(numLines, numCols);
+    board.readDictionary();
+
+    std::cout << "Dic size: " << board.dictWords.size() << '\n';
 
     bool running = true;
 
     while (running) {
         clearScreen();
         board.showBoard();
-        printMessage(board.error, 1);
+        if (!board.error.empty()) {  // show any error that might exist
+            printMessage(board.error, 1);
+            board.error = "";
+        }
         showEditMenu(board, running);
     }
 }
 
 
-void saveBoard(std::string &fileName, Board board) {
+void saveBoard(std::string &fileName, Board board, bool running) {
     readFileName(fileName);
-    board.save(fileName);
+    std::string filePath = "../UserBoards/" + fileName;
+    board.save(filePath);
+    running = true;
     const Menu saveMenu{"File saved successfully. Do you want to quit or continue editing?\n",
                         "Invalid choice! ",
-                        {{"Main menu", [&board] { showMainMenu(board); }},
-                         {"Continue editing", [] {}}}
+                        {{"Main menu", [&board, &running] { showMainMenu(board, running); }},
+                         {"Continue editing", [&running] {running = false;}}}
     };
     saveMenu();
 }
-
-
-
-
-
-

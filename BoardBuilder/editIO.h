@@ -1,12 +1,8 @@
-//
-// Created by ritam on 27/04/20.
-//
 
-#ifndef BOARDBUILDER_EDITIO_H
-#define BOARDBUILDER_EDITIO_H
+#pragma once
 
 #include <vector>
-#include "Board.h"
+#include "../CommonFiles/Board.h"
 
 void readDimensions(unsigned &lines, unsigned &cols);
 
@@ -23,5 +19,3 @@ void clearScreen();
 void searchFile(std::string &fileName);
 
 void printMessage(const std::string& message, unsigned colour);
-
-#endif //BOARDBUILDER_EDITIO_H

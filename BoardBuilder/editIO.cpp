@@ -3,6 +3,7 @@
 #include <limits>
 #include <iostream>
 #define NOMINMAX
+
 #ifdef _WIN32  // Windows compatibility
 #include <windows.h>
 #include <cstdlib>
@@ -79,7 +80,7 @@ void readDimensions(unsigned &lines, unsigned &cols) {
 void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     std::cout << "Starting position line ? ";
     std::cin >> coords.first;
-    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 > board.getnLines() ||
+    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 >= board.getnLines() ||
            std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
@@ -94,7 +95,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
 
     std::cout << "Starting position column ? ";
     std::cin >> coords.second;
-    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 > board.getnCols() ||
+    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 >= board.getnCols() ||
            std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
@@ -158,6 +159,11 @@ void readWord(std::string &word) {
         }
         break;
     }
+
+    for (char & i : word) {
+        i = tolower(i);
+    }
+
 }
 
 void readFileName(std::string &fileName) {
@@ -184,17 +190,19 @@ void readFileName(std::string &fileName) {
 
 void searchFile(std::string &fileName) {
 
-    std::cout << "Search for board (without file extention) : ";
+    std::cout << "Search for board (without file extension) : ";
     std::cin >> fileName;
+    fileName = "../UserBoards/" + fileName + ".txt";
+
 
     while (true) {
-        fileName += ".txt";
         std::ifstream file(fileName);
         if (!file.good()) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Board not found. Try again : ";
             std::cin >> fileName;
+            fileName = "../UserBoards/" + fileName + ".txt";
         } else {
             break;
         }
@@ -212,7 +220,7 @@ void printMessage(const std::string& message, unsigned colour) {
 
     SetConsoleTextAttribute(hcon, colours.at(0));
 #else
-    std::vector<std::string> colours = {"\033[1;37m", "\033[1;33m", "\033[0;31m"};
+    std::vector<std::string> colours = {"\033[0m", "\033[1;33m", "\033[0;31m"};
     std::cout << colours.at(colour);
     std::cout << message;
     std::cout << colours.at(0);
