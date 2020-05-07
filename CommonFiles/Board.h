@@ -36,20 +36,24 @@ public:
     std::string error{};
 
     std::vector<std::string> dictWords;
+    
+    void getBoardWords();
+
+    bool getBoardLetters();
+
+    std::vector<char> totalLetters;
 
 private:
 
     void saveWord(const std::string &word, std::pair<char, char>, const char &orientation);
 
-    void unsaveWord(std::pair<char, char> coords, const char &dir);
-
     std::vector<char> getLine(unsigned line);
 
     std::vector<char> getCol(unsigned col);
 
-    bool checkCol(std::vector<char> col);
-
-    bool checkLine(std::vector<char> line);
+    bool checkLine(std::vector<char> col, std::pair<char, char> coords, const std::string& word);
+    
+    bool checkCol(std::vector<char> nextLine, std::pair<char, char> coords, const std::string& word);
 
     bool isInDictionary(const std::string &word);
 
@@ -57,7 +61,7 @@ private:
 
     std::vector<std::string> errors = {
             "ERROR: Out of board limits\n", "ERROR: Bad intersection\n", "ERROR: Word already next to this word\n",
-            "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found."
+            "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found.", "WARNING: Number of existing letters is not enough to play a game with the maximum number of players\n"
     };
 
     unsigned numLines{}, numCols{};
