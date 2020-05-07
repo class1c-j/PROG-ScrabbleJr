@@ -228,7 +228,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
         }
 
         // check right and left neighborhoods
-         if (brdC != 0 || ((brdC + 1) != numCols) && check) {
+         if ((brdC != 0 || ((brdC + 1) != numCols)) && check) {
             if (brdC == 0) {
                 std::vector<char> nextCol = getCol(1);
                 check = checkCol(nextCol, coords, word);
