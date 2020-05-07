@@ -1,27 +1,31 @@
 //
-// Created by ritam on 01/05/20.
+// Created by ritam on 04/05/20.
 //
 
 #ifndef PROGT2_PLAYER_H
 #define PROGT2_PLAYER_H
 
-#include <string>
 #include <vector>
-#include "../BoardBuilder/editIO.h"
+#include <string>
+#include <algorithm>
 #include "../CommonFiles/Board.h"
-
-struct Move {std::pair<char, char>coords{}; char dir{};};
 
 class Player {
 public:
     Player();
     explicit Player(const std::string &name_);
-    Move getMove();
-    void play();
+    void setHand(const std::vector<char>& tiles);
+    void showHand();
+    std::string getName();
+    unsigned getScore() const;
+    void incrementScore();
+    void play(char letter, std::pair<char, char> coords, Board &board);
+    bool isValidMove(char letter, std::pair<char, char> coords, Board board);
+
 private:
     std::string name;
     std::vector<char> hand;
-    Move move;
+    unsigned score{};
 };
 
 

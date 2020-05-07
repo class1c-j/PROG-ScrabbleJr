@@ -35,8 +35,24 @@ public:
 
     std::string error{};
 
+    std::vector<std::vector<char> > getContent();
+
     std::vector<std::string> dictWords;
-    
+
+    bool isPlayed(std::pair<char, char> coords);
+
+    void setPlayed(std::pair<char, char> coords);
+
+    std::vector<char> getLine(unsigned line);
+
+    std::vector<char> getCol(unsigned col);
+
+    std::vector<std::pair<char, char>> getWordsInPointStart(std::pair<char, char> coords);
+
+    bool isFinished();
+
+    bool finishedWord(std::pair<char, char> coords);
+
     void getBoardWords();
 
     bool getBoardLetters();
@@ -47,13 +63,9 @@ private:
 
     void saveWord(const std::string &word, std::pair<char, char>, const char &orientation);
 
-    std::vector<char> getLine(unsigned line);
+    bool checkCol(std::vector<char> col, std::pair<char, char> coords, const std::string& word) const;
 
-    std::vector<char> getCol(unsigned col);
-
-    bool checkLine(std::vector<char> col, std::pair<char, char> coords, const std::string& word);
-    
-    bool checkCol(std::vector<char> nextLine, std::pair<char, char> coords, const std::string& word);
+    bool checkLine(std::vector<char> nextLine, std::pair<char, char> coords, const std::string& word) const;
 
     bool isInDictionary(const std::string &word);
 
@@ -61,7 +73,8 @@ private:
 
     std::vector<std::string> errors = {
             "ERROR: Out of board limits\n", "ERROR: Bad intersection\n", "ERROR: Word already next to this word\n",
-            "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found.", "WARNING: Number of existing letters is not enough to play a game with the maximum number of players\n"
+            "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found.",
+            "WARNING: Number of existing letters is not enough to play a game with the maximum number of players\n"
     };
 
     unsigned numLines{}, numCols{};
@@ -70,4 +83,5 @@ private:
 
     std::vector<std::vector<char> > board;
 
+    std::vector<std::vector<char> > played;
 };

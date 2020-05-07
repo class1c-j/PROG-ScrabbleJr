@@ -135,8 +135,8 @@ void saveBoard(std::string &fileName, Board board, bool running) {
     running = true;
     const Menu saveMenu{"File saved successfully. Do you want to quit or continue editing?\n",
                         "Invalid choice! ",
-                        {{"Main menu", [&board, &running] { showMainMenu(board, running); }},
-                         {"Continue editing", [&running] {running = false;}}}
+                        {{"Main menu", [&board, &running] { running = false;}},
+                         {"Continue editing", [] {}}}
     };
     saveMenu();
 }
