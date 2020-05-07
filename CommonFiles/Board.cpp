@@ -68,7 +68,7 @@ void Board::readDictionary() {
         }
         dict.close();
     } else {
-        error = errors.at(4);
+        error = errors.at(5);
     }
 }
 
@@ -117,8 +117,6 @@ void Board::insertWord(const std::string &word, std::pair<char, char> coords, co
             board.at(coords.first).at(i) = word.at(i - coords.second);
         }
     }
-
-    saveWord(word, coords, orientation);
 }
 
 void Board::removeWord(std::pair<char, char> coords, const char dir) {
@@ -137,7 +135,6 @@ void Board::removeWord(std::pair<char, char> coords, const char dir) {
     } else {
         error = errors.at(4);  // no word to remove
     }
-    unsaveWord(coords, dir);
 }
 
 bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
@@ -185,18 +182,25 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
         }
 
         // check superior and inferior neighborhoods
-        if ((brdL != 0 || (brdL + wLen) != numLines) && check) {
-            for (size_t i = brdC; i < brdC + wLen; i++) {
-                std::vector<char> wordCol = getCol(i);
+        if ((brdL != 0 || (brdL + 1) != numLines) && check) {
+            if (brdL == 0) {
+                std::vector<char> nextLine = getLine(1);
+                check = checkLine(nextLine, coords, word);
+            }
+            else if ((brdL + 1) == numLines) {
+                std::vector<char> prevLine = getLine(brdL - 1);
+                check = checkLine(prevLine, coords, word);
+            }
+            else {
+                std::vector<char> nextLine = getLine(brdL + 1);
+                check = checkLine(nextLine, coords, word);
                 if (check) {
-                    char a = wordCol.at(brdL);
-                    wordCol.at(brdL) = word.at(i - brdC);
-                    check = checkCol(wordCol);
-                    wordCol.at(i) = a;
-                    if (!check) {
-                        error = errors.at(2);  // touches existing word
-                    }
+                    std::vector<char> prevLine = getLine(brdL - 1);
+                    check = checkLine(prevLine, coords, word);
                 }
+            }
+            if (!check) {
+                error = errors.at(2);
             }
         }
 
@@ -224,20 +228,26 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
         }
 
         // check right and left neighborhoods
-        if (brdC != 0 || ((brdC + wLen) != numCols)) {
-            for (size_t i = brdL; i < brdL + wLen; i++) {
-                std::vector<char> wordLine = getLine(i);
+         if (brdC != 0 || ((brdC + 1) != numCols) && check) {
+            if (brdC == 0) {
+                std::vector<char> nextCol = getCol(1);
+                check = checkCol(nextCol, coords, word);
+            }
+            else if ((brdC + 1) == numCols) {
+                std::vector<char> prevCol = getCol(brdC - 1);
+                check = checkCol(prevCol, coords, word);
+            }
+            else {
+                std::vector<char> nextCol = getCol(brdC+1);
+                check = checkCol(nextCol, coords, word);
                 if (check) {
-                    char a = wordLine.at(brdC);
-                    wordLine.at(brdC) = word.at(i - brdL);
-                    check = checkLine(wordLine);
-                    wordLine.at(i) = a;
-                    if (!check) {
-                        error = errors.at(2);  // touches existing word
-                    }
+                    std::vector<char> prevCol = getCol(brdC - 1);
+                    check = checkCol(prevCol, coords, word);
                 }
             }
-
+            if (!check) {
+                error = errors.at(2);
+            }
         }
     }
     return check;
@@ -273,20 +283,8 @@ std::vector<std::string> Board::getWordList() {
 void Board::saveWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
     std::string pos = std::string() + (char) (coords.first + 65) + (char) (coords.second + 97);
     std::string info = pos + ' ' + dir + ' ' + word;
-    if (std::find(startingPoints.begin(), startingPoints.end(), pos) == startingPoints.end()) {
-        startingPoints.insert(pos);
-        words.insert(info);
-    }
-}
-
-void Board::unsaveWord(std::pair<char, char> coords, const char &dir) {
-    char line = coords.first + 65;
-    char col = coords.second + 97;
-    for (const auto &entry : words) {
-        if (entry.at(0) == line && entry.at(1) == col and entry.at(4) == dir) {
-            words.erase(entry);
-        }
-    }
+    startingPoints.insert(pos);
+    words.insert(info);
 }
 
 std::vector<char> Board::getLine(unsigned int line) {
@@ -301,22 +299,18 @@ std::vector<char> Board::getCol(unsigned int col) {
     return column;
 }
 
-
-bool Board::checkLine(std::vector<char> line) {
-    int i = 0;
-    while (i < numCols) {
-        std::string newWord;
-        while (line.at(i) != '0') {
-            newWord += line.at(i);
-            if (i == numCols - 1) {
-                break;
-            } else {
+bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, const std::string& word) {
+    unsigned int wLen = word.size(), brdC = coords.second;
+    int i = brdC;
+    while (i <= (brdC + wLen)) {
+        std::string newWord = "";
+        if (i >= 0 && i < numCols) {
+            while (line.at(i) != '0') {
+                newWord += line.at(i);
+                if (newWord.size() >= 2) {
+                    return false;
+                }
                 i++;
-            }
-        }
-        if (newWord.size() > 1) { // word must have more than one character
-            if (!(isInDictionary(newWord))) {
-                return false;
             }
         }
         i++;
@@ -324,21 +318,18 @@ bool Board::checkLine(std::vector<char> line) {
     return true;
 }
 
-bool Board::checkCol(std::vector<char> col) {
-    int i = 0;
-    while (i < numLines) {
-        std::string newWord;
-        while (col.at(i) != '0') {
-            newWord += col.at(i);
-            if (i == numLines - 1) {
-                break;
-            } else {
+bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const std::string& word) {
+    unsigned int wLen = word.size(), brdL = coords.first;
+    int i = brdL-1;
+    while (i <= (brdL+wLen)) {
+        std::string newWord="";
+        if (i >= 0 && i < numLines) {
+            while (col.at(i) != '0') {
+                newWord += col.at(i);
+                if (newWord.size() >= 2) {
+                    return false;
+                }
                 i++;
-            }
-        }
-        if (newWord.size() > 1) { // word must have more than one character
-            if (!(isInDictionary(newWord))) {
-                return false;
             }
         }
         i++;
@@ -349,4 +340,75 @@ bool Board::checkCol(std::vector<char> col) {
 bool Board::isInDictionary(const std::string &word) {
     std::cout << "size: " << dictWords.size() << '\n';
     return (std::binary_search(dictWords.begin(), dictWords.end(), word));
+}
+
+void Board::getBoardWords() {
+    //get all words that are vertical
+    for (int k = 0; k < numCols; k++) {
+        std::vector<char> Col = getCol(k);
+        int i = 0, j = 0;
+        while (i < numLines) {
+            std::string newWord = "";
+            while (Col.at(i) != '0') {
+                if (newWord == "") {
+                    j = i;
+                }
+                newWord += Col.at(i);
+                if (i == numLines - 1) {
+                    break;
+                }
+                else {
+                    i++;
+                }
+            }
+            if (newWord.size() > 1) { // word must have more than one character
+                auto newCoords = std::make_pair((char)j, (char)k);
+                saveWord(newWord, newCoords, 'V');
+            }
+            i++;
+        }
+    }
+    //get all words that are horizontal
+    for (int k = 0; k < numLines; k++) {
+        std::vector<char> Line = getLine(k);
+        int i = 0, j = 0;
+        while (i < numCols) {
+            std::string newWord = "";
+            while (Line.at(i) != '0') {
+                if (newWord == "") {
+                    j = i;
+                }
+                newWord += Line.at(i);
+                if (i == numCols - 1) {
+                    break;
+                }
+                else {
+                    i++;
+                }
+            }
+            if (newWord.size() > 1) { // word must have more than one character
+                auto newCoords = std::make_pair((char)k, (char)j);
+                saveWord(newWord, newCoords, 'H');
+            }
+            i++;
+        }
+    }
+}
+
+bool Board::getBoardLetters() {
+    bool check = true;
+    std::vector<char> totalLetters;
+    for (int i = 0; i < numLines; i++) {
+        std::vector<char> Line = getLine(i);
+        for (int j = 0; j < numCols; j++) {
+            if (Line.at(j) != '0') {
+                totalLetters.push_back(Line.at(j));
+            }
+        }
+    }
+    if (totalLetters.size() < 28) {
+        error = errors.at(6);
+        check = false;
+    }
+    return check;
 }
