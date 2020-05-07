@@ -328,7 +328,7 @@ bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, cons
     while (i <= (brdC + wLen)) {
         std::string newWord;
         if (i >= 0 && i < numCols) {
-            while (line.at(i) != '0') {
+            while (line.at(i) != '0' && i<=(brdC+wLen)) {
                 newWord += line.at(i);
                 if (newWord.size() >= 2) {
                     return false;
@@ -347,7 +347,7 @@ bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const 
     while (i <= (brdL+wLen)) {
         std::string newWord;
         if (i >= 0 && i < numLines) {
-            while (col.at(i) != '0') {
+            while (col.at(i) != '0' && i<=(brdL+wLen)) {
                 newWord += col.at(i);
                 if (newWord.size() >= 2) {
                     return false;
