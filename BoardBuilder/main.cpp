@@ -126,6 +126,9 @@ void createBoard(Board &board) {
 
 
 void saveBoard(std::string &fileName, Board board, bool running) {
+    board.getBoardWords();
+    board.getBoardLetters();
+    printMessage(board.error, 1);
     readFileName(fileName);
     std::string filePath = "../UserBoards/" + fileName;
     board.save(filePath);
