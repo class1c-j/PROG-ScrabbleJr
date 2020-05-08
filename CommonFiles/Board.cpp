@@ -222,6 +222,35 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
                 error = errors.at(2);
             }
         }
+        for (size_t i = brdC; i < brdC + wLen; i++) {
+            std::vector<char> Col = getCol(i);
+            if (check) {
+                char a = Col.at(i);
+                Col.at(brdL) = word.at(i - brdC);
+                int j = 0;
+                while (j < numLines) {
+                    std::string newWord;
+                    while (Col.at(j) != '0') {
+                        newWord += Col.at(j);
+                        if (j == numLines - 1) {
+                            break;
+                        }
+                        j++;
+                    }
+                    if (newWord.size() > 1) { // word must have more than one character
+                        if (!(isInDictionary(newWord))) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    j++;
+                }
+                Col.at(brdC) = a;
+                if (!check) {
+                    error = errors.at(2);
+                }
+            }
+        }
 
     } else if (dir == 'V') {
         for (unsigned i = brdL; i < brdL + wLen; i++) {
@@ -264,6 +293,35 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
             }
             if (!check) {
                 error = errors.at(2);
+            }
+        }
+        for (size_t i = brdL; i < brdL + wLen; i++) {
+            std::vector<char> Line = getLine(i);
+            if (check) {
+                char a = Line.at(i);
+                Line.at(brdC) = word.at(i - brdL);
+                int j = 0;
+                while (j < numCols) {
+                    std::string newWord;
+                    while (line.at(j) != '0') {
+                        newWord += line.at(j);
+                        if (j == numCols - 1) {
+                            break;
+                        }
+                        j++;
+                    }
+                    if (newWord.size() > 1) { // word must have more than one character
+                        if (!(isInDictionary(newWord))) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    j++;
+                }
+                Line.at(brdC) = a;
+                if (!check) {
+                    error = errors.at(2);
+                }
             }
         }
     }
