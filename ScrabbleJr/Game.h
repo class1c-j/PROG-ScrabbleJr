@@ -12,14 +12,23 @@
 class Game {
 public:
     Game();
+
     Game(std::vector<Player> players, Board board, Pool pool);
+
     std::vector<Player> getPlayers();
+
     void setPlayers(std::vector<Player> players);
+
     Board getBoard();
+
     void setBoard(Board board);
+
     Pool getPool();
+
     void setPool(Pool pool);
+
     void setPlayer(Player player, unsigned id);
+
     unsigned nextPlayer();
 
 private:

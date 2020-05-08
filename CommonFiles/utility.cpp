@@ -1,6 +1,3 @@
-//
-// Created by ritam on 04/05/20.
-//
 
 #include "utility.h"
 

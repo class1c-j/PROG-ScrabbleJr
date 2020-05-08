@@ -7,7 +7,9 @@
 #include "../CommonFiles/Menu.h"
 
 void loadBoard(Board &board);
+
 Game setup();
+
 void takeTurn(Game &game, unsigned playerID);
 
 
@@ -65,8 +67,8 @@ void takeTurn(Game &game, unsigned playerID) {
 
     if (possibleTiles >= 2) {
         std::cout << "2 or more possible plays\n";
-        for (int i = 0; i < 2; i ++) {
-            while  (!player.isValidMove(tile, coords, board)) {
+        for (int i = 0; i < 2; i++) {
+            while (!player.isValidMove(tile, coords, board)) {
                 readLetter(tile);
                 readCoordinates(coords, board);
             }
@@ -76,7 +78,7 @@ void takeTurn(Game &game, unsigned playerID) {
         }
     } else if (possibleTiles == 1) {
         std::cout << "1 possible play\n";
-        while  (!player.isValidMove(tile, coords, board)) {
+        while (!player.isValidMove(tile, coords, board)) {
             readLetter(tile);
             readCoordinates(coords, board);
         }
@@ -98,8 +100,8 @@ void takeTurn(Game &game, unsigned playerID) {
         possibleTiles = player.playableTiles(board).size();
 
         if (possibleTiles >= 2) {
-            for (int i = 0; i < 2; i ++) {
-                while  (!player.isValidMove(tile, coords, board)) {
+            for (int i = 0; i < 2; i++) {
+                while (!player.isValidMove(tile, coords, board)) {
                     readLetter(tile);
                     readCoordinates(coords, board);
                 }
@@ -108,7 +110,7 @@ void takeTurn(Game &game, unsigned playerID) {
                 player.showHand();
             }
         } else if (possibleTiles == 1) {
-            while  (!player.isValidMove(tile, coords, board)) {
+            while (!player.isValidMove(tile, coords, board)) {
                 readLetter(tile);
                 readCoordinates(coords, board);
             }

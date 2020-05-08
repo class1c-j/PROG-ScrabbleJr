@@ -9,7 +9,7 @@ void showMainMenu(Board board, bool &running);
 
 void showEditMenu(Board &board, bool &running);
 
-void saveBoard(std::string &fileName, Board board, bool running);
+void saveBoard(std::string &fileName, Board board, bool &running);
 
 void createBoard(Board &board);
 
@@ -125,14 +125,13 @@ void createBoard(Board &board) {
 }
 
 
-void saveBoard(std::string &fileName, Board board, bool running) {
+void saveBoard(std::string &fileName, Board board, bool &running) {
     board.getBoardWords();
     board.getBoardLetters();
     printMessage(board.error, 1);
     readFileName(fileName);
     std::string filePath = "../UserBoards/" + fileName;
     board.save(filePath);
-    running = true;
     const Menu saveMenu{"File saved successfully. Do you want to quit or continue editing?\n",
                         "Invalid choice! ",
                         {{"Main menu", [&board, &running] { running = false;}},

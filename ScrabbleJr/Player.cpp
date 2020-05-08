@@ -1,6 +1,3 @@
-//
-// Created by ritam on 04/05/20.
-//
 
 #include "Player.h"
 #include <iostream>
@@ -27,7 +24,8 @@ void Player::showHand() {
 }
 
 void Player::play(char letter, std::pair<char, char> coords, Board &board) {
-    auto it = std::find(hand.begin(), hand.end(), letter); hand.erase(it);  // take tile from player's hand
+    auto it = std::find(hand.begin(), hand.end(), letter);
+    hand.erase(it);  // take tile from player's hand
     board.setPlayed(coords);  // place the tile in the board
 }
 
@@ -48,8 +46,8 @@ bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board)
         //std::cout << "Error: place already played\n";
     } else {
 
-        std::pair<char, char> firstNPlayedV;
-        std::pair<char, char> firstNPlayedH;
+        std::pair<char, char> firstNPlayedV{};
+        std::pair<char, char> firstNPlayedH{};
         std::vector<std::pair<char, char> > starts = board.getWordsInPointStart(coords);
 
         std::pair<char, char> horizontal = starts.at(0);
@@ -95,8 +93,8 @@ std::vector<char> Player::playableTiles(const Board &board) {
     std::vector<char> playable;
 
     for (const auto &tile : hand) {
-        for (int i = 0; i < board.getnLines(); i ++) {
-            for (int j = 0; j < board.getnCols(); j ++) {
+        for (int i = 0; i < board.getnLines(); i++) {
+            for (int j = 0; j < board.getnCols(); j++) {
                 if (isValidMove(tile, {i, j}, board)) {
                     playable.push_back(tile);
                 }
