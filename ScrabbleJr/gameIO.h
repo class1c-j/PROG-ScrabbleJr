@@ -1,6 +1,3 @@
-//
-// Created by ritam on 04/05/20.
-//
 
 #ifndef PROGT2_GAMEIO_H
 #define PROGT2_GAMEIO_H
@@ -19,5 +16,7 @@
 #include "../CommonFiles/Board.h"
 
 void searchFile(std::string &fileName);
+
 void readLetter(char &c);
-void readCoordinates(std::pair<char, char> &coords, const Board& board);
+
+void readCoordinates(std::pair<char, char> &coords, const Board &board);

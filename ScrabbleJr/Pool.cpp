@@ -1,6 +1,3 @@
-//
-// Created by ritam on 04/05/20.
-//
 
 #include "Pool.h"
 
@@ -24,7 +21,7 @@ void Pool::shuffle() {
 void Pool::dealHand(unsigned tiles, Player &player) {
     std::vector<char> hand;
     std::cout << "1\n";
-    for (size_t i = 0; i < tiles; i ++) {
+    for (size_t i = 0; i < tiles; i++) {
         hand.push_back(letters.at(i));
     }
     letters.erase(letters.begin(), letters.begin() + tiles);

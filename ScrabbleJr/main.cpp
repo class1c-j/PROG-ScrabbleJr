@@ -21,7 +21,6 @@ int main() {
     std::pair<char, char> coords{};
     char c{};
 
-
     std::vector<Player> players(number);
 
     for (size_t i = 0; i < number; ++i) {

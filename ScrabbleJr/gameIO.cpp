@@ -1,6 +1,3 @@
-//
-// Created by ritam on 04/05/20.
-//
 
 #include "gameIO.h"
 
@@ -35,7 +32,7 @@ void readLetter(char &c) {
     }
 }
 
-void readCoordinates(std::pair<char, char> &coords, const Board& board) {
+void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     std::cout << "Line ? ";
     std::cin >> coords.first;
     while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 >= board.getnLines() ||

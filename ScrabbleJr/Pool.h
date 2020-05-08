@@ -1,6 +1,3 @@
-//
-// Created by ritam on 04/05/20.
-//
 
 #ifndef PROGT2_POOL_H
 #define PROGT2_POOL_H
@@ -18,11 +15,16 @@
 class Pool {
 public:
     Pool();
+
     explicit Pool(Board board);
+
     void dealHand(unsigned tiles, Player &player);
+
     std::vector<char> getContent();
+
 private:
     void shuffle();
+
     std::vector<char> letters;
 };
 

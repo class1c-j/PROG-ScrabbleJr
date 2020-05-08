@@ -1,13 +1,10 @@
-//
-// Created by ritam on 05/05/20.
-//
 
 #include <iostream>
 #include "Game.h"
 
 Game::Game() = default;
 
-Game::Game(const std::vector<Player>& players) {
+Game::Game(const std::vector<Player> &players) {
     nPlayers = players.size();
     currentPlayer = players.at(0);
     playerList = players;

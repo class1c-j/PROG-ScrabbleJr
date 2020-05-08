@@ -13,13 +13,21 @@
 class Player {
 public:
     Player();
+
     explicit Player(const std::string &name_);
-    void setHand(const std::vector<char>& tiles);
+
+    void setHand(const std::vector<char> &tiles);
+
     void showHand();
+
     std::string getName();
+
     unsigned getScore() const;
+
     void incrementScore();
+
     void play(char letter, std::pair<char, char> coords, Board &board);
+
     bool isValidMove(char letter, std::pair<char, char> coords, Board board);
 
 private:
