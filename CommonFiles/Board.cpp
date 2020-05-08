@@ -310,7 +310,8 @@ std::vector<char> Board::getLine(unsigned int line) {
 
 std::vector<char> Board::getCol(unsigned int col) {
     std::vector<char> column;
-    for (int i = 0; i < getnLines(); i ++) {
+    column.reserve(getnLines());
+for (int i = 0; i < getnLines(); i ++) {
         column.push_back(board.at(i).at(col));
     }
     return column;
@@ -385,9 +386,9 @@ void Board::getBoardWords() {
         std::vector<char> Line = getLine(k);
         int i = 0, j = 0;
         while (i < numCols) {
-            std::string newWord = "";
+            std::string newWord;
             while (Line.at(i) != '0') {
-                if (newWord == "") {
+                if (newWord.empty()) {
                     j = i;
                 }
                 newWord += Line.at(i);
@@ -424,7 +425,6 @@ bool Board::getBoardLetters() {
 }
 
 bool Board::isInDictionary(const std::string &word) {
-    std::cout << "size: " << dictWords.size() << '\n';
     return (std::binary_search(dictWords.begin(), dictWords.end(), word));
 }
 
@@ -465,7 +465,6 @@ std::vector<std::pair<char, char> > Board::getWordsInPointStart(std::pair<char, 
 
 
     // search vertically
-    std::cout << (int) coords.second << '\n';
     std::vector<char> currCol = getCol((int)coords.second);
     std::pair<char, char> startV;
     size_t j = coords.first;

@@ -9,6 +9,7 @@
 #include <string>
 #include <algorithm>
 #include "../CommonFiles/Board.h"
+#include "gameIO.h"
 
 class Player {
 public:
@@ -20,6 +21,8 @@ public:
 
     void showHand();
 
+    std::vector<char> getHand();
+
     std::string getName();
 
     unsigned getScore() const;
@@ -29,6 +32,8 @@ public:
     void play(char letter, std::pair<char, char> coords, Board &board);
 
     bool isValidMove(char letter, std::pair<char, char> coords, Board board);
+
+    std::vector<char> playableTiles(const Board &board);
 
 private:
     std::string name;

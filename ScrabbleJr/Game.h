@@ -7,21 +7,27 @@
 
 #include "Player.h"
 #include "../CommonFiles/Board.h"
+#include "Pool.h"
 
 class Game {
 public:
     Game();
-    explicit Game(const std::vector<Player>&);
-    unsigned getCurrPlayerN() const;
-    Player getCurrentPlayer();
-    Player nextPlayer();
-
+    Game(std::vector<Player> players, Board board, Pool pool);
+    std::vector<Player> getPlayers();
+    void setPlayers(std::vector<Player> players);
+    Board getBoard();
+    void setBoard(Board board);
+    Pool getPool();
+    void setPool(Pool pool);
+    void setPlayer(Player player, unsigned id);
+    unsigned nextPlayer();
 
 private:
     unsigned nPlayers{};
-    unsigned currPlayerN{};
-    std::vector<Player> playerList;
-    Player currentPlayer{};
+    unsigned _currentN;
+    std::vector<Player> _playerList;
+    Board _board;
+    Pool _pool;
 };
 
 

@@ -19,12 +19,13 @@ void Pool::shuffle() {
 }
 
 void Pool::dealHand(unsigned tiles, Player &player) {
-    std::vector<char> hand;
-    std::cout << "1\n";
+    std::vector<char> hand = player.getHand();
     for (size_t i = 0; i < tiles; i++) {
         hand.push_back(letters.at(i));
     }
-    letters.erase(letters.begin(), letters.begin() + tiles);
+
+    letters.erase(letters.begin(), letters.begin() + tiles - 1);
+
     player.setHand(hand);
 }
 
