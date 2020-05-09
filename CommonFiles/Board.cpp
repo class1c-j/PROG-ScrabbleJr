@@ -449,13 +449,14 @@ bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const 
     return true;
 }
 
-void Board::getBoardWords() {
+std::vector<std::string> Board::getBoardWords() {
+    std::vector<std::string> BoardWords;
     //get all words that are vertical
     for (int k = 0; k < numCols; k++) {
         std::vector<char> Col = getCol(k);
         int i = 0, j = 0;
         while (i < numLines) {
-            std::string newWord;
+            std::string newWord = "";
             while (Col.at(i) != '0') {
                 if (newWord == "") {
                     j = i;
@@ -463,12 +464,14 @@ void Board::getBoardWords() {
                 newWord += Col.at(i);
                 if (i == numLines - 1) {
                     break;
-                } else {
+                }
+                else {
                     i++;
                 }
             }
             if (newWord.size() > 1) { // word must have more than one character
-                auto newCoords = std::make_pair((char) j, (char) k);
+                BoardWords.push_back(newWord);
+                auto newCoords = std::make_pair((char)j, (char)k);
                 saveWord(newWord, newCoords, 'V');
             }
             i++;
@@ -477,27 +480,30 @@ void Board::getBoardWords() {
     //get all words that are horizontal
     for (int k = 0; k < numLines; k++) {
         std::vector<char> Line = getLine(k);
-        unsigned i = 0, j = 0;
+        int i = 0, j = 0;
         while (i < numCols) {
-            std::string newWord;
+            std::string newWord = "";
             while (Line.at(i) != '0') {
-                if (newWord.empty()) {
+                if (newWord == "") {
                     j = i;
                 }
                 newWord += Line.at(i);
                 if (i == numCols - 1) {
                     break;
-                } else {
+                }
+                else {
                     i++;
                 }
             }
             if (newWord.size() > 1) { // word must have more than one character
-                auto newCoords = std::make_pair((char) k, (char) j);
+                BoardWords.push_back(newWord);
+                auto newCoords = std::make_pair((char)k, (char)j);
                 saveWord(newWord, newCoords, 'H');
             }
             i++;
         }
     }
+    return BoardWords;
 }
 
 bool Board::getBoardLetters() {
