@@ -53,7 +53,7 @@ public:
 
     bool finishedWord(std::pair<char, char> coords);
 
-    void getBoardWords();
+    std::vector<std::string> getBoardWords();
 
     bool getBoardLetters();
 
