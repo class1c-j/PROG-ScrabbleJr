@@ -142,18 +142,42 @@ void Board::insertWord(const std::string &word, std::pair<char, char> coords, co
 
 void Board::removeWord(std::pair<char, char> coords, const char dir) {
     std::string word = getWord(coords, dir);
-
+    unsigned int brdL = coords.first, brdC = coords.second;
     if (!word.empty()) {
         if (dir == 'V') {
-            for (size_t i = coords.first; i <= coords.first + word.length(); i++) {
-                board.at(i).at(coords.second) = 0;
-            }
-        } else if (dir == 'H') {
-            for (size_t i = coords.second; i < coords.second + word.length(); i++) {
-                board.at(coords.first).at(i) = 0;
+            for (size_t i = brdL; i <= brdL + word.length(); i++) {
+                if (brdC == 0 && ((brdC + 1) == numCols)) {
+                    board.at(i).at(brdC) = '0';
+                }
+                else if (brdC == 0 && (board.at(i).at((brdC)+1)=='0')) {
+                    board.at(i).at(brdC) = '0';
+                }
+                else if ((brdC + 1) == numCols && board.at(i).at((brdC)-1)=='0') {
+                    board.at(i).at(brdC) = '0';
+                }
+                else if (((brdC + 1 != numCols) && (brdC != 0)) && ((board.at(i).at((brdC)+1) == '0') && board.at(i).at((brdC)-1) == '0')){
+                    board.at(i).at(brdC) = '0';
+                }
             }
         }
-    } else {
+        else if (dir == 'H') {
+            for (size_t i = brdC; i <= brdC + word.length(); i++) {
+                if (brdL == 0 && ((brdL + 1) == numLines)) {
+                    board.at(brdL).at(i) = '0';
+                }
+                else if (brdL == 0 && (board.at(brdL + 1).at(i) == '0')) {
+                    board.at(brdL).at(i) = '0';
+                }
+                else if ((brdL + 1) == numLines && board.at(brdL - 1).at(i) == '0') {
+                    board.at(brdL).at(i) = '0';
+                }
+                else if (((brdL + 1 != numCols) && (brdL != 0)) && (board.at(brdL + 1).at(i) == '0') && board.at(brdL - 1).at(i) == '0') {
+                    board.at(brdL).at(i) = '0';
+                }
+            }
+        }
+    }
+    else {
         error = errors.at(4);  // no word to remove
     }
 }
@@ -336,15 +360,26 @@ unsigned Board::getnCols() const {
     return numCols;
 }
 
-std::string Board::getWord(std::pair<char, char> coords, const char &dir) {
-    char line = coords.first + 65;
-    char col = coords.second + 97;
-    for (const auto &entry : words) {
-        if (line == entry.at(0) && entry.at(1) == col && entry.at(3) == dir) {
-            return entry.substr(5);
+std::string Board::getWord(std::pair<char, char> coords, const char& dir) {
+    unsigned int brdL = coords.first, brdC = coords.second;
+    std::string word;
+    if (dir == 'V') {
+        std::vector<char> Col = getCol(brdC);
+        int i = brdL;
+        while (i < numLines && Col.at(i) != '0') {
+            word += Col.at(i);
+            i++;
         }
     }
-    return std::string();
+    else if (dir == 'H') {
+        std::vector<char> Line = getLine(brdL);
+        int i = brdC;
+        while (i < numCols && Line.at(i) != '0') {
+            word += Line.at(i);
+            i++;
+        }
+    }
+    return word;
 }
 
 std::vector<std::string> Board::getWordList() {
