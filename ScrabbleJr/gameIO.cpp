@@ -1,4 +1,4 @@
-
+#define NOMINMAX
 #include "gameIO.h"
 
 void searchFile(std::string &fileName) {
