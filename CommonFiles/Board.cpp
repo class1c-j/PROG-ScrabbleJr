@@ -89,41 +89,47 @@ void Board::save(const std::string &name) {
     std::ofstream f_out(name);
     f_out << numLines << " x " << numCols << '\n';
     for (const std::string &word : words) {
-        f_out << word << '\n';
+        if (word.at(3)=='H')
+            f_out << word << '\n';
     }
+    for (const std::string& word : words) {
+        if (word.at(3) == 'V')
+            f_out << word << '\n';
+    }
+    showBoard(f_out);
 }
 
-void Board::showBoard() {
+void Board::showBoard(std::ostream& stream) {
 
     const int W = 2;  // edit to change how close together the letters are in the board
 
     // column letters
-    std::cout << "\n    ";
+    stream << "\n    ";
     for (int i = 0; i < numCols; i++) {
-        std::cout << std::left << std::setw(W) << char(i + 97) << " ";
+        stream << std::left << std::setw(W) << char(i + 97) << " ";
     }
 
-    std::cout << '\n';
-    std::cout << std::setfill('_') << std::setw(numCols * W + numCols + W) << std::left << "    " << "\n";
+    stream << '\n';
+    stream << std::setfill('_') << std::setw(numCols * W + numCols + W) << std::left << "    " << "\n";
 
     for (unsigned i = 0; i < numLines; i++) {
 
-        std::cout << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |";   // uppercase letters
+        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |";   // uppercase letters
 
         for (size_t j = 0; j < numCols; j++) {
             if (played.at(i).at(j) == '0') {
-                board.at(i).at(j) == '0' ? std::cout << std::left << std::setw(W + 1) << " " : std::cout << std::left
+                board.at(i).at(j) == '0' ? stream << std::left << std::setw(W + 1) << " " : stream << std::left
                 << std::setw(W) << (char) toupper(board.at(i).at(j)) << ' ';
             } else {
                 //setBackgroundColor(1);
-                std::cout << "\033[94;103m";
-                board.at(i).at(j) == '0' ? std::cout << std::left << std::setw(W + 1) << " " : std::cout << std::left
+                stream << "\033[94;103m";
+                board.at(i).at(j) == '0' ? stream << std::left << std::setw(W + 1) << " " : stream << std::left
                 << std::setw(W) << (char) toupper(board.at(i).at(j))<< ' ';
                 setBackgroundColor(0);
             }
 
         }
-        std::cout << '\n';
+        stream << '\n';
     }
 }
 
