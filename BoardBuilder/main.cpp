@@ -96,7 +96,7 @@ void editBoard(Board &board) {
 
     while (running) {
         clearScreen();
-        board.showBoard();
+        board.showBoard(std::cout);
         showEditMenu(board, running);
     }
 }
@@ -115,7 +115,7 @@ void createBoard(Board &board) {
 
     while (running) {
         clearScreen();
-        board.showBoard();
+        board.showBoard(std::cout);
         if (!board.error.empty()) {  // show any error that might exist
             printMessage(board.error, 1);
             board.error = "";
