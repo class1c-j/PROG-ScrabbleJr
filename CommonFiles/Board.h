@@ -17,7 +17,7 @@ public:
 
     void save(const std::string &name);
 
-    void showBoard();
+    void showBoard(std::ostream& stream);
 
     void insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation);
 
