@@ -13,6 +13,13 @@ void Player::setHand(const std::vector<char> &tiles) {
     hand = tiles;
 }
 
+void Player::addTiles(const std::vector<char> &tiles) {
+    for (const auto &i : tiles) {
+        std::cout << "adding " << i << " to player's tiles\n";
+        hand.push_back(i);
+    }
+}
+
 void Player::showHand() {
     std::cout << name << "'s hand: ";
     for (const auto &i : hand) {
@@ -97,7 +104,6 @@ std::vector<char> Player::playableTiles(const Board &board) {
                 if (isValidMove(tile, {i, j}, board) &&
                     std::count(playable.begin(), playable.end(), tile) < std::count(hand.begin(), hand.end(), tile)
                     && std::count(coords.begin(), coords.end(), pair) == 0) {
-                    std::cout << "Place " << tile << "on " << i << ", " << j << '\n';
                     playable.push_back(tile);
                     coords.emplace_back(i, j);
                 }
@@ -113,13 +119,10 @@ std::vector<char> Player::getHand() {
 }
 
 void Player::removeTile(char tile) {
-    std::cout << "here5\n";
     auto it = std::find(hand.begin(), hand.end(), tile);
-    std::cout << "here6\n";
     if (hasTile(tile)) {
         hand.erase(it);  // take tile from player's hand
     }
-    std::cout << "here7\n";
 }
 
 bool Player::hasTile (char tile) {

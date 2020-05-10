@@ -16,3 +16,7 @@ void setBackgroundColor(unsigned colour) {
     std::cout << colours.at(colour);
 #endif
 }
+
+bool operator<(const Player &player1, const Player &player2) {
+    return player1.getScore() < player2.getScore();
+}

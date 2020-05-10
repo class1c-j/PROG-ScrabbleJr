@@ -8,8 +8,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "../ScrabbleJr/Player.h"
 
 void setBackgroundColor(unsigned colour);
 
+bool operator<(const Player &player1, const Player &player2);
 
 #endif //PROGT2_UTILITY_H

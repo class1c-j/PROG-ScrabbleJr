@@ -40,6 +40,8 @@ public:
 
     bool hasTile(char tile);
 
+    void addTiles(const std::vector<char> &tiles);
+
 private:
     std::string name;
     std::vector<char> hand;

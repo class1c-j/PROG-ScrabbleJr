@@ -591,16 +591,31 @@ bool Board::isFinished() {
 
 bool Board::finishedWord(std::pair<char, char> coords) {
 
-    bool finishedH{}, finishedV{};
+    bool finishedH = true, finishedV = true;
 
     // search vertically
-    for (size_t i = coords.first; i > getWordsInPointStart(coords).at(1).first; i--) {
-        if (!isPlayed({i, coords.second})) finishedV = false;
+    std::pair<char, char> startV = getWordsInPointStart(coords).at(1);
+    size_t sizeV = searchWord(startV, 'V').size();
+    if (sizeV == 0) finishedV = false;
+    size_t endV = startV.first + sizeV;
+    for (size_t i = startV.first; i < endV; i ++) {
+        if (!isPlayed({i, coords.second})) {
+            finishedV = false;
+            break;
+        }
     }
 
+
     // search horizontally
-    for (size_t i = coords.second; i > getWordsInPointStart(coords).at(0).second; i--) {
-        if (!isPlayed({coords.first, i})) finishedH = false;
+    std::pair<char, char> startH = getWordsInPointStart(coords).at(0);
+    size_t sizeH = searchWord(startH, 'H').size();
+    if (sizeH == 0) finishedH = false;
+    size_t endH = startH.second + sizeH;
+    for (size_t i = startH.second; i < endH; i ++) {
+        if (!isPlayed({coords.first, i})) {
+            finishedH = false;
+            break;
+        }
     }
 
     return finishedV || finishedH;

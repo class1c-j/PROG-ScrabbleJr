@@ -22,6 +22,7 @@ public:
 
     std::vector<char> getContent();
 
+    void addTile(char tile);
 
     bool isEmpty();
 

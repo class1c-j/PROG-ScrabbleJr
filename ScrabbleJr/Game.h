@@ -7,6 +7,7 @@
 
 #include "Player.h"
 #include "../CommonFiles/Board.h"
+#include "../CommonFiles/utility.h"
 #include "Pool.h"
 
 class Game {
@@ -15,32 +16,25 @@ public:
 
     Game(std::vector<Player> players, Board board, Pool pool);
 
-    std::vector<Player> getPlayers();
+    void nextPlayer();
 
-    void setPlayers(std::vector<Player> players);
+    void makePlay();
 
-    Board getBoard();
+    bool isFinished();
 
-    void setBoard(Board board);
+    Player getWinner();
 
-    Pool getPool();
+    void makeTurn();
 
-    void setPool(Pool pool);
-
-    void setPlayer(Player player, unsigned id);
-
-    unsigned nextPlayer() const;
-
-    unsigned getCurrentP();
-
-    void setCurrentP(unsigned int p);
+    void play();
 
 private:
-    unsigned nPlayers{};
+    unsigned _nPlayers{};
     unsigned _currentN{};
     std::vector<Player> _playerList;
     Board _board;
     Pool _pool;
+    Player _currentP;
 };
 
 

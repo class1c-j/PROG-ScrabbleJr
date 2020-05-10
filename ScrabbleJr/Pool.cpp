@@ -17,14 +17,16 @@ void Pool::shuffle() {
 }
 
 void Pool::dealHand(unsigned tiles, Player &player) {
-    std::vector<char> hand = player.getHand();
+    std::vector<char> newTiles{};
     for (size_t i = 0; i < tiles; i++) {
-        hand.push_back(letters.at(i));
+        if (isEmpty()) break;
+        std::cout << "dealing " << letters.at(i) << "\n";
+        newTiles.push_back(letters.at(i));
     }
 
     letters.erase(letters.begin(), letters.begin() + tiles);
 
-    player.setHand(hand);
+    player.addTiles(newTiles);
 }
 
 std::vector<char> Pool::getContent() {
@@ -32,5 +34,10 @@ std::vector<char> Pool::getContent() {
 }
 
 bool Pool::isEmpty() {
-    return letters.size() != 0;
+    return letters.empty();
+}
+
+void Pool::addTile(char tile) {
+    letters.push_back(tile);
+    shuffle();
 }
