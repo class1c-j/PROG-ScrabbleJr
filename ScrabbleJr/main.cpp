@@ -10,18 +10,18 @@ void loadBoard(Board &board);
 
 Game setup();
 
-void takeTurn(Game &game, unsigned playerID);
+void takeTurn(Game &game);
+
+void makePlay(Board &board, Pool &pool, Player &player);
 
 
 int main() {
 
     Game game = setup();
-    unsigned currentP = 0;
     while (!game.getBoard().isFinished()) {
-        takeTurn(game, currentP);
-        currentP = game.nextPlayer();
+        std::cout << "Pool size = " << game.getPool().getContent().size() << '\n';
+        takeTurn(game);
     }
-
 }
 
 Game setup() {
@@ -51,14 +51,7 @@ Game setup() {
 
 }
 
-void takeTurn(Game &game, unsigned playerID) {
-
-    Board board = game.getBoard();
-    Pool pool = game.getPool();
-    Player player = game.getPlayers().at(playerID);
-
-    board.showBoard();
-    player.showHand();
+void makePlay(Board &board, Pool &pool, Player &player) {
 
     char tile{};
     std::pair<char, char> coords{};
@@ -66,8 +59,8 @@ void takeTurn(Game &game, unsigned playerID) {
     unsigned possibleTiles = player.playableTiles(board).size();
 
     if (possibleTiles >= 2) {
-        std::cout << "2 or more possible plays\n";
-        for (int i = 0; i < 2; i++) {
+        std::cout << "You have at least 2 tiles you can play\n";
+        for (int i = 0; i < 2; i ++) {
             while (!player.isValidMove(tile, coords, board)) {
                 readLetter(tile);
                 readCoordinates(coords, board);
@@ -76,8 +69,9 @@ void takeTurn(Game &game, unsigned playerID) {
             board.showBoard();
             player.showHand();
         }
+        if (!pool.isEmpty()) pool.dealHand(2, player);
     } else if (possibleTiles == 1) {
-        std::cout << "1 possible play\n";
+        std::cout << "You only have 1 tile that you can play\n";
         while (!player.isValidMove(tile, coords, board)) {
             readLetter(tile);
             readCoordinates(coords, board);
@@ -85,31 +79,8 @@ void takeTurn(Game &game, unsigned playerID) {
         player.play(tile, coords, board);
         board.showBoard();
         player.showHand();
-    } else {
-        std::vector<char> hand = player.getHand();
-        std::cout << "Choose 2 tiles to exchange\n";
-        readLetter(tile);
-        auto pos = std::find(hand.begin(), hand.end(), tile);
-        hand.erase(pos);
-
-        readLetter(tile);
-        auto pos2 = std::find(hand.begin(), hand.end(), tile);
-        hand.erase(pos2);
-
-        player.setHand(hand);
         possibleTiles = player.playableTiles(board).size();
-
-        if (possibleTiles >= 2) {
-            for (int i = 0; i < 2; i++) {
-                while (!player.isValidMove(tile, coords, board)) {
-                    readLetter(tile);
-                    readCoordinates(coords, board);
-                }
-                player.play(tile, coords, board);
-                board.showBoard();
-                player.showHand();
-            }
-        } else if (possibleTiles == 1) {
+        if (possibleTiles != 0) {
             while (!player.isValidMove(tile, coords, board)) {
                 readLetter(tile);
                 readCoordinates(coords, board);
@@ -117,15 +88,53 @@ void takeTurn(Game &game, unsigned playerID) {
             player.play(tile, coords, board);
             board.showBoard();
             player.showHand();
+            if (!pool.isEmpty()) pool.dealHand(2, player);
         } else {
-            std::cout << "Nothing to play, passing";
+            if (!pool.isEmpty()) pool.dealHand(1, player);
         }
+    } else {
+        std::cout << "None of your tiles can be played. Choose 2 to exchange for new ones\n";
+        for (int i = 0; i < 2; i ++) {
+            readLetter(tile);
+            while (true) {
+                if (!player.hasTile(tile)) {
+                    readLetter(tile);
+                } else {
+                    tile = '0';
+                    break;
+                }
+            }
+            player.removeTile(tile);
+            board.showBoard();
+            player.showHand();
+        }
+        if (!pool.isEmpty()) pool.dealHand(2, player);
+        if (possibleTiles != 0) {
+            makePlay(board, pool, player);
+        }
+        std::cout << "here4\n";
     }
+}
+
+void takeTurn(Game &game) {
+
+
+    Board board = game.getBoard();
+    Pool pool = game.getPool();
+    Player player = game.getPlayers().at(game.getCurrentP());
+
+    board.showBoard();
+    player.showHand();
+
+    makePlay(board, pool, player);
 
     game.setBoard(board);
-    game.setPlayer(player, playerID);
+    game.setPlayer(player, game.getCurrentP());
     game.setPool(pool);
+
+    game.setCurrentP(game.nextPlayer());
 }
+
 
 void loadBoard(Board &board) {
 

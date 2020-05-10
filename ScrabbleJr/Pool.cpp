@@ -5,10 +5,8 @@ Pool::Pool() = default;
 
 
 Pool::Pool(Board board) {
-    for (const auto &word : board.getWordList()) {
-        for (const auto letter : word) {
-            letters.push_back(letter);
-        }
+    for (const char &i : board.getBoardLetters()) {
+        letters.push_back(i);
     }
     shuffle();
 }
@@ -24,11 +22,15 @@ void Pool::dealHand(unsigned tiles, Player &player) {
         hand.push_back(letters.at(i));
     }
 
-    letters.erase(letters.begin(), letters.begin() + tiles - 1);
+    letters.erase(letters.begin(), letters.begin() + tiles);
 
     player.setHand(hand);
 }
 
 std::vector<char> Pool::getContent() {
     return letters;
+}
+
+bool Pool::isEmpty() {
+    return letters.size() != 0;
 }

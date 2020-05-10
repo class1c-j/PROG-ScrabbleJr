@@ -29,11 +29,15 @@ public:
 
     void setPlayer(Player player, unsigned id);
 
-    unsigned nextPlayer();
+    unsigned nextPlayer() const;
+
+    unsigned getCurrentP();
+
+    void setCurrentP(unsigned int p);
 
 private:
     unsigned nPlayers{};
-    unsigned _currentN;
+    unsigned _currentN{};
     std::vector<Player> _playerList;
     Board _board;
     Pool _pool;

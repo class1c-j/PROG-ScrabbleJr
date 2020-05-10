@@ -118,7 +118,7 @@ void Board::showBoard() {
                 //setBackgroundColor(1);
                 std::cout << "\033[94;103m";
                 board.at(i).at(j) == '0' ? std::cout << std::left << std::setw(W + 1) << " " : std::cout << std::left
-                << std::setw(W) << (char) toupper(board.at(i).at(j)) << ' ';
+                << std::setw(W) << (char) toupper(board.at(i).at(j))<< ' ';
                 setBackgroundColor(0);
             }
 
@@ -140,38 +140,21 @@ void Board::insertWord(const std::string &word, std::pair<char, char> coords, co
     }
 }
 
+
 void Board::removeWord(std::pair<char, char> coords, const char dir) {
     std::string word = getWord(coords, dir);
     unsigned int brdL = coords.first, brdC = coords.second;
     if (!word.empty()) {
         if (dir == 'V') {
             for (size_t i = brdL; i <= brdL + word.length(); i++) {
-                if (brdC == 0 && ((brdC + 1) == numCols)) {
-                    board.at(i).at(brdC) = '0';
-                }
-                else if (brdC == 0 && (board.at(i).at((brdC)+1)=='0')) {
-                    board.at(i).at(brdC) = '0';
-                }
-                else if ((brdC + 1) == numCols && board.at(i).at((brdC)-1)=='0') {
-                    board.at(i).at(brdC) = '0';
-                }
-                else if (((brdC + 1 != numCols) && (brdC != 0)) && ((board.at(i).at((brdC)+1) == '0') && board.at(i).at((brdC)-1) == '0')){
+                if ((brdC == 0 || board.at(i).at((brdC)-1) == '0') && ((brdC + 1) == numCols || (board.at(i).at((brdC)+1) == '0'))) {
                     board.at(i).at(brdC) = '0';
                 }
             }
         }
         else if (dir == 'H') {
             for (size_t i = brdC; i <= brdC + word.length(); i++) {
-                if (brdL == 0 && ((brdL + 1) == numLines)) {
-                    board.at(brdL).at(i) = '0';
-                }
-                else if (brdL == 0 && (board.at(brdL + 1).at(i) == '0')) {
-                    board.at(brdL).at(i) = '0';
-                }
-                else if ((brdL + 1) == numLines && board.at(brdL - 1).at(i) == '0') {
-                    board.at(brdL).at(i) = '0';
-                }
-                else if (((brdL + 1 != numCols) && (brdL != 0)) && (board.at(brdL + 1).at(i) == '0') && board.at(brdL - 1).at(i) == '0') {
+                if ((brdL == 0 || board.at(brdL-1).at(i) == '0') && ((brdL + 1) == numLines || (board.at(i).at((brdL)+1) == '0'))) {
                     board.at(brdL).at(i) = '0';
                 }
             }
@@ -181,6 +164,7 @@ void Board::removeWord(std::pair<char, char> coords, const char dir) {
         error = errors.at(4);  // no word to remove
     }
 }
+
 
 bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
 
@@ -365,17 +349,17 @@ std::string Board::getWord(std::pair<char, char> coords, const char& dir) {
     std::string word;
     if (dir == 'V') {
         std::vector<char> Col = getCol(brdC);
-        int i = brdL;
+        size_t i = brdL;
         while (i < numLines && Col.at(i) != '0') {
-            word += Col.at(i);
+            if (isalpha(Col.at(i))) word += Col.at(i);
             i++;
         }
     }
     else if (dir == 'H') {
         std::vector<char> Line = getLine(brdL);
-        int i = brdC;
+        size_t i = brdC;
         while (i < numCols && Line.at(i) != '0') {
-            word += Line.at(i);
+            if (isalpha(Line.at(i))) word += Line.at(i);
             i++;
         }
     }
@@ -397,6 +381,16 @@ void Board::saveWord(const std::string &word, std::pair<char, char> coords, cons
     words.insert(info);
 }
 
+std::string Board::searchWord(std::pair<char, char> coords, const char &dir) {
+    std::string pos = std::string() + (char) (coords.first + 65) + (char) (coords.second + 97);
+    for (const auto &i : words) {
+        if (i.substr(0, 4) == pos + ' ' + dir) {
+            return i.substr(5);
+        }
+    }
+    return std::string();
+}
+
 std::vector<char> Board::getLine(unsigned int line) {
     return board.at(line);
 }
@@ -404,7 +398,7 @@ std::vector<char> Board::getLine(unsigned int line) {
 std::vector<char> Board::getCol(unsigned int col) {
     std::vector<char> column;
     column.reserve(getnLines());
-for (int i = 0; i < getnLines(); i ++) {
+    for (int i = 0; i < getnLines(); i++) {
         column.push_back(board.at(i).at(col));
     }
     return column;
@@ -449,6 +443,7 @@ bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const 
     return true;
 }
 
+
 std::vector<std::string> Board::getBoardWords() {
     std::vector<std::string> BoardWords;
     //get all words that are vertical
@@ -456,9 +451,9 @@ std::vector<std::string> Board::getBoardWords() {
         std::vector<char> Col = getCol(k);
         int i = 0, j = 0;
         while (i < numLines) {
-            std::string newWord = "";
+            std::string newWord;
             while (Col.at(i) != '0') {
-                if (newWord == "") {
+                if (newWord.empty()) {
                     j = i;
                 }
                 newWord += Col.at(i);
@@ -482,9 +477,9 @@ std::vector<std::string> Board::getBoardWords() {
         std::vector<char> Line = getLine(k);
         int i = 0, j = 0;
         while (i < numCols) {
-            std::string newWord = "";
+            std::string newWord;
             while (Line.at(i) != '0') {
-                if (newWord == "") {
+                if (newWord.empty()) {
                     j = i;
                 }
                 newWord += Line.at(i);
@@ -506,8 +501,7 @@ std::vector<std::string> Board::getBoardWords() {
     return BoardWords;
 }
 
-bool Board::getBoardLetters() {
-    bool check = true;
+std::vector<char> Board::getBoardLetters() {
     for (unsigned i = 0; i < numLines; i++) {
         std::vector<char> Line = getLine(i);
         for (int j = 0; j < numCols; j++) {
@@ -518,9 +512,8 @@ bool Board::getBoardLetters() {
     }
     if (totalLetters.size() < 28) {
         error = errors.at(6);
-        check = false;
     }
-    return check;
+    return totalLetters;
 }
 
 bool Board::isInDictionary(const std::string &word) {
@@ -553,18 +546,19 @@ std::vector<std::pair<char, char> > Board::getWordsInPointStart(std::pair<char, 
         startH = {coords.first, i};
     } else {
         while (currLine.at(i) != '0') {
-            i --;
+            i--;
             if (i == 0) break;
         }
-        if (currLine.at(i) == '0') i ++;
+        if (currLine.at(i) == '0') i++;
         startH = {coords.first, i};
     }
 
-    if (!getWord(startH, 'H').empty()) result.push_back(startH); else result.emplace_back(-1, -1);
+
+    if (!searchWord(startH, 'H').empty()) result.push_back(startH); else result.emplace_back(-1, -1);
 
 
     // search vertically
-    std::vector<char> currCol = getCol((int)coords.second);
+    std::vector<char> currCol = getCol((int) coords.second);
     std::pair<char, char> startV{};
     size_t j = coords.first;
 
@@ -572,14 +566,14 @@ std::vector<std::pair<char, char> > Board::getWordsInPointStart(std::pair<char, 
         startV = {j, coords.second};
     } else {
         while (currCol.at(j) != '0') {
-            j --;
+            j--;
             if (j == 0) break;
         }
-        if (currCol.at(j) == '0') j ++;
+        if (currCol.at(j) == '0') j++;
         startV = {j, coords.second};
     }
 
-    if (!getWord(startV, 'V').empty()) result.push_back(startV); else result.emplace_back(-1, -1);
+    if (!searchWord(startV, 'V').empty()) result.push_back(startV); else result.emplace_back(-1, -1);
 
     return result;
 }

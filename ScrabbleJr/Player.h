@@ -11,6 +11,7 @@
 #include "../CommonFiles/Board.h"
 #include "gameIO.h"
 
+
 class Player {
 public:
     Player();
@@ -34,6 +35,10 @@ public:
     bool isValidMove(char letter, std::pair<char, char> coords, Board board);
 
     std::vector<char> playableTiles(const Board &board);
+
+    void removeTile(char tile);
+
+    bool hasTile(char tile);
 
 private:
     std::string name;

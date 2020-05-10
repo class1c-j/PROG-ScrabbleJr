@@ -10,9 +10,7 @@ Player::Player(const std::string &name_) {
 }
 
 void Player::setHand(const std::vector<char> &tiles) {
-    for (const char i : tiles) {
-        hand.push_back(i);
-    }
+    hand = tiles;
 }
 
 void Player::showHand() {
@@ -33,9 +31,8 @@ bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board)
 
     bool check;
     unsigned line = coords.first, col = coords.second;
-    auto it = std::find(hand.begin(), hand.end(), letter);
 
-    if (it == hand.end()) {
+    if (!hasTile(letter)) {
         check = false;
         //std::cout << "Error Letter not in player's hand\n";
     } else if (board.getContent().at(line).at(col) != letter) {
@@ -91,12 +88,18 @@ unsigned Player::getScore() const {
 std::vector<char> Player::playableTiles(const Board &board) {
 
     std::vector<char> playable;
+    std::vector<std::pair<char, char>> coords;
 
     for (const auto &tile : hand) {
         for (int i = 0; i < board.getnLines(); i++) {
             for (int j = 0; j < board.getnCols(); j++) {
-                if (isValidMove(tile, {i, j}, board)) {
+                std::pair<char, char> pair = {i, j};
+                if (isValidMove(tile, {i, j}, board) &&
+                    std::count(playable.begin(), playable.end(), tile) < std::count(hand.begin(), hand.end(), tile)
+                    && std::count(coords.begin(), coords.end(), pair) == 0) {
+                    std::cout << "Place " << tile << "on " << i << ", " << j << '\n';
                     playable.push_back(tile);
+                    coords.emplace_back(i, j);
                 }
             }
         }
@@ -109,4 +112,17 @@ std::vector<char> Player::getHand() {
     return hand;
 }
 
+void Player::removeTile(char tile) {
+    std::cout << "here5\n";
+    auto it = std::find(hand.begin(), hand.end(), tile);
+    std::cout << "here6\n";
+    if (hasTile(tile)) {
+        hand.erase(it);  // take tile from player's hand
+    }
+    std::cout << "here7\n";
+}
 
+bool Player::hasTile (char tile) {
+    auto it = std::find(hand.begin(), hand.end(), tile);
+    return !(it == hand.end());
+}

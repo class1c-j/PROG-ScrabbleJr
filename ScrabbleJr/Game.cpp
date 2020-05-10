@@ -41,7 +41,16 @@ void Game::setPlayer(Player player, unsigned int id) {
     _playerList.at(id) = std::move(player);
 }
 
-unsigned Game::nextPlayer() {
+unsigned Game::nextPlayer() const {
+    std::cout << "current is " << _currentN << " setting it to " << (_currentN + 1) % nPlayers << '\n';
     return (_currentN + 1) % nPlayers;
+}
+
+unsigned Game::getCurrentP() {
+    return _currentN;
+}
+
+void Game::setCurrentP(unsigned p) {
+    _currentN = p;
 }
 

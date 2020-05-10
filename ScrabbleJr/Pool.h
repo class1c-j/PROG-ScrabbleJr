@@ -22,9 +22,11 @@ public:
 
     std::vector<char> getContent();
 
+
+    bool isEmpty();
+
 private:
     void shuffle();
-
     std::vector<char> letters;
 };
 

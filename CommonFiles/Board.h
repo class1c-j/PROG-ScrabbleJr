@@ -55,7 +55,7 @@ public:
 
     std::vector<std::string> getBoardWords();
 
-    bool getBoardLetters();
+    std::vector<char> getBoardLetters();
 
     std::vector<char> totalLetters;
 
@@ -84,4 +84,6 @@ private:
     std::vector<std::vector<char> > board;
 
     std::vector<std::vector<char> > played;
+
+    std::string searchWord(std::pair<char, char> coords, const char &dir);
 };
