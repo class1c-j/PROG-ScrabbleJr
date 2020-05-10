@@ -27,7 +27,7 @@ void Game::makeTurn() {
 
 void Game::makePlay() {
 
-    _board.showBoard();
+    _board.showBoard(std::cout);
     _currentP.showHand();
 
     char tile{};
@@ -47,7 +47,7 @@ void Game::makePlay() {
             _currentP.play(tile, coords, _board);
             if (_board.finishedWord(coords)) _currentP.incrementScore();
 
-            _board.showBoard();
+            _board.showBoard(std::cout);
             _currentP.showHand();
         }
 
@@ -65,7 +65,7 @@ void Game::makePlay() {
         _currentP.play(tile, coords, _board);
         if (_board.finishedWord(coords)) _currentP.incrementScore();
 
-        _board.showBoard();
+        _board.showBoard(std::cout);
         _currentP.showHand();
 
         possibleTiles = _currentP.playableTiles(_board).size();
@@ -80,7 +80,7 @@ void Game::makePlay() {
             _currentP.play(tile, coords, _board);
             if (_board.finishedWord(coords)) _currentP.incrementScore();
 
-            _board.showBoard();
+            _board.showBoard(std::cout);
             _currentP.showHand();
 
             if (!_pool.isEmpty()) _pool.dealHand(2, _currentP);
@@ -112,7 +112,7 @@ void Game::makePlay() {
             _currentP.removeTile(tile);
             _pool.addTile(tile);
 
-            _board.showBoard();
+            _board.showBoard(std::cout);
             _currentP.showHand();
         }
         if (!_pool.isEmpty()) _pool.dealHand(2, _currentP);
