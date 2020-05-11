@@ -20,17 +20,12 @@ void Pool::dealHand(unsigned tiles, Player &player) {
     std::vector<char> newTiles{};
     for (size_t i = 0; i < tiles; i++) {
         if (isEmpty()) break;
-        std::cout << "dealing " << letters.at(i) << "\n";
         newTiles.push_back(letters.at(i));
     }
 
     letters.erase(letters.begin(), letters.begin() + tiles);
 
     player.addTiles(newTiles);
-}
-
-std::vector<char> Pool::getContent() {
-    return letters;
 }
 
 bool Pool::isEmpty() {

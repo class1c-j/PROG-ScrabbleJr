@@ -4,6 +4,7 @@
 #include "../CommonFiles/Board.h"
 #include "../CommonFiles/Menu.h"
 #include "editIO.h"
+#include "../CommonFiles/utility.h"
 
 void showMainMenu(Board board, bool &running);
 

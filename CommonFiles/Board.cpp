@@ -1,9 +1,10 @@
-#include "Board.h"
+
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
 #include "../CommonFiles/utility.h"
+#include "Board.h"
 
 Board::Board() = default;
 
@@ -39,7 +40,9 @@ Board::Board(std::ifstream &f_in) {
     std::istringstream s_in1(line);
     char sep{};
     s_in1 >> numLines >> sep >> numCols;
+
     while (std::getline(f_in, line)) {
+        if (line.empty()) break;
         words.insert(line);
     }
 
@@ -59,6 +62,8 @@ Board::Board(std::ifstream &f_in) {
             board.at(i).at(j) = '0';
         }
     }
+
+    std::cout << board.size() << " " << board.at(0).size() << '\n';
 
     // read words
     for (auto &i : words) {
@@ -101,7 +106,7 @@ void Board::save(const std::string &name) {
 
 void Board::showBoard(std::ostream& stream) {
 
-    const int W = 2;  // edit to change how close together the letters are in the board
+    const int W = 1;  // edit to change how close together the letters are in the board
 
     // column letters
     stream << "\n    ";
@@ -110,11 +115,11 @@ void Board::showBoard(std::ostream& stream) {
     }
 
     stream << '\n';
-    stream << std::setfill('_') << std::setw(numCols * W + numCols + W) << std::left << "    " << "\n";
+    //stream << std::setfill('-') << std::setw(numCols * W + numCols + 4) << std::left << "    " << "\n";
 
     for (unsigned i = 0; i < numLines; i++) {
 
-        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |";   // uppercase letters
+        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65);   // uppercase letters
 
         for (size_t j = 0; j < numCols; j++) {
             if (played.at(i).at(j) == '0') {

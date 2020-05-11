@@ -20,8 +20,6 @@ public:
 
     void dealHand(unsigned tiles, Player &player);
 
-    std::vector<char> getContent();
-
     void addTile(char tile);
 
     bool isEmpty();

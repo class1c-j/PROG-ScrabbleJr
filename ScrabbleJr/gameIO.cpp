@@ -1,27 +1,6 @@
 
 #include "gameIO.h"
 
-void searchFile(std::string &fileName) {
-
-    std::cout << "Search for board (without file extension) : ";
-    std::cin >> fileName;
-    fileName = "../UserBoards/" + fileName + ".txt";
-
-
-    while (true) {
-        std::ifstream file(fileName);
-        if (!file.good()) {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Board not found. Try again : ";
-            std::cin >> fileName;
-            fileName = "../UserBoards/" + fileName + ".txt";
-        } else {
-            break;
-        }
-    }
-}
-
 void readLetter(char &c) {
     std::cout << "Choose letter ? ";
     std::cin >> c;

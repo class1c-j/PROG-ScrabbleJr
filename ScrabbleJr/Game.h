@@ -9,6 +9,7 @@
 #include "../CommonFiles/Board.h"
 #include "../CommonFiles/utility.h"
 #include "Pool.h"
+#include <sstream>
 
 class Game {
 public:
@@ -27,6 +28,18 @@ public:
     void makeTurn();
 
     void play();
+
+    Player getCurrentPlayer();
+
+    void giveHint();
+
+    void showLeaderboard();
+
+    void showBoard();
+
+    void showOthersHands();
+
+    unsigned getSize();
 
 private:
     unsigned _nPlayers{};

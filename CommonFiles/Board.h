@@ -1,5 +1,6 @@
 
-#pragma once
+#ifndef PROGT2_BOARD_H
+#define PROGT2_BOARD_H
 
 #include <fstream>
 #include <vector>
@@ -87,3 +88,5 @@ private:
 
     std::string searchWord(std::pair<char, char> coords, const char &dir);
 };
+
+#endif //PROGT2_BOARD_H

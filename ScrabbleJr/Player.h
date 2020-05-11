@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <sstream>
 #include "../CommonFiles/Board.h"
 #include "gameIO.h"
 
@@ -18,13 +19,9 @@ public:
 
     explicit Player(const std::string &name_);
 
-    void setHand(const std::vector<char> &tiles);
-
     void showHand();
 
-    std::vector<char> getHand();
-
-    std::string getName();
+    std::string getName() const;
 
     unsigned getScore() const;
 
@@ -34,7 +31,7 @@ public:
 
     bool isValidMove(char letter, std::pair<char, char> coords, Board board);
 
-    std::vector<char> playableTiles(const Board &board);
+    std::vector<std::string> playableTiles(const Board &board);
 
     void removeTile(char tile);
 

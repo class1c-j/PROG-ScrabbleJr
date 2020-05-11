@@ -8,10 +8,18 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "../ScrabbleJr/Player.h"
+#include <limits>
+#include <fstream>
+#include <sstream>
 
 void setBackgroundColor(unsigned colour);
 
-bool operator<(const Player &player1, const Player &player2);
+void clearScreen();
+
+void searchFile(std::string &fileName);
+
+void printMessage(const std::string& message, unsigned colour);
+
+void gotoxy(int x, int y);
 
 #endif //PROGT2_UTILITY_H

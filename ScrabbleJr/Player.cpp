@@ -9,23 +9,17 @@ Player::Player(const std::string &name_) {
     name = name_;
 }
 
-void Player::setHand(const std::vector<char> &tiles) {
-    hand = tiles;
-}
 
 void Player::addTiles(const std::vector<char> &tiles) {
     for (const auto &i : tiles) {
-        std::cout << "adding " << i << " to player's tiles\n";
         hand.push_back(i);
     }
 }
 
 void Player::showHand() {
-    std::cout << name << "'s hand: ";
     for (const auto &i : hand) {
         std::cout << i << ' ';
     }
-    std::cout << '\n';
 }
 
 void Player::play(char letter, std::pair<char, char> coords, Board &board) {
@@ -80,7 +74,7 @@ bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board)
     return check;
 }
 
-std::string Player::getName() {
+std::string Player::getName() const {
     return name;
 }
 
@@ -92,10 +86,11 @@ unsigned Player::getScore() const {
     return score;
 }
 
-std::vector<char> Player::playableTiles(const Board &board) {
+std::vector<std::string> Player::playableTiles(const Board &board) {
 
     std::vector<char> playable;
     std::vector<std::pair<char, char>> coords;
+    std::vector<std::string> hints;
 
     for (const auto &tile : hand) {
         for (int i = 0; i < board.getnLines(); i++) {
@@ -106,17 +101,17 @@ std::vector<char> Player::playableTiles(const Board &board) {
                     && std::count(coords.begin(), coords.end(), pair) == 0) {
                     playable.push_back(tile);
                     coords.emplace_back(i, j);
+                    std::stringstream hint;
+                    hint << "Play " << tile << " at " << char(i+97) << char(j+65) << '\n';
+                    hints.push_back(hint.str());
                 }
             }
         }
     }
 
-    return playable;
+    return hints;
 }
 
-std::vector<char> Player::getHand() {
-    return hand;
-}
 
 void Player::removeTile(char tile) {
     auto it = std::find(hand.begin(), hand.end(), tile);
@@ -129,3 +124,4 @@ bool Player::hasTile (char tile) {
     auto it = std::find(hand.begin(), hand.end(), tile);
     return !(it == hand.end());
 }
+

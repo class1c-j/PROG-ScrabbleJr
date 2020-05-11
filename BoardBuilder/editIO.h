@@ -13,9 +13,3 @@ void readOrientation(char &orientation);
 void readWord(std::string &word);
 
 void readFileName(std::string &fileName);
-
-void clearScreen();
-
-void searchFile(std::string &fileName);
-
-void printMessage(const std::string& message, unsigned colour);
