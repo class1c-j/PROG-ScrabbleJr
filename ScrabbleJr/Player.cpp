@@ -35,13 +35,13 @@ bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board)
 
     if (!hasTile(letter)) {
         check = false;
-        //std::cout << "Error Letter not in player's hand\n";
+        error = errors.at(0);
     } else if (board.getContent().at(line).at(col) != letter) {
         check = false;
-        //std::cout << "Error: letters do not correspond\n";
+        error = errors.at(1);
     } else if (board.isPlayed(coords)) {
         check = false;
-        //std::cout << "Error: place already played\n";
+        error = errors.at(1);
     } else {
 
         std::pair<char, char> firstNPlayedV{};
@@ -125,3 +125,6 @@ bool Player::hasTile (char tile) {
     return !(it == hand.end());
 }
 
+std::vector<char> Player::getHand() {
+    return hand;
+}

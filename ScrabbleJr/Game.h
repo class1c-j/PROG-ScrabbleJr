@@ -27,8 +27,6 @@ public:
 
     void makeTurn();
 
-    void play();
-
     Player getCurrentPlayer();
 
     void giveHint();
@@ -41,6 +39,9 @@ public:
 
     unsigned getSize();
 
+
+    void showAllHands();
+
 private:
     unsigned _nPlayers{};
     unsigned _currentN{};
@@ -48,6 +49,12 @@ private:
     Board _board;
     Pool _pool;
     Player _currentP;
+
+    void exchangeTiles();
+
+    void playTile();
+
+    void showMessage();
 };
 
 

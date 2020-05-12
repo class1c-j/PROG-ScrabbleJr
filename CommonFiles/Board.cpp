@@ -63,8 +63,6 @@ Board::Board(std::ifstream &f_in) {
         }
     }
 
-    std::cout << board.size() << " " << board.at(0).size() << '\n';
-
     // read words
     for (auto &i : words) {
         std::stringstream str_stream(i);
@@ -115,11 +113,11 @@ void Board::showBoard(std::ostream& stream) {
     }
 
     stream << '\n';
-    //stream << std::setfill('-') << std::setw(numCols * W + numCols + 4) << std::left << "    " << "\n";
+    stream << std::setfill('-') << std::setw(numCols * W + numCols + 4) << std::left << "    " << "\n";
 
     for (unsigned i = 0; i < numLines; i++) {
 
-        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65);   // uppercase letters
+        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |" ; // uppercase letters
 
         for (size_t j = 0; j < numCols; j++) {
             if (played.at(i).at(j) == '0') {
@@ -629,6 +627,6 @@ bool Board::finishedWord(std::pair<char, char> coords) {
         }
     }
 
-    return finishedV || finishedH;
+    return int(finishedV) + int(finishedH);
 
 }

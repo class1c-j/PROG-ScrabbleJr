@@ -24,6 +24,8 @@ public:
 
     bool isEmpty();
 
+    size_t getSize();
+
 private:
     void shuffle();
     std::vector<char> letters;

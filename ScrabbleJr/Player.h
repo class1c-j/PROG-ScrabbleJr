@@ -39,6 +39,14 @@ public:
 
     void addTiles(const std::vector<char> &tiles);
 
+    std::vector<char> getHand();
+
+    std::vector<std::string> errors = {
+            "ERROR: You do not have that tile in your hand.\n", "ERROR: Can't place that tile there.\n"
+    };
+
+    std::string error{};
+
 private:
     std::string name;
     std::vector<char> hand;

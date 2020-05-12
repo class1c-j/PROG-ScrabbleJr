@@ -75,7 +75,8 @@ private:
     std::vector<std::string> errors = {
             "ERROR: Out of board limits\n", "ERROR: Bad intersection\n", "ERROR: Word already next to this word\n",
             "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found.",
-            "WARNING: Number of existing letters is not enough to play a game with the maximum number of players\n"
+            "WARNING: Number of existing letters is not enough to play a game with the maximum number of players\n",
+            "ERROR: Board does not have enough tiles for the desired number of players\n"
     };
 
     unsigned numLines{}, numCols{};

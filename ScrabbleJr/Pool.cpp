@@ -36,3 +36,7 @@ void Pool::addTile(char tile) {
     letters.push_back(tile);
     shuffle();
 }
+
+size_t Pool::getSize() {
+    return letters.size();
+}

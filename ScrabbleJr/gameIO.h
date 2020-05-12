@@ -14,9 +14,12 @@
 #include <limits>
 #include <sstream>
 #include "../CommonFiles/Board.h"
-
-void searchFile(std::string &fileName);
+#include "../CommonFiles/utility.h"
 
 void readLetter(char &c);
 
 void readCoordinates(std::pair<char, char> &coords, const Board &board);
+
+void readNumberPlayers(size_t &number);
+
+std::vector<std::string> readPlayersNames(unsigned number);

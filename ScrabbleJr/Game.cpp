@@ -22,111 +22,141 @@ Game::Game(std::vector<Player> players, Board board, Pool pool) {
 void Game::nextPlayer() {
     _currentN = (_currentN + 1) % _nPlayers;
     _currentP = _playerList.at(_currentN);
+    while (_currentP.getHand().empty()) {
+        std::cout << _currentP.getName() << " has no tiles. Passing\n";
+        _currentN = (_currentN + 1) % _nPlayers;
+        _currentP = _playerList.at(_currentN);
+    }
 }
 
 void Game::makeTurn() {
+
     makePlay();
     nextPlayer();
 }
 
 void Game::makePlay() {
 
-    _board.showBoard(std::cout);
+    size_t playable = _currentP.playableTiles(_board).size();
+
+    if (playable == 0) {
+        if (_pool.isEmpty()) {
+            std::cin.ignore();
+        } else if (_pool.getSize() == 1) {
+            exchangeTiles();
+        } else {
+            for (int i = 0; i < 2; i ++) exchangeTiles();
+        }
+    }
+
+    playable = _currentP.playableTiles(_board).size();
+
+    if (playable == 1) {
+        playTile();
+        _pool.dealHand(1, _currentP);
+    } else if (playable >= 2) {
+        for (int i = 0; i < 2; i ++) playTile();
+        _pool.dealHand(2, _currentP);
+    } else {
+        // Nada?
+    }
+
+}
+
+void Game::exchangeTiles() {
+
+    char tile{};
+
+
+    clearScreen();
+    showBoard();
+    showOthersHands();
+    gotoxy(2, _board.getnLines() + 5);
+    std::cout << "Your tiles\n";
+    gotoxy(2, getSize() + 6);
     _currentP.showHand();
+    std::cout << '\n';
+    gotoxy(_board.getnCols() + 30, _board.getnLines() + 5);
+    std::cout << "\033[A\033[2K";
+    readLetter(tile);
+
+    while (!_currentP.hasTile(tile)) {
+
+        clearScreen();
+        showBoard();
+        showOthersHands();
+        showMessage();
+        gotoxy(2, _board.getnLines() + 5);
+        std::cout << "Your tiles\n";
+        gotoxy(2, getSize() + 6);
+        _currentP.showHand();
+        std::cout << '\n';
+        gotoxy(_board.getnCols() + 30, _board.getnLines() + 5);
+        std::cout << "\033[A\033[2K";
+        readLetter(tile);
+
+    }
+
+    _pool.dealHand(1, _currentP);
+    _pool.addTile(tile);
+
+}
+
+void Game::playTile() {
+
+    clearScreen();
 
     char tile{};
     std::pair<char, char> coords{};
 
-    unsigned possibleTiles = _currentP.playableTiles(_board).size();
+    clearScreen();
+    showBoard();
+    showOthersHands();
+    gotoxy(2, getSize() + 5);
+    std::cout << "Your tiles: ";
+    gotoxy(2, getSize() + 6);
+    _currentP.showHand();
+    std::cout << '\n';
+    gotoxy(_board.getnCols() + 30, getSize() + 5);
+    readLetter(tile);
+    gotoxy(2, _board.getnLines() + 5);
+    std::cout << "Your tiles: ";  // clearing the line causes this to disappear
+    readCoordinates(coords, _board);
 
-    if (possibleTiles >= 2) {
+    while (!_currentP.isValidMove(tile, coords, _board)) {
 
-        for (int i = 0; i < 2; i ++) {
-
-            while (!_currentP.isValidMove(tile, coords, _board)) {
-                readLetter(tile);
-                readCoordinates(coords, _board);
-            }
-
-            _currentP.play(tile, coords, _board);
-            if (_board.finishedWord(coords)) _currentP.incrementScore();
-
-            showBoard();
-            _currentP.showHand();
-        }
-
-        if (!_pool.isEmpty()) _pool.dealHand(2, _currentP);
-        _currentP.showHand();
-
-    } else if (possibleTiles == 1) {
-
-
-        while (!_currentP.isValidMove(tile, coords, _board)) {
-            readLetter(tile);
-            readCoordinates(coords, _board);
-        }
-
-        _currentP.play(tile, coords, _board);
-        if (_board.finishedWord(coords)) _currentP.incrementScore();
-
+        clearScreen();
         showBoard();
+        showOthersHands();
+        showMessage();
+        gotoxy(2, getSize() + 5);
+        std::cout << "Your tiles: ";
+        gotoxy(2, getSize() + 6);
         _currentP.showHand();
+        std::cout << '\n';
+        gotoxy(_board.getnCols() + 30, getSize() + 5);
+        readLetter(tile);
+        gotoxy(2, _board.getnLines() + 5);
+        std::cout << "Your tiles: ";  // clearing the line causes this to disappear
+        readCoordinates(coords, _board);
 
-        possibleTiles = _currentP.playableTiles(_board).size();
-
-        if (possibleTiles != 0) {  // if after playing one tile, another play becomes available, play normally
-
-            while (!_currentP.isValidMove(tile, coords, _board)) {
-                readLetter(tile);
-                readCoordinates(coords, _board);
-            }
-
-            _currentP.play(tile, coords, _board);
-            if (_board.finishedWord(coords)) _currentP.incrementScore();
-
-            showBoard();
-            _currentP.showHand();
-
-            if (!_pool.isEmpty()) _pool.dealHand(2, _currentP);
-            _currentP.showHand();
-
-        } else {  // else, draw only one tile from the pool
-
-            if (!_pool.isEmpty()) _pool.dealHand(1, _currentP);
-            _currentP.showHand();
-
-        }
-
-    } else {
-
-        std::cout << "None of your tiles can be played. Choose 2 to exchange for new ones\n";
-
-        for (int i = 0; i < 2; i ++) {
-
-            readLetter(tile);
-            while (true) {
-                if (!_currentP.hasTile(tile)) {
-                    readLetter(tile);
-                } else {
-                    tile = '0';
-                    break;
-                }
-            }
-
-            _currentP.removeTile(tile);
-            _pool.addTile(tile);
-
-            showBoard();
-            _currentP.showHand();
-        }
-        if (!_pool.isEmpty()) _pool.dealHand(2, _currentP);
-
-        if (possibleTiles != 0) {  // if the newly dealt tiles allow the player to play, play
-            makePlay();
+        if (!_currentP.isValidMove(tile, coords, _board)) {
+            showMessage();
+        } else {
+            break;
         }
     }
 
-    _playerList.at(_currentN) = _currentP;
+    _currentP.play(tile, coords, _board);
+    clearScreen();
+    showBoard();
+    showOthersHands();
+    gotoxy(2, getSize() + 5);
+    std::cout << "Your tiles: ";
+    gotoxy(2, getSize() + 6);
+    _currentP.showHand();
+
+
 }
 
 bool Game::isFinished() {
@@ -139,15 +169,11 @@ Player Game::getWinner() {
     return _playerList.front();
 }
 
-void Game::play() {
-    while (!isFinished()) {
-        makeTurn();
-    }
-}
 
 void Game::giveHint() {
 
     std::vector<std::string> possible = _currentP.playableTiles(_board);
+    gotoxy(_board.getnCols() + 30, 16);
     std::cout << possible.front();
 
 }
@@ -167,32 +193,14 @@ void Game::showLeaderboard() {
 
 void Game::showBoard() {
 
-    std::stringstream ss;
-    std::stringstream toString;
-    _board.showBoard(toString);
-    std::string temp{};
-    std::vector<std::string> lines{};
-    std::string string = toString.str();
-    ss << string;
+    _board.showBoard(std::cout);
 
-    while (std::getline(ss, temp, '\n')) {
-        lines.push_back(temp);
-    }
-
-    int l = 0;
-    for (const auto &i : lines) {
-        gotoxy(20, l);
-        std::cout << i;
-        l += 1;
-    }
-
-    std::cout << '\n';
 
 }
 
 void Game::showOthersHands() {
 
-    const int WEIGHT = _board.getnLines() + 50;
+    const int WEIGHT = _board.getnLines() + 30;
     const int HEIGHT = _board.getnCols() + 3;
 
     int l = 5;
@@ -204,39 +212,82 @@ void Game::showOthersHands() {
         notPlaying.emplace_back();
     }
 
-    gotoxy(2, 2);
+    gotoxy(WEIGHT, 2);
     std::cout << notPlaying.at(0).getName();
-    gotoxy(2, 3);
-    std::cout << "Score: " << notPlaying.at(0).getScore();
-    gotoxy(2, 4);
+    gotoxy(WEIGHT, 3);
+    if (!notPlaying.at(0).getName().empty()) std::cout << "Score: " << notPlaying.at(0).getScore();
+    gotoxy(WEIGHT, 4);
     notPlaying.at(0).showHand();
 
-    gotoxy(WEIGHT, 2);
+    gotoxy(WEIGHT, 6);
     std::cout << notPlaying.at(1).getName();
-    gotoxy(WEIGHT, 3);
-    std::cout << "Score: " << notPlaying.at(1).getScore();
-    gotoxy(WEIGHT, 4);
+    gotoxy(WEIGHT, 7);
+    if (!notPlaying.at(1).getName().empty()) std::cout << "Score: " << notPlaying.at(1).getScore();
+    gotoxy(WEIGHT, 8);
     notPlaying.at(1).showHand();
 
-    gotoxy(WEIGHT, HEIGHT - 5);
+    gotoxy(WEIGHT, 10);
     std::cout << notPlaying.at(2).getName();
-    gotoxy(WEIGHT, HEIGHT - 4);
-    std::cout << "Score: " << notPlaying.at(2).getScore();
-    gotoxy(WEIGHT, HEIGHT - 3);
+    gotoxy(WEIGHT, 11);
+    if (!notPlaying.at(2).getName().empty()) std::cout << "Score: " << notPlaying.at(2).getScore();
+    gotoxy(WEIGHT, 12);
     notPlaying.at(2).showHand();
 
-    gotoxy(2, HEIGHT - 5);
+}
+
+void Game::showAllHands() {
+
+    const int WEIGHT = _board.getnLines() + 30;
+    const int HEIGHT = _board.getnCols() + 3;
+
+    int l = 5;
+    std::vector<Player> notPlaying{};
+    for (int i = 0; i < _nPlayers; i ++) {
+        if (i != _currentN) notPlaying.push_back(_playerList.at(i));
+    }
+    while (notPlaying.size() != 3) {
+        notPlaying.emplace_back();
+    }
+
+    gotoxy(WEIGHT, 2);
+    std::cout << notPlaying.at(0).getName();
+    gotoxy(WEIGHT, 3);
+    if (!notPlaying.at(0).getName().empty()) std::cout << "Score: " << notPlaying.at(0).getScore();
+    gotoxy(WEIGHT, 4);
+    notPlaying.at(0).showHand();
+
+    gotoxy(WEIGHT, 6);
+    std::cout << notPlaying.at(1).getName();
+    gotoxy(WEIGHT, 7);
+    if (!notPlaying.at(1).getName().empty()) std::cout << "Score: " << notPlaying.at(1).getScore();
+    gotoxy(WEIGHT, 8);
+    notPlaying.at(1).showHand();
+
+    gotoxy(WEIGHT, 10);
+    std::cout << notPlaying.at(2).getName();
+    gotoxy(WEIGHT, 11);
+    if (!notPlaying.at(2).getName().empty()) std::cout << "Score: " << notPlaying.at(2).getScore();
+    gotoxy(WEIGHT, 12);
+    notPlaying.at(2).showHand();
+
+    gotoxy(2, HEIGHT + 2);
     std::cout << "You";
-    gotoxy(2, HEIGHT - 4);
+    gotoxy(2, HEIGHT + 3);
     std::cout << "Score: " << _currentP.getScore();
-    gotoxy(2, HEIGHT - 3);
+    gotoxy(2, HEIGHT + 4);
     _currentP.showHand();
-
-
 }
 
 unsigned Game::getSize() {
     return _board.getnLines();
+}
+
+void Game::showMessage() {
+
+    gotoxy(_board.getnCols() + 30, 15);
+    printMessage(_currentP.error, 1);
+    _currentP.error = "";
+
 }
 
 
