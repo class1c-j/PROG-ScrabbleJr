@@ -1,5 +1,6 @@
-
+#define NOMINMAX
 #include "utility.h"
+#include <windows.h>
 
 // TODO:  windows compatibility
 
