@@ -52,7 +52,7 @@ public:
 
     bool isFinished();
 
-    bool finishedWord(std::pair<char, char> coords);
+    int finishedWord(std::pair<char, char> coords);
 
     std::vector<std::string> getBoardWords();
 

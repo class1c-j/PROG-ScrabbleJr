@@ -598,7 +598,7 @@ bool Board::isFinished() {
     return true;
 }
 
-bool Board::finishedWord(std::pair<char, char> coords) {
+int Board::finishedWord(std::pair<char, char> coords) {
 
     bool finishedH = true, finishedV = true;
 

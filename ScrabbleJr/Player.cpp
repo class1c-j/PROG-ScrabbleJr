@@ -102,7 +102,7 @@ std::vector<std::string> Player::playableTiles(const Board &board) {
                     playable.push_back(tile);
                     coords.emplace_back(i, j);
                     std::stringstream hint;
-                    hint << "Play " << tile << " at " << char(i+97) << char(j+65) << '\n';
+                    hint << "\033[2K" << "Try playing " << tile << " at " << char(i+65) << char(j+97);
                     hints.push_back(hint.str());
                 }
             }
@@ -127,4 +127,8 @@ bool Player::hasTile (char tile) {
 
 std::vector<char> Player::getHand() {
     return hand;
+}
+
+void Player::setScore(int i) {
+    score = i;
 }

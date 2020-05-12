@@ -40,6 +40,8 @@ void Game::makePlay() {
     size_t playable = _currentP.playableTiles(_board).size();
 
     if (playable == 0) {
+        gotoxy(_board.getnCols() + 30, 15);
+        printMessage(_currentP.getName() + ", Exchange 2 tiles", 0);
         if (_pool.isEmpty()) {
             std::cin.ignore();
         } else if (_pool.getSize() == 1) {
@@ -52,14 +54,21 @@ void Game::makePlay() {
     playable = _currentP.playableTiles(_board).size();
 
     if (playable == 1) {
+        gotoxy(_board.getnCols() + 30, 15);
+        printMessage(_currentP.getName() + ", Play 1 tiles", 0);
         playTile();
         _pool.dealHand(1, _currentP);
     } else if (playable >= 2) {
+        gotoxy(_board.getnCols() + 30, 15);
+        printMessage(_currentP.getName() + ", Play 2 tiles", 0);
         for (int i = 0; i < 2; i ++) playTile();
         _pool.dealHand(2, _currentP);
     } else {
-        // Nada?
+        printMessage(_currentP.getName() + ", Press ENTER to pass", 0);
+        std::cin.ignore();
     }
+
+    _playerList.at(_currentN) = _currentP;
 
 }
 
@@ -67,13 +76,11 @@ void Game::exchangeTiles() {
 
     char tile{};
 
-
-    clearScreen();
     showBoard();
     showOthersHands();
-    gotoxy(2, _board.getnLines() + 5);
+    gotoxy(2, _board.getnLines() + 6);
     std::cout << "Your tiles\n";
-    gotoxy(2, getSize() + 6);
+    gotoxy(2, getSize() + 7);
     _currentP.showHand();
     std::cout << '\n';
     gotoxy(_board.getnCols() + 30, _board.getnLines() + 5);
@@ -86,9 +93,9 @@ void Game::exchangeTiles() {
         showBoard();
         showOthersHands();
         showMessage();
-        gotoxy(2, _board.getnLines() + 5);
+        gotoxy(2, _board.getnLines() + 6);
         std::cout << "Your tiles\n";
-        gotoxy(2, getSize() + 6);
+        gotoxy(2, getSize() + 7);
         _currentP.showHand();
         std::cout << '\n';
         gotoxy(_board.getnCols() + 30, _board.getnLines() + 5);
@@ -100,26 +107,33 @@ void Game::exchangeTiles() {
     _pool.dealHand(1, _currentP);
     _pool.addTile(tile);
 
+    _playerList.at(_currentN) = _currentP;
+
 }
 
 void Game::playTile() {
 
-    clearScreen();
 
-    char tile{};
+    char tile = 0;
     std::pair<char, char> coords{};
 
-    clearScreen();
     showBoard();
     showOthersHands();
-    gotoxy(2, getSize() + 5);
-    std::cout << "Your tiles: ";
     gotoxy(2, getSize() + 6);
+    std::cout << "Your tiles: ";
+    gotoxy(2, getSize() + 7);
     _currentP.showHand();
     std::cout << '\n';
     gotoxy(_board.getnCols() + 30, getSize() + 5);
+    std::thread hint([this, tile] () {
+        std::this_thread::sleep_for(std::chrono::seconds(10));
+        if (tile == 0) {
+            giveHint();
+        }
+    });
+    hint.detach();
     readLetter(tile);
-    gotoxy(2, _board.getnLines() + 5);
+    gotoxy(2, _board.getnLines() + 6);
     std::cout << "Your tiles: ";  // clearing the line causes this to disappear
     readCoordinates(coords, _board);
 
@@ -129,14 +143,22 @@ void Game::playTile() {
         showBoard();
         showOthersHands();
         showMessage();
-        gotoxy(2, getSize() + 5);
-        std::cout << "Your tiles: ";
+        tile = 0;
         gotoxy(2, getSize() + 6);
+        std::cout << "Your tiles: ";
+        gotoxy(2, getSize() + 7);
         _currentP.showHand();
         std::cout << '\n';
+        std::thread hint([this, tile] () {
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+            if (tile == 0) {
+                giveHint();
+            }
+        });
+        hint.detach();
         gotoxy(_board.getnCols() + 30, getSize() + 5);
         readLetter(tile);
-        gotoxy(2, _board.getnLines() + 5);
+        gotoxy(2, _board.getnLines() + 6);
         std::cout << "Your tiles: ";  // clearing the line causes this to disappear
         readCoordinates(coords, _board);
 
@@ -147,15 +169,22 @@ void Game::playTile() {
         }
     }
 
+
     _currentP.play(tile, coords, _board);
+
+    for (int i = 0; i < _board.finishedWord(coords); i ++) {
+        _currentP.setScore(_currentP.getScore() + 1);
+    }
+
     clearScreen();
     showBoard();
     showOthersHands();
-    gotoxy(2, getSize() + 5);
-    std::cout << "Your tiles: ";
     gotoxy(2, getSize() + 6);
+    std::cout << "Your tiles: ";
+    gotoxy(2, getSize() + 7);
     _currentP.showHand();
 
+    _playerList.at(_currentN) = _currentP;
 
 }
 
@@ -173,8 +202,14 @@ Player Game::getWinner() {
 void Game::giveHint() {
 
     std::vector<std::string> possible = _currentP.playableTiles(_board);
-    gotoxy(_board.getnCols() + 30, 16);
-    std::cout << possible.front();
+    gotoxy(_board.getnCols() + 30, getSize() + 5);
+    printMessage(possible.front(), 0);
+    gotoxy(2, _board.getnLines() + 6);
+    std::cout << "Your tiles: ";  // clearing the line causes this to disappear
+    gotoxy(_board.getnCols() + 50, _board.getnLines() + 5);
+    std::cout << ": ";
+    std::cin.ignore();
+
 
 }
 
@@ -183,16 +218,19 @@ Player Game::getCurrentPlayer() {
 }
 
 void Game::showLeaderboard() {
+
     std::vector<Player> copy = _playerList;
     std::sort(copy.begin(), copy.end());
     std::cout << "NAME\tSCORE\n";
     for (const auto &player : copy) {
         std::cout << player.getName() << "\t" << player.getScore() << '\n';
     }
+
 }
 
 void Game::showBoard() {
 
+    gotoxy(0, 0);
     _board.showBoard(std::cout);
 
 

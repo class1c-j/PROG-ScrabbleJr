@@ -47,6 +47,8 @@ public:
 
     std::string error{};
 
+    void setScore(int i);
+
 private:
     std::string name;
     std::vector<char> hand;

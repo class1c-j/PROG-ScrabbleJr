@@ -9,7 +9,11 @@
 #include "../CommonFiles/Board.h"
 #include "../CommonFiles/utility.h"
 #include "Pool.h"
+#include <ctime>
+#include <chrono>
+#include <thread>
 #include <sstream>
+#include <future>
 
 class Game {
 public:

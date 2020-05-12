@@ -3,6 +3,7 @@
 
 void readLetter(char &c) {
 
+    std::cout << "\033[2K";
     std::cout << "Choose letter ? ";
     std::cin >> c;
     while (std::cin.fail()) {
@@ -31,7 +32,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
         } else {
 
             std::cout << "\033[A\033[2K";
-            gotoxy(2, board.getnLines() + 5);
+            gotoxy(2, board.getnLines() + 6);
             std::cout << "Your tiles: ";  // clearing the line causes this to disappear
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -42,7 +43,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     }
     std::cout << "\033[A\033[2K";
 
-    gotoxy(2, board.getnLines() + 5);
+    gotoxy(2, board.getnLines() + 6);
     std::cout << "Your tiles: ";  // clearing the line causes this to disappear
 
 
@@ -57,9 +58,8 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
             std::cout << "User chose to close input.\n";
             break;
         } else {
-            gotoxy(board.getnCols() + 30, board.getnLines() + 6);
             std::cout << "\033[A\033[2K";
-            gotoxy(2, board.getnLines() + 5);
+            gotoxy(2, board.getnLines() + 6);
             std::cout << "Your tiles: ";  // clearing the line causes this to disappear
             std::cin.clear();
             gotoxy(board.getnCols() + 30, board.getnLines() + 5);
