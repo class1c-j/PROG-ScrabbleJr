@@ -155,15 +155,15 @@ void Board::removeWord(std::pair<char, char> coords, const char dir) {
     unsigned int brdL = coords.first, brdC = coords.second;
     if (!word.empty()) {
         if (dir == 'V') {
-            for (size_t i = brdL; i <= brdL + word.length(); i++) {
+            for (size_t i = brdL; i < brdL + word.length(); i++) {
                 if ((brdC == 0 || board.at(i).at((brdC)-1) == '0') && ((brdC + 1) == numCols || (board.at(i).at((brdC)+1) == '0'))) {
                     board.at(i).at(brdC) = '0';
                 }
             }
         }
         else if (dir == 'H') {
-            for (size_t i = brdC; i <= brdC + word.length(); i++) {
-                if ((brdL == 0 || board.at(brdL-1).at(i) == '0') && ((brdL + 1) == numLines || (board.at(i).at((brdL)+1) == '0'))) {
+            for (size_t i = brdC; i < brdC + word.length(); i++) {
+                if ((brdL == 0 || board.at(brdL - 1).at(i) == '0') && ((brdL + 1) == numLines || (board.at(brdL+1).at(i) == '0'))) {
                     board.at(brdL).at(i) = '0';
                 }
             }
