@@ -27,12 +27,9 @@ int main() {
 
     showMainMenu(game);
 
-    std::cout << "Winner is " << game.getWinner().getName() << " with " << game.getWinner().getScore() << '\n';
 }
 
 Game setup() {
-
-    //TODO: input validation, deal with boards that do not have enough tiles
 
     Board board;
     loadBoard(board);
@@ -40,11 +37,17 @@ Game setup() {
 
     size_t number;
     readNumberPlayers(number);
-    std::cin.ignore();
+    while (number > board.maxPlayersAllowed()) {
+        std::cout << "The selected board does not have enough tiles.\n";
+        readNumberPlayers(number);
+    }
 
-     std::vector<std::string> names = readPlayersNames(number);
+    std::vector<std::string> names = readPlayersNames(number);
 
     std::vector<Player> players;
+
+    players.reserve(names.size());
+
     for (const auto &i : names) {
         players.emplace_back(i);
     }
@@ -88,7 +91,6 @@ void showInstructions() {
 
 void loadBoard(Board &board) {
 
-    //TODO: do not let save boards with numbers in the name
     std::string boardName;
     searchFile(boardName);
     std::ifstream boardFile(boardName);
@@ -111,11 +113,10 @@ void showMainMenu(Game &game) {
                             game.showAllHands();
                             while (!game.isFinished()) {
                                 gotoxy(game.getSize() + 30, game.getSize() + 5);
-                                std::cout << "It's your turn to play, " << game.getCurrentPlayer().getName();
-                                gotoxy(game.getSize() + 30, game.getSize() + 6);
-                                std::cin.ignore();
                                 game.makeTurn();
                             }
+                            game.showLeaderboard();
+                            std::cin.ignore();
                         }}, {"Instructions", [] {
                             showInstructions();
                             std::cin.ignore();

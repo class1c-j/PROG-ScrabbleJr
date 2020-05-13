@@ -1,15 +1,17 @@
 #define NOMINMAX
 #include "gameIO.h"
 
-void readLetter(char &c) {
+void readLetter(std::string &c) {
 
-    std::cout << "\033[2K";
+    std::transform(c.begin(), c.end(), c.begin(), ::tolower);
+
     std::cout << "Choose letter ? ";
     std::cin >> c;
-    while (std::cin.fail()) {
+    while (std::cin.fail() || (c.size() > 1 && c != "hint")) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << "\033[A\033[2K";
+        std::cout << "Invalid line choice. Try again: ";
         std::cin >> c;
     }
 
@@ -30,22 +32,15 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
             std::cout << "User chose to close input.\n";
             break;
         } else {
-
-            std::cout << "\033[A\033[2K";
-            gotoxy(2, board.getnLines() + 6);
-            std::cout << "Your tiles: ";  // clearing the line causes this to disappear
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "\033[A\033[2K";
             gotoxy(board.getnCols() + 30, board.getnLines() + 5);
             std::cout << "Invalid line choice. Try again: ";
             std::cin >> coords.first;
         }
     }
     std::cout << "\033[A\033[2K";
-
-    gotoxy(2, board.getnLines() + 6);
-    std::cout << "Your tiles: ";  // clearing the line causes this to disappear
-
 
     gotoxy(board.getnCols() + 30, board.getnLines() + 5);
     std::cout << "Column ? ";
@@ -59,8 +54,6 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
             break;
         } else {
             std::cout << "\033[A\033[2K";
-            gotoxy(2, board.getnLines() + 6);
-            std::cout << "Your tiles: ";  // clearing the line causes this to disappear
             std::cin.clear();
             gotoxy(board.getnCols() + 30, board.getnLines() + 5);
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -100,6 +93,8 @@ void readNumberPlayers(size_t &number) {
 }
 
 std::vector<std::string> readPlayersNames(unsigned number) {
+
+    std::cin.ignore();  // getline will be used, so we have to remove the \n that could be in the buffer
 
     std::vector<std::string> players(number);
 

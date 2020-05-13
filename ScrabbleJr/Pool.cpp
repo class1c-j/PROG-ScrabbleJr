@@ -18,12 +18,16 @@ void Pool::shuffle() {
 
 void Pool::dealHand(unsigned tiles, Player &player) {
     std::vector<char> newTiles{};
+
+    int taken = 0;
+
     for (size_t i = 0; i < tiles; i++) {
         if (isEmpty()) break;
         newTiles.push_back(letters.at(i));
+        taken ++;
     }
 
-    letters.erase(letters.begin(), letters.begin() + tiles);
+    letters.erase(letters.begin(), letters.begin() + taken);
 
     player.addTiles(newTiles);
 }

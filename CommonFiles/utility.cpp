@@ -1,6 +1,9 @@
 #define NOMINMAX
 #include "utility.h"
+
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 // TODO:  windows compatibility
 
@@ -72,7 +75,7 @@ void printMessage(const std::string& message, unsigned colour) {
 
     SetConsoleTextAttribute(hcon, colours.at(0));
 #else
-    std::vector<std::string> colours = {"\033[0m", "\033[1;33m", "\033[0;31m"};
+    std::vector<std::string> colours = {"\033[0m", "\033[1;33m", "\033[0;31m", "\033[0;92m"};
     std::cout << colours.at(colour);
     std::cout << message;
     std::cout << colours.at(0);

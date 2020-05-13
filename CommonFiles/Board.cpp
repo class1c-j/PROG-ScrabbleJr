@@ -590,7 +590,7 @@ std::vector<std::pair<char, char> > Board::getWordsInPointStart(std::pair<char, 
 bool Board::isFinished() {
     for (unsigned i = 0; i < getnLines(); i++) {
         for (unsigned j = 0; j < getnCols(); j++) {
-            if (!isPlayed({i, j})) {
+            if (board.at(i).at(j) != '0' && !isPlayed({i, j})) {
                 return false;
             }
         }
@@ -628,5 +628,17 @@ int Board::finishedWord(std::pair<char, char> coords) {
     }
 
     return int(finishedV) + int(finishedH);
+
+}
+
+unsigned Board::maxPlayersAllowed() {
+
+    unsigned tiles = getBoardLetters().size();
+
+    if (tiles == 0) return 0;
+    else if (tiles < 14) return 1;
+    else if (tiles < 21) return 2;
+    else if (tiles < 28) return 3;
+    else return 4;
 
 }

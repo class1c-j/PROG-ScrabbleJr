@@ -13,10 +13,12 @@
 #include <fstream>
 #include <limits>
 #include <sstream>
+#include <algorithm>
+#include <string>
 #include "../CommonFiles/Board.h"
 #include "../CommonFiles/utility.h"
 
-void readLetter(char &c);
+void readLetter(std::string &c);
 
 void readCoordinates(std::pair<char, char> &coords, const Board &board);
 

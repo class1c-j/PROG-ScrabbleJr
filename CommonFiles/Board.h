@@ -60,6 +60,8 @@ public:
 
     std::vector<char> totalLetters;
 
+    unsigned maxPlayersAllowed();
+
 private:
 
     void saveWord(const std::string &word, std::pair<char, char>, const char &orientation);

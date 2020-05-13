@@ -33,8 +33,6 @@ public:
 
     Player getCurrentPlayer();
 
-    void giveHint();
-
     void showLeaderboard();
 
     void showBoard();
@@ -59,6 +57,8 @@ private:
     void playTile();
 
     void showMessage();
+
+    void giveHint();
 };
 
 
