@@ -1,0 +1,25 @@
+12 x 14
+Bb H eating
+Bi H meat
+Ej H be
+Fb H should
+Ic H aah
+Ac V cake
+Ae V with
+Ak V sauce
+Dn V illegal
+
+    a b c d e f g h i j k l m n 
+    ----------------------------
+ A |    C   W           S       
+ B |  E A T I N G   M E A T     
+ C |    K   T           U       
+ D |    E   H           C     I 
+ E |                  B E     L 
+ F |  S H O U L D             L 
+ G |                          E 
+ H |                          G 
+ I |    A A H                 A 
+ J |                          L 
+ K |                            
+ L |                            
