@@ -1,0 +1,39 @@
+15 x 15
+Aa H cake
+Af H with
+Ak H meat
+Cd H sauce
+Cj H is
+Ec H delicious
+Gb H doctors
+Id H are
+Am V as
+Ca V dick
+Ce V all
+Dm V well
+Eg V car
+Hk V driving
+Ia V mary
+Ii V scenic
+Im V as
+Jc V tense
+Jg V and
+Ke V ax
+
+    a b c d e f g h i j k l m n o 
+    ------------------------------
+ A |C A K E   W I T H   M E A T   
+ B |                        S     
+ C |D     S A U C E   I S         
+ D |I       L               W     
+ E |C   D E L I C I O U S   E     
+ F |K           A           L     
+ G |  D O C T O R S         L     
+ H |                    D         
+ I |M     A R E     S   R   A     
+ J |A   T       A   C   I   S     
+ K |R   E   A   N   E   V         
+ L |Y   N   X   D   N   I         
+ M |    S           I   N         
+ N |    E           C   G         
+ O |                              
