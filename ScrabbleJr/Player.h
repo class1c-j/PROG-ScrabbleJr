@@ -14,7 +14,9 @@
 
 
 class Player {
+
 public:
+
     Player();
 
     explicit Player(const std::string &name_);
@@ -25,13 +27,11 @@ public:
 
     unsigned getScore() const;
 
-    void incrementScore();
-
     void play(char letter, std::pair<char, char> coords, Board &board);
 
     bool isValidMove(char letter, std::pair<char, char> coords, Board board);
 
-    std::vector<std::string> playableTiles(const Board &board);
+    std::vector<std::pair<char, char> > getPlayable(const Board &board);
 
     void removeTile(char tile);
 
@@ -41,18 +41,26 @@ public:
 
     std::vector<char> getHand();
 
+    std::string error{};
+
+    void incrementScore();
+
+    std::vector<std::string> getHints(const Board &board);
+
+    bool operator >(const Player &otherPlayer) const;
+
+private:
+
     std::vector<std::string> errors = {
             "ERROR: You do not have that tile in your hand.\n", "ERROR: Can't place that tile there.\n"
     };
 
-    std::string error{};
+    std::string _name;
 
-    void setScore(int i);
+    std::vector<char> _hand;
 
-private:
-    std::string name;
-    std::vector<char> hand;
-    unsigned score{};
+    unsigned _score{};
+
 };
 
 

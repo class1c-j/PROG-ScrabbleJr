@@ -24,4 +24,4 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board);
 
 void readNumberPlayers(size_t &number);
 
-std::vector<std::string> readPlayersNames(unsigned number);
+std::vector<std::string> readPlayersNames(size_t number);

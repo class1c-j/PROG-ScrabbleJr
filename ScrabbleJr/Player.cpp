@@ -5,130 +5,224 @@
 Player::Player() = default;
 
 
-Player::Player(const std::string &name_) {
-    name = name_;
+Player::Player(const std::string &name) {
+    _name = name;
 }
 
 
+/**
+ * @brief add some determined tiles to player's hand
+ * @param tiles - vector that contains the tiles to be given to the player
+ */
 void Player::addTiles(const std::vector<char> &tiles) {
+
     for (const auto &i : tiles) {
-        hand.push_back(i);
+        _hand.push_back(i);
     }
+
 }
 
+
+/**
+ * @brief show the content of the player's hand
+ */
 void Player::showHand() {
-    for (const auto &i : hand) {
+
+    for (const auto &i : _hand) {
         std::cout << i << ' ';
     }
+
 }
 
+
+/**
+ * @brief places a piece from the player's hand on the board
+ * @param letter - the tile to play
+ * @param coords - the place on the board where the tile is to be placed
+ * @param board - the board
+ */
 void Player::play(char letter, std::pair<char, char> coords, Board &board) {
-    auto it = std::find(hand.begin(), hand.end(), letter);
-    hand.erase(it);  // take tile from player's hand
-    board.setPlayed(coords);  // place the tile in the board
+
+    // take tile from player's hand
+    auto it = std::find(_hand.begin(), _hand.end(), letter);
+    _hand.erase(it);
+
+    // place it on the board
+    board.setPlayed(coords);
 }
 
+
+/**
+ * @brief validates a move
+ * @param letter - the tile chosen
+ * @param coords - the place chosen
+ * @param board  - the current board
+ * @return true if the move can be made, false otherwise
+ */
 bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board) {
 
     bool check;
-    unsigned line = coords.first, col = coords.second;
+    char col = coords.second;
+    char line = coords.first;
 
     if (!hasTile(letter)) {
+
         check = false;
-        error = errors.at(0);
-    } else if (board.getContent().at(line).at(col) != letter) {
+        error = errors.at(0);  // tell user he does not have the tile
+
+    } else if (board.getContent().at(line).at(col) != letter || board.isPlayed(coords)) {
+
         check = false;
-        error = errors.at(1);
-    } else if (board.isPlayed(coords)) {
-        check = false;
-        error = errors.at(1);
+        error = errors.at(1);  // tell user that he can't play the selected tile on selected place
+
     } else {
 
-        std::pair<char, char> firstNPlayedV{};
-        std::pair<char, char> firstNPlayedH{};
-        std::vector<std::pair<char, char> > starts = board.getWordsInPointStart(coords);
+        std::pair<char, char> firstNPlayedV = board.getFirstNotPlayedV(coords);
+        std::pair<char, char> firstNPlayedH = board.getFirstNotPlayedH(coords);
 
-        std::pair<char, char> horizontal = starts.at(0);
-        if (horizontal != std::pair<char, char>{-1, -1}) {
-            for (size_t i = horizontal.second; i < horizontal.second + board.getWord(horizontal, 'H').size(); i++) {
-                if (!board.isPlayed({line, i})) {
-                    firstNPlayedH = {line, i};
-                    break;
-                }
-            }
-        }
-
-        std::pair<char, char> vertical = starts.at(1);
-        if (vertical != std::pair<char, char>{-1, -1}) {
-            for (size_t i = vertical.first; i < vertical.first + board.getWord(vertical, 'V').size(); i++) {
-                if (!board.isPlayed({i, col})) {
-                    firstNPlayedV = {i, col};
-                    break;
-                }
-            }
-        }
-
+        // check if the chosen place is the first free place for the words that pass there
         check = (coords == firstNPlayedH) || (coords == firstNPlayedV);
-        //if (!check) std::cout << "Not in the first free place\n";
+
+        if (!check) error = errors.at(1);  // tell user he can't play the selected tile on selected place
     }
+
     return check;
 }
 
+
+/**
+ * @brief name of the player
+ * @return name
+ */
 std::string Player::getName() const {
-    return name;
+    return _name;
 }
 
-void Player::incrementScore() {
-    score++;
-}
 
+/**
+ * @brief score of the player
+ * @return score
+ */
 unsigned Player::getScore() const {
-    return score;
+    return _score;
 }
 
-std::vector<std::string> Player::playableTiles(const Board &board) {
+
+/**
+ * @brief looks for the possible places where the player can play
+ * @param board - the current board
+ * @return vector with the coordinates where a tile can be placed by the player
+ */
+std::vector<std::pair<char, char> > Player::getPlayable(const Board &board) {
 
     std::vector<char> playable;
-    std::vector<std::pair<char, char>> coords;
-    std::vector<std::string> hints;
+    std::vector<std::pair<char, char>> coords;  // temporary vector to store the places that have already been
+    // accounted for, avoiding duplicates
 
-    for (const auto &tile : hand) {
+    for (const auto &tile : _hand) {
+
         for (int i = 0; i < board.getnLines(); i++) {
             for (int j = 0; j < board.getnCols(); j++) {
+
                 std::pair<char, char> pair = {i, j};
+
+                // if a place is valid and it has not been counted yet
                 if (isValidMove(tile, {i, j}, board) &&
-                    std::count(playable.begin(), playable.end(), tile) < std::count(hand.begin(), hand.end(), tile)
+                    std::count(playable.begin(), playable.end(), tile) < std::count(_hand.begin(), _hand.end(), tile)
                     && std::count(coords.begin(), coords.end(), pair) == 0) {
+
                     playable.push_back(tile);
                     coords.emplace_back(i, j);
-                    std::stringstream hint;
-                    hint << "\033[2K" << "Try playing " << tile << " at " << char(i+65) << char(j+97);
-                    hints.push_back(hint.str());
+
                 }
+
             }
         }
+
+    }
+
+    return coords;
+}
+
+
+/**
+ * @brief generate hints that tell the player to look at a certain place where he can play
+ * @param board - the current board
+ * @return a vector with hints
+ */
+std::vector<std::string> Player::getHints(const Board &board) {
+
+    std::vector<std::string> hints{};
+
+    for (const auto &i : getPlayable(board)) {
+
+        char line = i.first;
+        char col = i.second;
+
+        std::stringstream hint;
+        hint << "Do you have any tile to play on " << char(line + 65) << char(col + 97) << "? ";
+        hints.push_back(hint.str());
+
     }
 
     return hints;
 }
 
-
+/**
+ * @brief
+ * @param tile the tile to be taken from the player's hand
+ */
 void Player::removeTile(char tile) {
-    auto it = std::find(hand.begin(), hand.end(), tile);
+
+    // get the position of the tile in the hand
+    auto it = std::find(_hand.begin(), _hand.end(), tile);
+
     if (hasTile(tile)) {
-        hand.erase(it);  // take tile from player's hand
+
+        _hand.erase(it);  // take it
+
     }
+
 }
 
-bool Player::hasTile (char tile) {
-    auto it = std::find(hand.begin(), hand.end(), tile);
-    return !(it == hand.end());
+
+/**
+ * @brief checks if the player has a given tile
+ * @param tile - the tile to look for
+ * @return true if the player has that tile, false otherwise
+ */
+bool Player::hasTile(char tile) {
+
+    auto it = std::find(_hand.begin(), _hand.end(), tile);
+
+    // if std::find does not find the tile, it returns the iterator _hand.end()
+    return !(it == _hand.end());
+
 }
 
+
+/**
+ * @brief get the tiles that the player has
+ * @return the hand
+ */
 std::vector<char> Player::getHand() {
-    return hand;
+    return _hand;
 }
 
-void Player::setScore(int i) {
-    score = i;
+
+/**
+ * @brief add one to the player's score
+ */
+void Player::incrementScore() {
+    _score++;
+}
+
+
+/**
+ * @brief operator to compare two players based on their score
+ * @param otherPlayer operand 2
+ * @return true if operand 1 has a higher score than operand 2
+ */
+bool Player::operator>(const Player &otherPlayer) const {
+    return this->_score > otherPlayer._score;
 }

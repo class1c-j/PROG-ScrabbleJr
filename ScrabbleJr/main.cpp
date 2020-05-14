@@ -5,11 +5,6 @@
 #include "Pool.h"
 #include "Game.h"
 #include "../CommonFiles/Menu.h"
-#include "../CommonFiles/utility.h"
-
-#ifdef _WIN32
-windowsSetup()
-#endif
 
 void loadBoard(Board &board);
 
@@ -113,11 +108,12 @@ void showMainMenu(Game &game) {
                             game.showAllHands();
                             while (!game.isFinished()) {
                                 gotoxy(game.getSize() + 30, game.getSize() + 5);
-                                game.makeTurn();
+                                game.makePlay();
+                                game.nextPlayer();
                             }
                             game.showLeaderboard();
                             std::cin.ignore();
-                        }}, {"Instructions", [] {
+                        }}, {"Show Instructions", [] {
                             showInstructions();
                             std::cin.ignore();
                         }}, {"Quit", [&running] {

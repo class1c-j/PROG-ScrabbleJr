@@ -32,8 +32,6 @@ public:
 
     std::string getWord(std::pair<char, char> coords, const char &dir);
 
-    std::vector<std::string> getWordList();
-
     std::string error{};
 
     std::vector<std::vector<char> > getContent();
@@ -44,9 +42,9 @@ public:
 
     void setPlayed(std::pair<char, char> coords);
 
-    std::vector<char> getLine(unsigned line);
+    std::vector<char> getLine(size_t line);
 
-    std::vector<char> getCol(unsigned col);
+    std::vector<char> getCol(size_t col);
 
     std::vector<std::pair<char, char>> getWordsInPointStart(std::pair<char, char> coords);
 
@@ -61,6 +59,10 @@ public:
     std::vector<char> totalLetters;
 
     unsigned maxPlayersAllowed();
+
+    std::pair<char, char> getFirstNotPlayedH(std::pair<char, char> coords);
+
+    std::pair<char, char> getFirstNotPlayedV(std::pair<char, char> coords);
 
 private:
 
@@ -77,7 +79,7 @@ private:
     std::vector<std::string> errors = {
             "ERROR: Out of board limits\n", "ERROR: Bad intersection\n", "ERROR: Word already next to this word\n",
             "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found.",
-            "WARNING: Number of existing letters is not enough to play a game with the maximum number of players\n",
+            "WARNING: Number of existing _letters is not enough to play a game with the maximum number of players\n",
             "ERROR: Board does not have enough tiles for the desired number of players\n"
     };
 

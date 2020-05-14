@@ -92,7 +92,7 @@ void readNumberPlayers(size_t &number) {
     }
 }
 
-std::vector<std::string> readPlayersNames(unsigned number) {
+std::vector<std::string> readPlayersNames(size_t number) {
 
     std::cin.ignore();  // getline will be used, so we have to remove the \n that could be in the buffer
 

@@ -104,9 +104,9 @@ void Board::save(const std::string &name) {
 
 void Board::showBoard(std::ostream& stream) {
 
-    const int W = 1;  // edit to change how close together the letters are in the board
+    const int W = 1;  // edit to change how close together the _letters are in the board
 
-    // column letters
+    // column _letters
     stream << "\n    ";
     for (int i = 0; i < numCols; i++) {
         stream << std::left << std::setw(W) << char(i + 97) << " ";
@@ -117,7 +117,7 @@ void Board::showBoard(std::ostream& stream) {
 
     for (unsigned i = 0; i < numLines; i++) {
 
-        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |" ; // uppercase letters
+        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |" ; // uppercase _letters
 
         for (size_t j = 0; j < numCols; j++) {
             if (played.at(i).at(j) == '0') {
@@ -139,7 +139,7 @@ void Board::showBoard(std::ostream& stream) {
 void Board::insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation) {
 
     if (orientation == 'V') {
-        for (unsigned i = coords.first; i < coords.first + word.length(); i++) {
+        for (char i = coords.first; i < coords.first + word.length(); i++) {
             board.at(i).at(coords.second) = word.at(i - coords.first);
         }
     } else if (orientation == 'H') {
@@ -355,7 +355,7 @@ unsigned Board::getnCols() const {
 
 std::string Board::getWord(std::pair<char, char> coords, const char& dir) {
     unsigned int brdL = coords.first, brdC = coords.second;
-    std::string word;
+    std::string word{};
     if (dir == 'V') {
         std::vector<char> Col = getCol(brdC);
         size_t i = brdL;
@@ -375,14 +375,6 @@ std::string Board::getWord(std::pair<char, char> coords, const char& dir) {
     return word;
 }
 
-std::vector<std::string> Board::getWordList() {
-    std::vector<std::string> wordList;
-    for (const auto &i : words) {
-        wordList.push_back(i.substr(5));
-    }
-    return wordList;
-}
-
 void Board::saveWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
     std::string pos = std::string() + (char) (coords.first + 65) + (char) (coords.second + 97);
     std::string info = pos + ' ' + dir + ' ' + word;
@@ -400,17 +392,23 @@ std::string Board::searchWord(std::pair<char, char> coords, const char &dir) {
     return std::string();
 }
 
-std::vector<char> Board::getLine(unsigned int line) {
+std::vector<char> Board::getLine(size_t line) {
+
     return board.at(line);
 }
 
-std::vector<char> Board::getCol(unsigned int col) {
+std::vector<char> Board::getCol(size_t col) {
+
     std::vector<char> column;
+
     column.reserve(getnLines());
+
     for (int i = 0; i < getnLines(); i++) {
         column.push_back(board.at(i).at(col));
     }
+
     return column;
+
 }
 
 
@@ -641,4 +639,55 @@ unsigned Board::maxPlayersAllowed() {
     else if (tiles < 28) return 3;
     else return 4;
 
+}
+
+std::pair<char, char> Board::getFirstNotPlayedH(std::pair<char, char> coords) {
+
+    std::pair<char, char> result{};
+
+    std::pair<char, char> start = getWordsInPointStart(coords).at(0);
+
+
+    if (start != std::pair<char, char>{-1, -1}) {  // if there is an horizontal  word
+
+        std::string word = getWord(start, 'H');
+
+        // iterate through the board positions where the word is, looking for the first free spot
+        for (size_t i = start.second; i < start.second + word.length(); i++) {
+
+            if (!isPlayed({coords.first, i})) {
+                result = {coords.first, i};
+                break;
+            }
+
+        }
+
+    }
+
+    return result;
+}
+
+
+std::pair<char, char> Board::getFirstNotPlayedV(std::pair<char, char> coords) {
+
+    std::pair<char, char> result{};
+
+    std::pair<char, char> start = getWordsInPointStart(coords).at(1);
+
+    if (start != std::pair<char, char>{-1, -1}) {  // if there is a vertical word
+
+        std::string word = getWord(start, 'V');
+
+        for (size_t i = start.first; i < start.first + word.length(); i++) {
+
+            if (!isPlayed({i, coords.second})) {
+                result = {i, coords.second};
+                break;
+            }
+
+        }
+
+    }
+
+    return result;
 }

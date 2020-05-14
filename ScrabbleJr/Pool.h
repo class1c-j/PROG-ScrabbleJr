@@ -14,6 +14,7 @@
 
 class Pool {
 public:
+
     Pool();
 
     explicit Pool(Board board);
@@ -27,8 +28,10 @@ public:
     size_t getSize();
 
 private:
+
     void shuffle();
-    std::vector<char> letters;
+
+    std::vector<char> _letters;
 };
 
 

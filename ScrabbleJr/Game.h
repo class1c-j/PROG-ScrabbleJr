@@ -26,8 +26,6 @@ public:
 
     bool isFinished();
 
-    void makeTurn();
-
     void showLeaderboard();
 
     void showBoard();
@@ -36,15 +34,20 @@ public:
 
     unsigned getSize();
 
-
     void showAllHands();
 
 private:
-    unsigned _nPlayers{};
+
+    unsigned long _nPlayers{};
+
     unsigned _currentN{};
+
     std::vector<Player> _playerList;
+
     Board _board;
+
     Pool _pool;
+
     Player _currentP;
 
     void exchangeTiles();
@@ -54,6 +57,10 @@ private:
     void showMessage();
 
     void giveHint();
+
+    int WIDTH;
+
+    int HEIGHT;
 };
 
 
