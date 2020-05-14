@@ -9,11 +9,10 @@
 #include "../CommonFiles/Board.h"
 #include "../CommonFiles/utility.h"
 #include "Pool.h"
-#include <ctime>
-#include <chrono>
-#include <thread>
 #include <sstream>
-#include <future>
+#include <iomanip>
+#include <iostream>
+#include <algorithm>
 
 class Game {
 public:
@@ -27,11 +26,7 @@ public:
 
     bool isFinished();
 
-    Player getWinner();
-
     void makeTurn();
-
-    Player getCurrentPlayer();
 
     void showLeaderboard();
 

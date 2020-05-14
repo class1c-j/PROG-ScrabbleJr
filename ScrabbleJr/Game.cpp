@@ -1,5 +1,4 @@
 
-#include <algorithm>
 #include "Game.h"
 
 Game::Game() = default;
@@ -54,7 +53,7 @@ void Game::makePlay() {
         } else if (_pool.getSize() == 1) {
             exchangeTiles();
         } else {
-            for (int i = 0; i < 2; i ++) exchangeTiles();
+            for (int i = 0; i < 2; i++) exchangeTiles();
         }
     }
 
@@ -70,12 +69,12 @@ void Game::makePlay() {
         gotoxy(_board.getnCols() + 28, 15);
         std::cout << "\033[A\033[2K";
         printMessage("It's your turn, " + _currentP.getName() + ", play 2 tiles.", 0);
-        for (int i = 0; i < 2; i ++) playTile();
+        for (int i = 0; i < 2; i++) playTile();
         _pool.dealHand(2, _currentP);
     } else {
         gotoxy(_board.getnCols() + 28, 15);
         std::cout << "\033[A\033[2K";
-        printMessage("It's your turn, " +_currentP.getName() + ", press ENTER to pass.", 0);
+        printMessage("It's your turn, " + _currentP.getName() + ", press ENTER to pass.", 0);
         std::cin.ignore();
     }
 
@@ -98,7 +97,7 @@ void Game::exchangeTiles() {
         tile = input.front();
 
         if (!_currentP.hasTile(tile)) {
-            showLeaderboard();
+            showMessage();
         } else {
             break;
         }
@@ -107,6 +106,11 @@ void Game::exchangeTiles() {
 
     _pool.dealHand(1, _currentP);
     _pool.addTile(tile);
+    _currentP.removeTile(tile);
+
+    clearScreen();
+    showBoard();
+    showOthersHands();
 
     _playerList.at(_currentN) = _currentP;
 
@@ -150,7 +154,7 @@ void Game::playTile() {
 
     _currentP.play(tile, coords, _board);
 
-    for (int i = 0; i < _board.finishedWord(coords); i ++) {
+    for (int i = 0; i < _board.finishedWord(coords); i++) {
         _currentP.setScore(_currentP.getScore() + 1);
     }
 
@@ -171,11 +175,37 @@ void Game::showLeaderboard() {
     clearScreen();
     std::vector<Player> copy = _playerList;
     std::sort(copy.begin(), copy.end(), std::greater<>());
-    std::cout << "NAME\tSCORE\n";
-    for (const auto &player : copy) {
-        std::cout << player.getName() << "\t" << player.getScore() << '\n';
-    }
-    std::cout << "ENTER to go back to main menu ...";
+
+    std::cout << " __| |____________________________________________| |__\n"
+                 "(__   ____________________________________________   __)\n"
+                 "   | |                                            | |\n"
+                 "   | |               BOARD FINISHED               | |\n"
+                 "   | |                                            | |\n";
+    std::cout << "   | |  ";
+    if (_nPlayers >= 1) std::cout << std::setw(38) << std::left << copy.at(0).getName() << copy.at(0).getScore();
+    else std::cout << std::setw(39) << " ";
+    std::cout << "   | |\n";
+    std::cout << "   | |  ";
+    if (_nPlayers >= 2) std::cout << std::setw(38) << std::left << copy.at(1).getName() << copy.at(1).getScore();
+    else std::cout << std::setw(39) << " ";
+    std::cout << "   | |\n";
+    std::cout << "   | |  ";
+    if (_nPlayers >= 3) std::cout << std::setw(38) << std::left << copy.at(2).getName() << copy.at(2).getScore();
+    else std::cout << std::setw(39) << " ";
+    std::cout << "   | |\n";
+    std::cout << "   | |  ";
+    if (_nPlayers >= 4) std::cout << std::setw(38) << std::left << copy.at(3).getName() << copy.at(3).getScore();
+    else std::cout << std::setw(39) << " ";
+    std::cout << "   | |\n";
+    std::cout << "   | |                                            | |\n"
+                 "   | |                                            | |\n"
+                 "   | |                                            | |\n"
+                 " __| |____________________________________________| |__\n"
+                 "(__   ____________________________________________   __)\n"
+                 "   | |                                            | |\n\n";
+
+
+    std::cout << "Thanks for playing this game. Press ENTER to go back to the main menu\n";
     std::cin.ignore();
 
 }
@@ -193,7 +223,7 @@ void Game::showOthersHands() {
     const int WEIGHT = _board.getnLines() + 30;
 
     std::vector<Player> notPlaying{};
-    for (int i = 0; i < _nPlayers; i ++) {
+    for (int i = 0; i < _nPlayers; i++) {
         if (i != _currentN) notPlaying.push_back(_playerList.at(i));
     }
     while (notPlaying.size() != 3) {
