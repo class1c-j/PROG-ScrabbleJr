@@ -120,15 +120,12 @@ void Board::showBoard(std::ostream& stream) {
         stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |" ; // uppercase _letters
 
         for (size_t j = 0; j < numCols; j++) {
-            if (played.at(i).at(j) == '0') {
+            if (played.at(i).at(j) == '1') {
                 board.at(i).at(j) == '0' ? stream << std::left << std::setw(W + 1) << " " : stream << std::left
-                << std::setw(W) << (char) toupper(board.at(i).at(j)) << ' ';
+                << std::setw(W) << _playedColour <<(char) toupper(board.at(i).at(j)) << _noColour << ' ';
             } else {
-                //setBackgroundColor(1);
-                stream << "\033[94;103m";
                 board.at(i).at(j) == '0' ? stream << std::left << std::setw(W + 1) << " " : stream << std::left
                 << std::setw(W) << (char) toupper(board.at(i).at(j))<< ' ';
-                setBackgroundColor(0);
             }
 
         }

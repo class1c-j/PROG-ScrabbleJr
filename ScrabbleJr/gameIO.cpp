@@ -16,7 +16,7 @@ void readLetter(std::string &c) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         clearLineAndGoUp();
-        std::cout << "Invalid line choice. Try again: ";
+        std::cout << "Invalid tile. Try again: ";
         std::cin >> c;
     }
 
@@ -32,7 +32,7 @@ void readLetter(std::string &c) {
  */
 void readCoordinates(std::pair<char, char> &coords, const Board &board) {
 
-    gotoxy(board.getnCols() + 30, board.getnLines() + 5);
+    goToXY(board.getnCols() + 30, board.getnLines() + 5);
     std::cout << "Line ? ";
     std::cin >> coords.first;
 
@@ -47,7 +47,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             clearLineAndGoUp();
-            gotoxy(board.getnCols() + 30, board.getnLines() + 5);
+            goToXY(board.getnCols() + 30, board.getnLines() + 5);
             std::cout << "Invalid line choice. Try again: ";
             std::cin >> coords.first;
         }
@@ -55,7 +55,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     
     clearLineAndGoUp();
 
-    gotoxy(board.getnCols() + 30, board.getnLines() + 5);
+    goToXY(board.getnCols() + 30, board.getnLines() + 5);
     std::cout << "Column ? ";
     std::cin >> coords.second;
     while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 >= board.getnCols() ||
@@ -68,7 +68,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
         } else {
             clearLineAndGoUp();
             std::cin.clear();
-            gotoxy(board.getnCols() + 30, board.getnLines() + 5);
+            goToXY(board.getnCols() + 30, board.getnLines() + 5);
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid column choice. Try again: ";
             std::cin >> coords.second;

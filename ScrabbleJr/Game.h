@@ -54,7 +54,7 @@ private:
 
     void playTile();
 
-    void showMessage();
+    void showPlayerError();
 
     void giveHint();
 

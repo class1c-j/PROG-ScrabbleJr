@@ -1,6 +1,3 @@
-//
-// Created by ritam on 04/05/20.
-//
 
 #ifndef PROGT2_UTILITY_H
 #define PROGT2_UTILITY_H
@@ -12,6 +9,12 @@
 #include <fstream>
 #include <sstream>
 
+// Setup ANSI sequence support for windows 10 computers
+#ifdef _WIN32
+#include <windows.h>
+int windowsSetup();
+#endif
+
 void setBackgroundColor(unsigned colour);
 
 void clearScreen();
@@ -20,12 +23,10 @@ void searchFile(std::string &fileName);
 
 void printMessage(const std::string& message, unsigned colour);
 
-void gotoxy(int x, int y);
-
-#ifdef _WIN32
-int windowsSetup();
-#endif
+void goToXY(int x, int y);
 
 void clearLineAndGoUp();
+
+
 
 #endif //PROGT2_UTILITY_H

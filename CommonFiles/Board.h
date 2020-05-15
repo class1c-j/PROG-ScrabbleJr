@@ -92,6 +92,10 @@ private:
     std::vector<std::vector<char> > played;
 
     std::string searchWord(std::pair<char, char> coords, const char &dir);
+
+    std::string _playedColour = "\033[48;2;140;45;25m";
+
+    std::string _noColour = "\033[39;49m";
 };
 
 #endif //PROGT2_BOARD_H

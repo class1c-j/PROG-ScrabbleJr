@@ -29,7 +29,7 @@ void Player::addTiles(const std::vector<char> &tiles) {
 void Player::showHand() {
 
     for (const auto &i : _hand) {
-        std::cout << i << ' ';
+        std::cout << _tileColour << i << _noColour << ' ';
     }
 
 }
@@ -150,22 +150,16 @@ std::vector<std::pair<char, char> > Player::getPlayable(const Board &board) {
  * @param board - the current board
  * @return a vector with hints
  */
-std::vector<std::string> Player::getHints(const Board &board) {
+std::string Player::getHint(const Board &board) {
 
-    std::vector<std::string> hints{};
+    std::pair<char, char> coords = getPlayable(board).front();
+    char line = coords.first;
+    char col = coords.second;
 
-    for (const auto &i : getPlayable(board)) {
+    std::stringstream hint;
+    hint << "HINT: Do you have any tile to play on " << char(line + 'A') << char(col + 'a') << "? ";
 
-        char line = i.first;
-        char col = i.second;
-
-        std::stringstream hint;
-        hint << "Do you have any tile to play on " << char(line + 65) << char(col + 97) << "? ";
-        hints.push_back(hint.str());
-
-    }
-
-    return hints;
+    return hint.str();
 }
 
 /**

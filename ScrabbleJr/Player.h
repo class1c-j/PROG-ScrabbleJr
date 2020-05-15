@@ -45,7 +45,7 @@ public:
 
     void incrementScore();
 
-    std::vector<std::string> getHints(const Board &board);
+    std::string getHint(const Board &board);
 
     bool operator >(const Player &otherPlayer) const;
 
@@ -60,6 +60,10 @@ private:
     std::vector<char> _hand;
 
     unsigned _score{};
+
+    std::string _tileColour = "\033[48;2;140;45;25m";
+
+    std::string _noColour = "\033[39;49m";
 
 };
 

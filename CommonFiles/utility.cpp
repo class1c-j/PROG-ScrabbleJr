@@ -1,11 +1,6 @@
 #define NOMINMAX
 #include "utility.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-// TODO:  windows compatibility
 
 void setBackgroundColor(unsigned colour) {
 
@@ -53,11 +48,12 @@ void printMessage(const std::string& message, unsigned colour) {
 
 }
 
-void gotoxy(int x, int y) {
+void goToXY(int x, int y) {
     std::ostringstream oss;
     oss << "\033["<< y << ";"<< x << "H";
     std::cout << oss.str();
 }
+
 
 #ifdef _WIN32
 
