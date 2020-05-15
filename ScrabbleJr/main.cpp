@@ -5,6 +5,7 @@
 #include "Pool.h"
 #include "Game.h"
 #include "../CommonFiles/Menu.h"
+#include "../CommonFiles/utility.h"
 
 void loadBoard(Board &board);
 
@@ -17,6 +18,10 @@ void showInstructions();
 void showMainMenu(Game &game);
 
 int main() {
+
+#ifdef _WIN32
+    windowsSetup();
+#endif
 
     Game game;
 

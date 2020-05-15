@@ -22,6 +22,10 @@ void printMessage(const std::string& message, unsigned colour);
 
 void gotoxy(int x, int y);
 
+#ifdef _WIN32
 int windowsSetup();
+#endif
+
+void clearLineAndGoUp();
 
 #endif //PROGT2_UTILITY_H

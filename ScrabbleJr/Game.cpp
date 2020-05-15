@@ -54,7 +54,7 @@ void Game::makePlay() {
     if (playable == 0) {
 
         gotoxy(_board.getnCols() + 30, 15);
-        std::cout << "\033[A\033[2K";  // TODO: SYSTEM AGNOSTIC
+        clearLineAndGoUp();  // TODO: SYSTEM AGNOSTIC
 
         if (!_pool.isEmpty()) {
 
@@ -78,7 +78,7 @@ void Game::makePlay() {
     if (playable == 1) {
 
         gotoxy(_board.getnCols() + 28, 15);
-        std::cout << "\033[A\033[2K";  //TODO: SYSTEM AGNOSTIC
+        clearLineAndGoUp();
 
         printMessage("It's your turn, " + _currentP.getName() + ", play 1 tile.", 0);
 
@@ -89,7 +89,7 @@ void Game::makePlay() {
     } else if (playable >= 2) {
 
         gotoxy(_board.getnCols() + 28, 15);
-        std::cout << "\033[A\033[2K";  //TODO: SYSTEM AGNOSTIC
+        clearLineAndGoUp(); //TODO: SYSTEM AGNOSTIC
 
         printMessage("It's your turn, " + _currentP.getName() + ", play 2 tiles.", 0);
 
@@ -100,7 +100,7 @@ void Game::makePlay() {
     } else {
 
         gotoxy(_board.getnCols() + 28, 15);
-        std::cout << "\033[A\033[2K";  // TODO: SYSTEM AGNOSTIC
+        clearLineAndGoUp();  // TODO: SYSTEM AGNOSTIC
 
         // There are no possible plays, the player must pass
         printMessage("It's your turn, " + _currentP.getName() + ", press ENTER to pass.", 0);
@@ -130,7 +130,7 @@ void Game::exchangeTiles() {
     while (!_currentP.hasTile(tile) || input.size() > 1) {
 
         gotoxy(getSize() + 30, getSize() + 6);
-        std::cout << "\033[A\033[2K";  // TODO: SYSTEM AGNOSTIC
+        clearLineAndGoUp();  // TODO: SYSTEM AGNOSTIC
 
         readLetter(input);
         while (input == "hint") {
@@ -182,17 +182,16 @@ void Game::playTile() {
         showAllHands();
 
         gotoxy(getSize() + 30, getSize() + 6);
-        std::cout << "\033[A\033[2K";
+        clearLineAndGoUp();
 
         readLetter(input);
 
         while (input == "hint") {
 
             giveHint();
-            std::cin.ignore();
 
             gotoxy(getSize() + 30, getSize() + 6);
-            std::cout << "\033[A\033[2K";
+            clearLineAndGoUp();
 
             readLetter(input);
 

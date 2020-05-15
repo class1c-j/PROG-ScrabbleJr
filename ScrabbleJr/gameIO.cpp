@@ -11,15 +11,16 @@ void readLetter(std::string &c) {
 
     std::cout << "Choose letter ? ";
     std::cin >> c;
+
     while (std::cin.fail() || (c.size() > 1 && c != "hint")) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "\033[A\033[2K";
+        clearLineAndGoUp();
         std::cout << "Invalid line choice. Try again: ";
         std::cin >> c;
     }
 
-    std::cout << "\033[A\033[2K";
+    clearLineAndGoUp();
 }
 
 
@@ -45,13 +46,14 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
         } else {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "\033[A\033[2K";
+            clearLineAndGoUp();
             gotoxy(board.getnCols() + 30, board.getnLines() + 5);
             std::cout << "Invalid line choice. Try again: ";
             std::cin >> coords.first;
         }
     }
-    std::cout << "\033[A\033[2K";
+    
+    clearLineAndGoUp();
 
     gotoxy(board.getnCols() + 30, board.getnLines() + 5);
     std::cout << "Column ? ";
@@ -64,7 +66,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
             std::cout << "User chose to close input.\n";
             break;
         } else {
-            std::cout << "\033[A\033[2K";
+            clearLineAndGoUp();
             std::cin.clear();
             gotoxy(board.getnCols() + 30, board.getnLines() + 5);
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

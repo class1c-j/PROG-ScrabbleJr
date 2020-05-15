@@ -8,40 +8,20 @@
 // TODO:  windows compatibility
 
 void setBackgroundColor(unsigned colour) {
-#ifdef _WIN32
-    // YELLOY -> 14, // READ -> 4, // WHITE -> 15
-    if (colour == 1) {
-        HANDLE hcon= GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hcon, BACKGROUND_GREEN);
-    } else {
-        HANDLE hcon= GetStdHandle(STD_OUTPUT_HANDLE);
-        SetConsoleTextAttribute(hcon, 15);
-    }
-#else
+
     std::vector<std::string> colours = {"\033[0m", "\033[0;42m"};
     std::cout << colours.at(colour);
-#endif
 }
 
 void clearScreen() {
-#ifdef _WIN32
-    COORD coordScreen = { 0, 0 };  // upper left corner
-    DWORD cCharsWritten;
-    DWORD dwConSize;
-    HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    GetConsoleScreenBufferInfo(hCon, &csbi);
-    dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-    // fill with spaces
-    FillConsoleOutputCharacter(hCon, TEXT(' '), dwConSize, coordScreen, &cCharsWritten);
-    GetConsoleScreenBufferInfo(hCon, &csbi);
-    FillConsoleOutputAttribute(hCon, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
-    // cursor to upper left corner
-    SetConsoleCursorPosition(hCon, coordScreen);
-#else
     std::cout << "\033[2J\033[1;1H";
-#endif
+
 }
+
+void clearLineAndGoUp() {
+    std::cout << "\033[A\033[2K";
+}
+
 
 void searchFile(std::string &fileName) {
 
@@ -65,21 +45,12 @@ void searchFile(std::string &fileName) {
 }
 
 void printMessage(const std::string& message, unsigned colour) {
-#ifdef _WIN32
-    // YELLOY -> 14, // READ -> 4, // WHITE -> 15
-    std::vector<int> colours = {15, 14, 4};
-    HANDLE hcon= GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hcon, colours.at(colour));
 
-    std::cout << message;
-
-    SetConsoleTextAttribute(hcon, colours.at(0));
-#else
     std::vector<std::string> colours = {"\033[0m", "\033[1;33m", "\033[0;31m", "\033[0;92m"};
     std::cout << colours.at(colour);
     std::cout << message;
     std::cout << colours.at(0);
-#endif
+
 }
 
 void gotoxy(int x, int y) {
@@ -89,8 +60,6 @@ void gotoxy(int x, int y) {
 }
 
 #ifdef _WIN32
-
-#include <windows.h>
 
 int windowsSetup() {
     // Set output mode to handle virtual terminal sequences
