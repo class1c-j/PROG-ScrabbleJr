@@ -58,9 +58,9 @@ private:
 
     void giveHint();
 
-    int WIDTH;
+    int WIDTH{};
 
-    int HEIGHT;
+    int HEIGHT{};
 };
 
 

@@ -50,6 +50,7 @@ void Game::makePlay() {
 
     size_t playable = _currentP.getPlayable(_board).size();  // count with the possible plays
 
+
     if (playable == 0) {
 
         gotoxy(_board.getnCols() + 30, 15);
@@ -108,6 +109,7 @@ void Game::makePlay() {
     }
 
     // update player state
+    exchangeTiles();
     _playerList.at(_currentN) = _currentP;
 
 }
@@ -155,6 +157,7 @@ void Game::exchangeTiles() {
 
     _pool.dealHand(1, _currentP);  // give a new tile to the player
 
+    clearScreen();
     showBoard();
     showAllHands();
 

@@ -38,7 +38,7 @@ void Pool::dealHand(unsigned tiles, Player &player) {
 
     for (size_t i = 0; i < tiles; i++) {
 
-        if (isEmpty()) break;
+        if (isEmpty() || i >= getSize()) break;
 
         newTiles.push_back(_letters.at(i));
         taken++;
