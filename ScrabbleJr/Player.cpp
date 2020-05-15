@@ -1,12 +1,13 @@
 
 #include "Player.h"
 #include <iostream>
+#include <utility>
 
 Player::Player() = default;
 
 
-Player::Player(const std::string &name) {
-    _name = name;
+Player::Player(std::string name)
+        : _name(std::move(name)) {
 }
 
 
@@ -29,7 +30,7 @@ void Player::addTiles(const std::vector<char> &tiles) {
 void Player::showHand() {
 
     for (const auto &i : _hand) {
-        std::cout << _tileColour << i << _noColour << ' ';
+        std::cout << _tileColour << char(toupper(i)) << _noColour << ' ';
     }
 
 }
@@ -62,8 +63,8 @@ void Player::play(char letter, std::pair<char, char> coords, Board &board) {
 bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board) {
 
     bool check;
-    char col = coords.second;
-    char line = coords.first;
+    size_t col = coords.second;
+    size_t line = coords.first;
 
     if (!hasTile(letter)) {
 
@@ -121,8 +122,8 @@ std::vector<std::pair<char, char> > Player::getPlayable(const Board &board) {
 
     for (const auto &tile : _hand) {
 
-        for (int i = 0; i < board.getnLines(); i++) {
-            for (int j = 0; j < board.getnCols(); j++) {
+        for (size_t i = 0; i < board.getnLines(); i++) {
+            for (size_t j = 0; j < board.getnCols(); j++) {
 
                 std::pair<char, char> pair = {i, j};
 
@@ -157,7 +158,7 @@ std::string Player::getHint(const Board &board) {
     char col = coords.second;
 
     std::stringstream hint;
-    hint << "HINT: Do you have any tile to play on " << char(line + 'A') << char(col + 'a') << "? ";
+    hint << "HINT: Do you have any tile to play on " << line + 'A' << col + 'a' << "? ";
 
     return hint.str();
 }
@@ -187,6 +188,7 @@ void Player::removeTile(char tile) {
  */
 bool Player::hasTile(char tile) {
 
+    tile = tolower(tile);  // it doesn't make sense to have the tiles be case sensitive
     auto it = std::find(_hand.begin(), _hand.end(), tile);
 
     // if std::find does not find the tile, it returns the iterator _hand.end()

@@ -26,9 +26,9 @@ public:
 
     bool verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir);
 
-    unsigned getnLines() const;
+    size_t getnLines() const;
 
-    unsigned getnCols() const;
+    size_t getnCols() const;
 
     std::string getWord(std::pair<char, char> coords, const char &dir);
 
@@ -83,7 +83,7 @@ private:
             "ERROR: Board does not have enough tiles for the desired number of players\n"
     };
 
-    unsigned numLines{}, numCols{};
+    size_t numLines{}, numCols{};
 
     std::set<std::string> words;
 

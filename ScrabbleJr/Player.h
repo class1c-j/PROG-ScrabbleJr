@@ -19,7 +19,7 @@ public:
 
     Player();
 
-    explicit Player(const std::string &name_);
+    explicit Player(std::string name_);
 
     void showHand();
 
@@ -41,6 +41,7 @@ public:
 
     std::vector<char> getHand();
 
+
     std::string error{};
 
     void incrementScore();
@@ -51,11 +52,11 @@ public:
 
 private:
 
+    std::string _name;
+
     std::vector<std::string> errors = {
             "ERROR: You do not have that tile in your hand.\n", "ERROR: Can't place that tile there.\n"
     };
-
-    std::string _name;
 
     std::vector<char> _hand;
 

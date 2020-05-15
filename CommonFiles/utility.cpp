@@ -48,7 +48,7 @@ void printMessage(const std::string& message, unsigned colour) {
 
 }
 
-void goToXY(int x, int y) {
+void goToXY(size_t x, size_t y) {
     std::ostringstream oss;
     oss << "\033["<< y << ";"<< x << "H";
     std::cout << oss.str();

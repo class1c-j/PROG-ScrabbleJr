@@ -18,7 +18,7 @@ class Game {
 public:
     Game();
 
-    Game(std::vector<Player> players, Board board, Pool pool);
+    Game(const std::vector<Player>& players, const Board& board, Pool pool);
 
     void nextPlayer();
 
@@ -32,15 +32,11 @@ public:
 
     void showOthersHands();
 
-    unsigned getSize();
+    size_t getSize();
 
     void showAllHands();
 
 private:
-
-    unsigned long _nPlayers{};
-
-    unsigned _currentN{};
 
     std::vector<Player> _playerList;
 
@@ -48,7 +44,15 @@ private:
 
     Pool _pool;
 
+    size_t _currentN{};
+
     Player _currentP;
+
+    size_t _nPlayers{};
+
+    size_t WIDTH{};
+
+    size_t HEIGHT{};
 
     void exchangeTiles();
 
@@ -58,9 +62,6 @@ private:
 
     void giveHint();
 
-    int WIDTH{};
-
-    int HEIGHT{};
 };
 
 

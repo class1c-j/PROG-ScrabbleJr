@@ -13,11 +13,13 @@ void readLetter(std::string &c) {
     std::cin >> c;
 
     while (std::cin.fail() || (c.size() > 1 && c != "hint")) {
+
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         clearLineAndGoUp();
         std::cout << "Invalid tile. Try again: ";
         std::cin >> c;
+
     }
 
     clearLineAndGoUp();
@@ -36,7 +38,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     std::cout << "Line ? ";
     std::cin >> coords.first;
 
-    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 >= board.getnLines() ||
+    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 'A' >= board.getnLines() ||
            std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
@@ -58,7 +60,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     goToXY(board.getnCols() + 30, board.getnLines() + 5);
     std::cout << "Column ? ";
     std::cin >> coords.second;
-    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 >= board.getnCols() ||
+    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 'a'>= board.getnCols() ||
            std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();

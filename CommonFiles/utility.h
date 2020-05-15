@@ -23,7 +23,7 @@ void searchFile(std::string &fileName);
 
 void printMessage(const std::string& message, unsigned colour);
 
-void goToXY(int x, int y);
+void goToXY(size_t x, size_t y);
 
 void clearLineAndGoUp();
 

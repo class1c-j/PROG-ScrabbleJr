@@ -140,7 +140,7 @@ void readWord(std::string &word) {
         break;
     }
 
-    for (int i : word) {
+    for (char &i : word) {
         i = tolower(i);
     }
 

@@ -1,25 +1,16 @@
 
 #include "Game.h"
 
+#include <utility>
+
 Game::Game() = default;
 
-Game::Game(std::vector<Player> players, Board board, Pool pool) {
+Game::Game(const std::vector<Player>& players, const Board& board, Pool pool)
 
-    _playerList = std::move(players);
+        : _playerList(players), _board(board), _pool(std::move(pool)), _currentN(0),
+        _currentP(_playerList.at(_currentN)), _nPlayers(players.size()), WIDTH(board.getnCols()),
+        HEIGHT(board.getnLines()) {
 
-    _board = std::move(board);
-
-    _pool = std::move(pool);
-
-    _currentN = 0;
-
-    _currentP = _playerList.at(_currentN);
-
-    _nPlayers = _playerList.size();
-
-    WIDTH = _board.getnCols() + 30;  // useful for padding
-
-    HEIGHT = _board.getnLines() + 3;  // useful for padding
 }
 
 
@@ -374,7 +365,7 @@ void Game::showAllHands() {
  * @brief get the width needed for padding
  * @return the width of the board
  */
-unsigned Game::getSize() {
+size_t Game::getSize() {
     return _board.getnLines();
 }
 

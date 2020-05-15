@@ -8,9 +8,8 @@
 
 Board::Board() = default;
 
-Board::Board(unsigned rows, unsigned cols) {
-    numLines = rows;
-    numCols = cols;
+Board::Board(unsigned rows, unsigned cols)
+        : numLines(rows), numCols(cols) {
 
     // resize the board vector according to the specified dimensions
     board.resize(numLines);
@@ -104,11 +103,11 @@ void Board::save(const std::string &name) {
 
 void Board::showBoard(std::ostream& stream) {
 
-    const int W = 1;  // edit to change how close together the _letters are in the board
+    const size_t W = 1;  // edit to change how close together the _letters are in the board
 
     // column _letters
     stream << "\n    ";
-    for (int i = 0; i < numCols; i++) {
+    for (size_t i = 0; i < numCols; i++) {
         stream << std::left << std::setw(W) << char(i + 97) << " ";
     }
 
@@ -136,11 +135,11 @@ void Board::showBoard(std::ostream& stream) {
 void Board::insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation) {
 
     if (orientation == 'V') {
-        for (char i = coords.first; i < coords.first + word.length(); i++) {
+        for (size_t i = coords.first; i < coords.first + word.length(); i++) {
             board.at(i).at(coords.second) = word.at(i - coords.first);
         }
     } else if (orientation == 'H') {
-        for (unsigned i = coords.second; i < coords.second + word.length(); i++) {
+        for (size_t i = coords.second; i < coords.second + word.length(); i++) {
             board.at(coords.first).at(i) = word.at(i - coords.second);
         }
     }
@@ -186,13 +185,13 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
         error = errors.at(3); // word is not in the dictionary
         check = false;
 
-    } else if (dir == 'H' && (numCols - brdC) < wLen || (dir == 'V' && (numLines - brdL) < wLen)) {
+    } else if ((dir == 'H' && (numCols - brdC) < wLen) || (dir == 'V' && (numLines - brdL) < wLen)) {
         check = false;
         error = errors.at(0);  // crosses board limits
 
     } else if (dir == 'H') {
 
-        for (unsigned i = brdC; i < brdC + wLen; i++) {
+        for (size_t i = brdC; i < brdC + wLen; i++) {
             if ((line.at(i) != '0') && (word.at(i - brdC) != line.at(i))) {
                 error = errors.at(1);  // causes bad intersection
                 check = false;
@@ -238,10 +237,10 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
         }
         for (size_t i = brdC; i < brdC + wLen; i++) {
             std::vector<char> Col = getCol(i);
-            if (check) {
+            if (i < numLines && check) {
                 char a = Col.at(i);
                 Col.at(brdL) = word.at(i - brdC);
-                int j = 0;
+                size_t j = 0;
                 while (j < numLines) {
                     std::string newWord;
                     while (Col.at(j) != '0') {
@@ -267,7 +266,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
         }
 
     } else if (dir == 'V') {
-        for (unsigned i = brdL; i < brdL + wLen; i++) {
+        for (size_t i = brdL; i < brdL + wLen; i++) {
             if ((col.at(i) != '0') && (word.at(i - brdL) != col.at(i))) {
                 error = errors.at(1);  // causes bad intersection
                 check = false;
@@ -314,7 +313,7 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
             if (check) {
                 char a = Line.at(i);
                 Line.at(brdC) = word.at(i - brdL);
-                int j = 0;
+                size_t j = 0;
                 while (j < numCols) {
                     std::string newWord;
                     while (line.at(j) != '0') {
@@ -342,11 +341,11 @@ bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, co
     return check;
 }
 
-unsigned Board::getnLines() const {
+size_t Board::getnLines() const {
     return numLines;
 }
 
-unsigned Board::getnCols() const {
+size_t Board::getnCols() const {
     return numCols;
 }
 
@@ -400,7 +399,7 @@ std::vector<char> Board::getCol(size_t col) {
 
     column.reserve(getnLines());
 
-    for (int i = 0; i < getnLines(); i++) {
+    for (size_t i = 0; i < getnLines(); i++) {
         column.push_back(board.at(i).at(col));
     }
 
@@ -410,8 +409,8 @@ std::vector<char> Board::getCol(size_t col) {
 
 
 bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, const std::string &word) const {
-    unsigned int wLen = word.size(), brdC = coords.second;
-    int i = brdC;
+    size_t wLen = word.size(), brdC = coords.second;
+    size_t i = brdC;
     while (i <= (brdC + wLen)) {
         std::string newWord;
         if (i >= 0 && i < numCols) {
@@ -429,8 +428,8 @@ bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, cons
 }
 
 bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const std::string &word) const {
-    unsigned int wLen = word.size(), brdL = coords.first;
-    unsigned i = brdL - 1;
+    size_t wLen = word.size(), brdL = coords.first;
+    size_t i = brdL - 1;
     while (i <= (brdL + wLen)) {
         std::string newWord;
         if (i >= 0 && i < numLines) {
@@ -451,9 +450,9 @@ bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const 
 std::vector<std::string> Board::getBoardWords() {
     std::vector<std::string> BoardWords;
     //get all words that are vertical
-    for (int k = 0; k < numCols; k++) {
+    for (size_t k = 0; k < numCols; k++) {
         std::vector<char> Col = getCol(k);
-        int i = 0, j = 0;
+        size_t i = 0, j = 0;
         while (i < numLines) {
             std::string newWord;
             while (Col.at(i) != '0') {
@@ -477,9 +476,9 @@ std::vector<std::string> Board::getBoardWords() {
         }
     }
     //get all words that are horizontal
-    for (int k = 0; k < numLines; k++) {
+    for (size_t k = 0; k < numLines; k++) {
         std::vector<char> Line = getLine(k);
-        int i = 0, j = 0;
+        size_t i = 0, j = 0;
         while (i < numCols) {
             std::string newWord;
             while (Line.at(i) != '0') {
@@ -506,9 +505,9 @@ std::vector<std::string> Board::getBoardWords() {
 }
 
 std::vector<char> Board::getBoardLetters() {
-    for (unsigned i = 0; i < numLines; i++) {
+    for (size_t i = 0; i < numLines; i++) {
         std::vector<char> Line = getLine(i);
-        for (int j = 0; j < numCols; j++) {
+        for (size_t j = 0; j < numCols; j++) {
             if (Line.at(j) != '0') {
                 totalLetters.push_back(Line.at(j));
             }
@@ -562,7 +561,7 @@ std::vector<std::pair<char, char> > Board::getWordsInPointStart(std::pair<char, 
 
 
     // search vertically
-    std::vector<char> currCol = getCol((int) coords.second);
+    std::vector<char> currCol = getCol((size_t) coords.second);
     std::pair<char, char> startV{};
     size_t j = coords.first;
 
@@ -600,7 +599,9 @@ int Board::finishedWord(std::pair<char, char> coords) {
     // search vertically
     std::pair<char, char> startV = getWordsInPointStart(coords).at(1);
     size_t sizeV = searchWord(startV, 'V').size();
+
     if (sizeV == 0) finishedV = false;
+
     size_t endV = startV.first + sizeV;
     for (size_t i = startV.first; i < endV; i ++) {
         if (!isPlayed({i, coords.second})) {
@@ -613,7 +614,9 @@ int Board::finishedWord(std::pair<char, char> coords) {
     // search horizontally
     std::pair<char, char> startH = getWordsInPointStart(coords).at(0);
     size_t sizeH = searchWord(startH, 'H').size();
+
     if (sizeH == 0) finishedH = false;
+
     size_t endH = startH.second + sizeH;
     for (size_t i = startH.second; i < endH; i ++) {
         if (!isPlayed({coords.first, i})) {
@@ -628,7 +631,7 @@ int Board::finishedWord(std::pair<char, char> coords) {
 
 unsigned Board::maxPlayersAllowed() {
 
-    unsigned tiles = getBoardLetters().size();
+    size_t tiles = getBoardLetters().size();
 
     if (tiles == 0) return 0;
     else if (tiles < 14) return 1;
