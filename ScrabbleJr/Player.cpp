@@ -158,7 +158,7 @@ std::string Player::getHint(const Board &board) {
     char col = coords.second;
 
     std::stringstream hint;
-    hint << "HINT: Do you have any tile to play on " << line + 'A' << col + 'a' << "? ";
+    hint << "HINT: Do you have any tile to play on " << char (line + 'A') << char(col + 'a') << "? ";
 
     return hint.str();
 }

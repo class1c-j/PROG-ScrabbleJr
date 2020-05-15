@@ -8,8 +8,8 @@ Game::Game() = default;
 Game::Game(const std::vector<Player>& players, const Board& board, Pool pool)
 
         : _playerList(players), _board(board), _pool(std::move(pool)), _currentN(0),
-        _currentP(_playerList.at(_currentN)), _nPlayers(players.size()), WIDTH(board.getnCols()),
-        HEIGHT(board.getnLines()) {
+        _currentP(_playerList.at(_currentN)), _nPlayers(players.size()), WIDTH(board.getnCols() + 30),
+        HEIGHT(board.getnLines() + 3) {
 
 }
 
@@ -25,7 +25,10 @@ void Game::nextPlayer() {
     // in case one player goes out of tiles, his turn is skipped
     while (_currentP.getHand().empty() && !isFinished()) {
 
-        //TODO: std::cout << _currentP.getName() << " has no tiles. Passing\n";
+        goToXY(WIDTH, 15);
+        clearLineAndGoUp();
+        printMessage(_currentP.getName() + " has no tiles. Press ENTER to pass ...", 0);
+
         _currentN = (_currentN + 1) % _nPlayers;
         _currentP = _playerList.at(_currentN);
 
@@ -49,15 +52,19 @@ void Game::makePlay() {
 
         if (!_pool.isEmpty()) {
 
-            printMessage(_currentP.getName() + ", Exchange 2 tiles", 0);
-
             if (_pool.getSize() == 1) {  // if there is only one tile in the pool, exchange it
 
+                printMessage(_currentP.getName() + ", Exchange 2 tiles", 0);
                 exchangeTiles();
 
             } else {  // exchange 2 tiles
 
-                for (int i = 0; i < 2; i++) exchangeTiles();
+                for (int i = 0; i < 2; i++) {
+
+                    printMessage(_currentP.getName() + ", Exchange 2 tiles", 0);
+                    exchangeTiles();
+
+                }
             }
 
         }
@@ -84,7 +91,7 @@ void Game::makePlay() {
         for (int i = 0; i < 2; i++) {
 
             goToXY(WIDTH, 15);
-            clearLineAndGoUp(); //TODO: SYSTEM AGNOSTIC
+            clearLineAndGoUp();
 
             printMessage("It's your turn, " + _currentP.getName() + ", play 2 tiles.", 0);
             playTile();
@@ -96,7 +103,7 @@ void Game::makePlay() {
     } else {
 
         goToXY(WIDTH, 15);
-        clearLineAndGoUp();  // TODO: SYSTEM AGNOSTIC
+        clearLineAndGoUp();
 
         // There are no possible plays, the player must pass
         printMessage("It's your turn, " + _currentP.getName() + ", press ENTER to pass.", 0);
