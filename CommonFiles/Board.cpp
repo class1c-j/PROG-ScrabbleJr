@@ -328,9 +328,7 @@ bool Board::checkNewWords(const std::string& word, std::pair<char, char> coords,
     size_t wLen = word.size(), brdL = coords.first, brdC = coords.second;
     size_t hLimit = (wLen + brdC);
     size_t vLimit = (wLen + brdL);
-    std::vector<char> line = getLine(brdL);
-    std::vector<char> col = getCol(brdC);
-
+    
     if (dir == 'H') {
         for (size_t i = brdC; i < hLimit; i++) {
             std::vector<char> col = getCol(i);
