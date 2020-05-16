@@ -70,9 +70,9 @@ private:
 
     bool isInDictionary(const std::string &word);
     
-    bool checkNewWord(std::vector<char> col, const char& orientation, unsigned int flag);
+    bool checkNewWord(std::vector<char> col, const char& orientation, const char& newDir);
 
-    void deleteWord(std::pair<char, char> coords, const char& orientation, std::vector<char> col);
+    void deleteTemporaryWord(std::pair<char, char> coords, const char& orientation, std::vector<char> col);
 
     bool isInBoardLimits(const std::string& word, std::pair<char, char> coords, const char& dir) const;
 
