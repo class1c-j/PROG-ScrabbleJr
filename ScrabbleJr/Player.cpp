@@ -62,9 +62,10 @@ void Player::play(char letter, std::pair<char, char> coords, Board &board) {
  */
 bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board) {
 
-    bool check;
-    size_t col = coords.second;
-    size_t line = coords.first;
+    bool check{};
+
+    size_t col = static_cast<size_t> (coords.second);
+    size_t line = static_cast<size_t> (coords.first);
 
     if (!hasTile(letter)) {
 
@@ -122,8 +123,8 @@ std::vector<std::pair<char, char> > Player::getPlayable(const Board &board) {
 
     for (const auto &tile : _hand) {
 
-        for (size_t i = 0; i < board.getnLines(); i++) {
-            for (size_t j = 0; j < board.getnCols(); j++) {
+        for (size_t i = 0; i < board.getNumLines(); i++) {
+            for (size_t j = 0; j < board.getNumCols(); j++) {
 
                 std::pair<char, char> pair = {i, j};
 
@@ -158,7 +159,7 @@ std::string Player::getHint(const Board &board) {
     char col = coords.second;
 
     std::stringstream hint;
-    hint << "HINT: Do you have any tile to play on " << char (line + 'A') << char(col + 'a') << "? ";
+    hint << "HINT: Do you have any tile to play on " << char(line + 'A') << char(col + 'a') << "? ";
 
     return hint.str();
 }

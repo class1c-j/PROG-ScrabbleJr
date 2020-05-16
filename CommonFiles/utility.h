@@ -15,8 +15,6 @@
 int windowsSetup();
 #endif
 
-void setBackgroundColor(unsigned colour);
-
 void clearScreen();
 
 void searchFile(std::string &fileName);

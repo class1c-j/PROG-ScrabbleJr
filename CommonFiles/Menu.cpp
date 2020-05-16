@@ -1,6 +1,3 @@
-//
-// Created by ritam on 27/04/20.
-//
 
 #include "Menu.h"
 #include <iostream>
@@ -10,20 +7,21 @@
 
 
 Menu::Menu(const std::string &msg, const std::string &invalid,
-           const std::map<std::string, std::function<void()>> &commands) {
-
-    message_ = msg;
-    invalidMessage_ = invalid;
-    commands_ = commands;
+           const std::map<std::string, std::function<void()>> &commands)
+           : _message(msg), _invalidMessage(invalid), _commands(commands) {
 
 }
 
+
+/**
+ * @brief shows a menu with all the options. user selects between the given numbers to call the corresponding function
+ */
 void Menu::operator()() const {
 
-    int count = 1;
+    int count = 1;  // to show the numbers of each option on the screen
 
-    std::cout << message_;
-    for (const auto &cmd : commands_) {
+    std::cout << _message;
+    for (const auto &cmd : _commands) {
         std::cout << '[' << count << ']' << " " << cmd.first << '\n';
         count++;
     }
@@ -31,9 +29,10 @@ void Menu::operator()() const {
 
     size_t choiceNum{};  // user choice number
     std::string userChoice;  // user choice name
+
     std::vector<std::string> options{};
 
-    for (const auto &i : commands_) {  // get keys from map
+    for (const auto &i : _commands) {  // get keys from map
         options.push_back(i.first);
     }
 
@@ -49,19 +48,18 @@ void Menu::operator()() const {
             } else {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << invalidMessage_;
+                std::cout << _invalidMessage;
                 std::cin >> choiceNum;
             }
         } else if (choiceNum < 1 || choiceNum > options.size()) {
-            std::cout << invalidMessage_;
+            std::cout << _invalidMessage;
             std::cin >> choiceNum;
         } else {
             break;
         }
     }
 
-
     userChoice = options.at(choiceNum - 1);
 
-    commands_.at(userChoice)();
+    _commands.at(userChoice)();
 }

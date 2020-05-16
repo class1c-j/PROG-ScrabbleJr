@@ -7,15 +7,18 @@
 #include "../CommonFiles/Menu.h"
 #include "../CommonFiles/utility.h"
 
-void loadBoard(Board &board);
-
-Game setup();
 
 void showName();
 
-void showInstructions();
+void showMainMenu(Game &game);
 
 void showMainMenu(Game &game);
+
+Game setup();
+
+void loadBoard(Board &board);
+
+
 
 int main() {
 
@@ -29,6 +32,22 @@ int main() {
 
 }
 
+/**
+ * @brief shows ASCII art of the name of the game
+ */
+void showName() {
+    std::cout << "  ___              _    _    _          _      \n"
+                 " / __| __ _ _ __ _| |__| |__| |___   _ | |_ _  \n"
+                 " \\__ \\/ _| '_/ _` | '_ \\ '_ \\ / -_) | || | '_| \n"
+                 " |___/\\__|_| \\__,_|_.__/_.__/_\\___|  \\__/|_|(_)";
+
+    std::cout << "\n\n";
+}
+
+/**
+ * @brief sets the game up, asking for the number of players and their names
+ * @return a game object containing all the needed information
+ */
 Game setup() {
 
     Board board;
@@ -66,15 +85,9 @@ Game setup() {
 
 }
 
-void showName() {
-    std::cout << "  ___              _    _    _          _      \n"
-                 " / __| __ _ _ __ _| |__| |__| |___   _ | |_ _  \n"
-                 " \\__ \\/ _| '_/ _` | '_ \\ '_ \\ / -_) | || | '_| \n"
-                 " |___/\\__|_| \\__,_|_.__/_.__/_\\___|  \\__/|_|(_)";
-
-    std::cout << "\n\n";
-}
-
+/**
+ * @brief Shows the instructions of the game
+ */
 void showInstructions() {
 
     clearScreen();
@@ -98,6 +111,11 @@ void showInstructions() {
 }
 
 
+
+/**
+ * @brief loads the board from a file
+ * @param board - the board
+ */
 void loadBoard(Board &board) {
 
     std::string boardName;
@@ -107,6 +125,11 @@ void loadBoard(Board &board) {
 
 }
 
+
+/**
+ * @brief shows a menu that lets the user start a game or view the instructions
+ * @param game
+ */
 void showMainMenu(Game &game) {
 
     clearScreen();

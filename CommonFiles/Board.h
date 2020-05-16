@@ -18,7 +18,7 @@ public:
 
     void save(const std::string &name);
 
-    void showBoard(std::ostream& stream);
+    void show(std::ostream& stream);
 
     void insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation);
 
@@ -26,17 +26,15 @@ public:
 
     bool verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir);
 
-    size_t getnLines() const;
+    size_t getNumLines() const;
 
-    size_t getnCols() const;
+    size_t getNumCols() const;
 
-    std::string getWord(std::pair<char, char> coords, const char &dir);
+    std::string getWordToRemove(std::pair<char, char> coords, const char &dir);
 
-    std::string error{};
+    std::string _error{};
 
     std::vector<std::vector<char> > getContent();
-
-    std::vector<std::string> dictWords;
 
     bool isPlayed(std::pair<char, char> coords);
 
@@ -52,11 +50,9 @@ public:
 
     int finishedWord(std::pair<char, char> coords);
 
-    std::vector<std::string> getBoardWords();
+    void saveAllWords();
 
     std::vector<char> getBoardLetters();
-
-    std::vector<char> totalLetters;
 
     unsigned maxPlayersAllowed();
 
@@ -78,7 +74,7 @@ private:
 
     void deleteWord(std::pair<char, char> coords, const char& orientation, std::vector<char> col);
 
-    bool isInBoardLimits(const std::string& word, std::pair<char, char> coords, const char& dir);
+    bool isInBoardLimits(const std::string& word, std::pair<char, char> coords, const char& dir) const;
 
     bool badIntersection(const std::string& word, std::pair<char, char> coords, const char& dir);
 
@@ -88,24 +84,28 @@ private:
 
     bool checkNewWords(const std::string& word, std::pair<char, char> coords, const char& dir);
 
-    std::set<std::string> startingPoints;
+    std::string searchWord(std::pair<char, char> coords, const char &dir);
 
-    std::vector<std::string> errors = {
+    std::vector<char> _allLetters;
+
+    std::set<std::string> _startingPoints;
+
+    std::vector<std::string> _errors = {
             "ERROR: Out of board limits\n", "ERROR: Bad intersection\n", "ERROR: Word already next to this word\n",
             "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found.",
             "WARNING: Number of existing _letters is not enough to play a game with the maximum number of players\n",
             "ERROR: Board does not have enough tiles for the desired number of players\n"
     };
 
-    size_t numLines{}, numCols{};
+    size_t _numLines{}, _numCols{};
 
-    std::set<std::string> words;
+    std::set<std::string> _wordsInfo;
 
-    std::vector<std::vector<char> > board;
+    std::vector<std::string> _dictionary;
 
-    std::vector<std::vector<char> > played;
+    std::vector<std::vector<char> > _board;
 
-    std::string searchWord(std::pair<char, char> coords, const char &dir);
+    std::vector<std::vector<char> > _played;
 
     std::string _playedColour = "\033[48;2;140;45;25m";
 

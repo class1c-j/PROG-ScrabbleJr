@@ -2,12 +2,6 @@
 #include "utility.h"
 
 
-void setBackgroundColor(unsigned colour) {
-
-    std::vector<std::string> colours = {"\033[0m", "\033[0;42m"};
-    std::cout << colours.at(colour);
-}
-
 void clearScreen() {
     std::cout << "\033[2J\033[1;1H";
 
@@ -47,7 +41,11 @@ void printMessage(const std::string& message, unsigned colour) {
     std::cout << colours.at(0);
 
 }
-
+/**
+ * @brief moves the cursor to a given position (x, y)
+ * @param x
+ * @param y
+ */
 void goToXY(size_t x, size_t y) {
     std::ostringstream oss;
     oss << "\033["<< y << ";"<< x << "H";

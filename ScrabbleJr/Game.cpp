@@ -8,8 +8,8 @@ Game::Game() = default;
 Game::Game(const std::vector<Player>& players, const Board& board, Pool pool)
 
         : _playerList(players), _board(board), _pool(std::move(pool)), _currentN(0),
-        _currentP(_playerList.at(_currentN)), _nPlayers(players.size()), WIDTH(board.getnCols() + 30),
-        HEIGHT(board.getnLines() + 3) {
+          _currentP(_playerList.at(_currentN)), _nPlayers(players.size()), _WIDTH(board.getNumCols() + 30),
+          _HEIGHT(board.getNumLines() + 3) {
 
 }
 
@@ -25,7 +25,7 @@ void Game::nextPlayer() {
     // in case one player goes out of tiles, his turn is skipped
     while (_currentP.getHand().empty() && !isFinished()) {
 
-        goToXY(WIDTH, 15);
+        goToXY(_WIDTH, 15);
         clearLineAndGoUp();
         printMessage(_currentP.getName() + " has no tiles. Press ENTER to pass ...", 0);
 
@@ -47,7 +47,7 @@ void Game::makePlay() {
 
     if (playable == 0) {
 
-        goToXY(WIDTH, 15);
+        goToXY(_WIDTH, 15);
         clearLineAndGoUp();
 
         if (!_pool.isEmpty()) {
@@ -75,7 +75,7 @@ void Game::makePlay() {
 
     if (playable == 1) {
 
-        goToXY(WIDTH, 15);
+        goToXY(_WIDTH, 15);
         clearLineAndGoUp();
 
         printMessage("It's your turn, " + _currentP.getName() + ", play 1 tile.", 0);
@@ -90,7 +90,7 @@ void Game::makePlay() {
         // place 2 tiles, take 2 tiles
         for (int i = 0; i < 2; i++) {
 
-            goToXY(WIDTH, 15);
+            goToXY(_WIDTH, 15);
             clearLineAndGoUp();
 
             printMessage("It's your turn, " + _currentP.getName() + ", play 2 tiles.", 0);
@@ -102,7 +102,7 @@ void Game::makePlay() {
 
     } else {
 
-        goToXY(WIDTH, 15);
+        goToXY(_WIDTH, 15);
         clearLineAndGoUp();
 
         // There are no possible plays, the player must pass
@@ -131,7 +131,7 @@ void Game::exchangeTiles() {
 
     while (!_currentP.hasTile(tile) || input.size() > 1) {
 
-        goToXY(WIDTH, HEIGHT + 3);
+        goToXY(_WIDTH, _HEIGHT + 3);
         clearLineAndGoUp();  // TODO: SYSTEM AGNOSTIC
 
         readLetter(input);
@@ -185,7 +185,7 @@ void Game::playTile() {
         showBoard();
         showAllHands();
 
-        goToXY(WIDTH, getSize() + 6);
+        goToXY(_WIDTH, getSize() + 6);
         clearLineAndGoUp();
 
         readLetter(input);
@@ -194,7 +194,7 @@ void Game::playTile() {
 
             giveHint();
 
-            goToXY(WIDTH, getSize() + 6);
+            goToXY(_WIDTH, getSize() + 6);
             clearLineAndGoUp();
 
             readLetter(input);
@@ -313,7 +313,7 @@ void Game::showLeaderboard() {
 void Game::showBoard() {
 
     goToXY(0, 0);
-    _board.showBoard(std::cout);
+    _board.show(std::cout);
 
 }
 
@@ -331,25 +331,25 @@ void Game::showOthersHands() {
         notPlaying.emplace_back();
     }
 
-    goToXY(WIDTH, 2);
+    goToXY(_WIDTH, 2);
     std::cout << notPlaying.at(0).getName();
-    goToXY(WIDTH, 3);
+    goToXY(_WIDTH, 3);
     if (_nPlayers >= 2) std::cout << "Score: " << notPlaying.at(0).getScore();
-    goToXY(WIDTH, 4);
+    goToXY(_WIDTH, 4);
     notPlaying.at(0).showHand();
 
-    goToXY(WIDTH, 6);
+    goToXY(_WIDTH, 6);
     std::cout << notPlaying.at(1).getName();
-    goToXY(WIDTH, 7);
+    goToXY(_WIDTH, 7);
     if (_nPlayers >= 3) std::cout << "Score: " << notPlaying.at(1).getScore();
-    goToXY(WIDTH, 8);
+    goToXY(_WIDTH, 8);
     notPlaying.at(1).showHand();
 
-    goToXY(WIDTH, 10);
+    goToXY(_WIDTH, 10);
     std::cout << notPlaying.at(2).getName();
-    goToXY(WIDTH, 11);
+    goToXY(_WIDTH, 11);
     if (_nPlayers == 4) std::cout << "Score: " << notPlaying.at(2).getScore();
-    goToXY(WIDTH, 12);
+    goToXY(_WIDTH, 12);
     notPlaying.at(2).showHand();
 
 }
@@ -361,9 +361,9 @@ void Game::showAllHands() {
 
     showOthersHands();
 
-    goToXY(2, HEIGHT + 3);
+    goToXY(2, _HEIGHT + 3);
     _currentP.showHand();
-    goToXY(2, HEIGHT + 4);
+    goToXY(2, _HEIGHT + 4);
     std::cout << "You (" << _currentP.getScore() << " points)";
 
 }
@@ -373,7 +373,7 @@ void Game::showAllHands() {
  * @return the width of the board
  */
 size_t Game::getSize() {
-    return _board.getnLines();
+    return _board.getNumLines();
 }
 
 
@@ -382,7 +382,7 @@ size_t Game::getSize() {
  */
 void Game::showPlayerError() {
 
-    goToXY(WIDTH, 15);
+    goToXY(_WIDTH, 15);
     clearLineAndGoUp();  // in case there is any other message there
 
     printMessage(_currentP.error, 1);
@@ -399,7 +399,7 @@ void Game::showPlayerError() {
  */
 void Game::giveHint() {
 
-    goToXY(WIDTH, 15);
+    goToXY(_WIDTH, 15);
     clearLineAndGoUp();  // in case there is any other message there
 
     printMessage(_currentP.getHint(_board), 3);

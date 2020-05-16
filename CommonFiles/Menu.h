@@ -15,9 +15,9 @@ public:
     void operator()() const;
 
 private:
-    std::string message_;
-    std::string invalidMessage_;
-    std::map<std::string, std::function<void()>> commands_;
+    std::string _message;
+    std::string _invalidMessage;
+    std::map<std::string, std::function<void()>> _commands;
 };
 
 

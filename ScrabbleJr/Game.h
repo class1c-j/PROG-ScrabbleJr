@@ -1,7 +1,3 @@
-//
-// Created by ritam on 05/05/20.
-//
-
 #ifndef PROGT2_GAME_H
 #define PROGT2_GAME_H
 
@@ -50,9 +46,9 @@ private:
 
     size_t _nPlayers{};
 
-    size_t WIDTH{};
+    size_t _WIDTH{};
 
-    size_t HEIGHT{};
+    size_t _HEIGHT{};
 
     void exchangeTiles();
 

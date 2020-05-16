@@ -6,8 +6,19 @@
 #include "editIO.h"
 #include "../CommonFiles/utility.h"
 
+/**
+ * @brief shows a menu with options to select between starting a board or editing an existing one
+ * @param board - the board
+ * @param running - a flag passed to allow for the menu to stop the programme
+ */
 void showMainMenu(Board board, bool &running);
 
+
+/**
+ * @brief
+ * @param board
+ * @param running
+ */
 void showEditMenu(Board &board, bool &running);
 
 void saveBoard(std::string &fileName, Board board, bool &running);
@@ -17,14 +28,18 @@ void createBoard(Board &board);
 void editBoard(Board &board);
 
 int main() {
+
     bool running = true;
-    Board board = Board();
+    Board board{};
+
     while (running) {
         showMainMenu(board, running);
     }
+
 }
 
 void showName() {
+
     std::cout << "  ___                         _     ___          _   _      _             \n"
                  " | _ )  ___   __ _   _ _   __| |   | _ )  _  _  (_) | |  __| |  ___   _ _ \n"
                  " | _ \\ / _ \\ / _` | | '_| / _` |   | _ \\ | || | | | | | / _` | / -_) | '_|\n"
@@ -91,15 +106,17 @@ void editBoard(Board &board) {
     searchFile(fileName);
     std::ifstream file(fileName);
     board = Board(file);
+
     board.readDictionary();
 
     bool running = true;
 
     while (running) {
         clearScreen();
-        board.showBoard(std::cout);
+        board.show(std::cout);
         showEditMenu(board, running);
     }
+
 }
 
 
@@ -110,16 +127,14 @@ void createBoard(Board &board) {
     board = Board(numLines, numCols);
     board.readDictionary();
 
-    std::cout << "Dic size: " << board.dictWords.size() << '\n';
-
     bool running = true;
 
     while (running) {
         clearScreen();
-        board.showBoard(std::cout);
-        if (!board.error.empty()) {  // show any error that might exist
-            printMessage(board.error, 1);
-            board.error = "";
+        board.show(std::cout);
+        if (!board._error.empty()) {  // show any error that might exist
+            printMessage(board._error, 1);
+            board._error = "";
         }
         showEditMenu(board, running);
     }
@@ -127,15 +142,13 @@ void createBoard(Board &board) {
 
 
 void saveBoard(std::string &fileName, Board board, bool &running) {
-    board.getBoardWords();
-    board.getBoardLetters();
-    printMessage(board.error, 1);
+    printMessage(board._error, 1);
     readFileName(fileName);
     std::string filePath = "../UserBoards/" + fileName;
     board.save(filePath);
     const Menu saveMenu{"File saved successfully. Do you want to quit or continue editing?\n",
                         "Invalid choice! ",
-                        {{"Main menu", [&board, &running] { running = false;}},
+                        {{"Main menu", [&running] { running = false;}},
                          {"Continue editing", [] {}}}
     };
     saveMenu();

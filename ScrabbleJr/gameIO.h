@@ -2,8 +2,6 @@
 #ifndef PROGT2_GAMEIO_H
 #define PROGT2_GAMEIO_H
 
-#endif //PROGT2_GAMEIO_H
-
 #ifdef _WIN32
 #include <windows.h>
 #include <cstdlib>
@@ -25,3 +23,5 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board);
 void readNumberPlayers(size_t &number);
 
 std::vector<std::string> readPlayersNames(size_t number);
+
+#endif //PROGT2_GAMEIO_H
