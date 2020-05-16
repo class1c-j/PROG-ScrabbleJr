@@ -214,12 +214,12 @@ void Board::removeWord(std::pair<char, char> coords, const char dir) {
 
 
 /**
- * @brief
- * @param coords
- * @param dir
- * @param sequence
+ * @brief deletes a word that was temporarily inserted to be tested
+ * @param coords - starting positions of the word
+ * @param dir - direction of the word (vertical ou horizontal)
+ * @param sequence - line/column before the word was inserted
  */
-void Board::deleteWord(std::pair<char, char> coords, const char &dir, std::vector<char> sequence) {
+void Board::deleteTemporaryWord(std::pair<char, char> coords, const char &dir, std::vector<char> sequence) {
 
     size_t brdL = coords.first, brdC = coords.second;
 
@@ -229,16 +229,16 @@ void Board::deleteWord(std::pair<char, char> coords, const char &dir, std::vecto
     if (dir == 'H') {
 
         for (size_t i = 0; i < _numCols; i++) {
-            if (sequence.at(i) != line.at(i)) {
-                _board.at(brdL).at(i) = '0';
+            if (sequence.at(i) != line.at(i)) { //compares the current line with the old line
+                _board.at(brdL).at(i) = '0';    //and deletes the letters where they are not equal
             }
         }
 
     } else if (dir == 'V') {
 
         for (size_t i = 0; i < _numLines; i++) {
-            if (sequence.at(i) != col.at(i)) {
-                _board.at(i).at(brdC) = '0';
+            if (sequence.at(i) != col.at(i)) {  //compares the current line with the old line
+                _board.at(i).at(brdC) = '0';    //and deletes the letters where they are not equal
             }
         }
 
@@ -343,62 +343,65 @@ bool Board::badIntersection(const std::string &word, std::pair<char, char> coord
 
 
 /**
- * @brief
- * @param word
- * @param coords
- * @param dir
- * @return
+ * @brief tests if the word's limits are or not valid
+ * @param word - word entered by the user
+ * @param coords - word starting positions
+ * @param dir - direction (vertical or horizontal)
+ * @return false if the limits are not valid, otherwise true
  */
-bool Board::checkWordLimits(const std::string &word, std::pair<char, char> coords, const char &dir) {
+bool Board::checkWordLimits(const std::string & word, std::pair<char, char> coords, const char& dir) {
 
     size_t wLen = word.size(), brdL = coords.first, brdC = coords.second;
+
     size_t hLimit = (wLen + brdC);
     size_t vLimit = (wLen + brdL);
+
     std::vector<char> line = getLine(brdL);
     std::vector<char> col = getCol(brdC);
+
+    bool validLimits = true;
 
     if (dir == 'H' && (brdC != 0 || (hLimit) != _numCols)) {
 
         if ((brdC == 0 && line.at(hLimit) != '0') || ((hLimit) == _numCols && line.at(brdC - 1) != '0')
             || ((brdC != 0 && (hLimit) != _numCols) && (line.at(hLimit) != '0' || line.at(brdC - 1) != '0'))) {
 
-            insertWord(word, coords, dir);
+            insertWord(word, coords, dir);  //the word is temporarily inserted in the board to be tested with its limits
             std::vector<char> newLine = getLine(brdL);
 
-            if (!checkNewWord(newLine, dir, 0)) {
-                deleteWord(coords, dir, line);
-                return false;
+            if (!checkNewWord(newLine, dir, 'H')) {
+                validLimits = false;
             }
 
-            deleteWord(coords, dir, line);
+            deleteTemporaryWord(coords, dir, line); //after testing the word is deleted
         }
 
-    } else if (dir == 'V' && (brdL != 0 || (vLimit) != _numLines)) {
+    }
+    else if (dir == 'V' && (brdL != 0 || (vLimit) != _numLines)) {
 
         if ((brdL == 0 && col.at(vLimit) != '0') || (vLimit == _numLines && col.at(brdL - 1) != '0')
             || ((brdL != 0 && (vLimit) != _numLines) && (col.at(vLimit) != '0' || col.at(brdL - 1) != '0'))) {
 
-            insertWord(word, coords, dir);
+            insertWord(word, coords, dir);  //the word is temporarily inserted in the board to be tested with its limits
             std::vector<char> newCol = getCol(brdC);
-            if (!checkNewWord(newCol, dir, 0)) {
-                deleteWord(coords, dir, col);
-                return false;
+            if (!checkNewWord(newCol, dir, 'V')) {
+                validLimits = false;
             }
-            deleteWord(coords, dir, col);
+            deleteTemporaryWord(coords, dir, col);  //after testing the word is deleted
         }
 
     }
 
-    return true;
+    return validLimits;
 }
 
 
 /**
- * @brief
- * @param word
- * @param coords
- * @param dir
- * @return
+ * @brief checks the neighborhood of the word
+ * @param word - word entered by the user
+ * @param coords - word starting positions
+ * @param dir - direction (vertical or horizontal)
+ * @return false if the neighborhood is not valid, ottherwise true
  */
 bool Board::checkWordNeighborhood(const std::string &word, std::pair<char, char> coords, const char &dir) {
 
@@ -435,41 +438,41 @@ bool Board::checkWordNeighborhood(const std::string &word, std::pair<char, char>
 
 
 /**
- * @brief
- * @param word
- * @param coords
- * @param dir
- * @return
+ * @brief checks if adding the new word an existing word is updated to a larger word and if this last is valid
+ * @param word - word entered by the user
+ * @param coords - word starting positions
+ * @param dir - word's direction (vertical or horizontal)
+ * @return false if any larger word is not valid, otherwise true
  */
-bool Board::checkNewWords(const std::string &word, std::pair<char, char> coords, const char &dir) {
-
-    //checks if adding the new word an existing word is updated to a larger word and if this last is valid
+bool Board::checkNewWords(const std::string & word, std::pair<char, char> coords, const char& dir) {
 
     size_t wLen = word.size(), brdL = coords.first, brdC = coords.second;
+
     size_t hLimit = (wLen + brdC);
     size_t vLimit = (wLen + brdL);
+
+    bool validNewWord = true;
 
     if (dir == 'H') {
         for (size_t i = brdC; i < hLimit; i++) {
             std::vector<char> col = getCol(i);
-            char saveBoardPos = col.at(brdL); //this char saves the board in a certain position
-            col.at(brdL) = word.at(i - brdC);
+            char saveBoardPos = col.at(brdL);   //this char saves the board in a certain position
+            col.at(brdL) = word.at(i - brdC);   //the board is updated with the letter of the word
 
-            if (!checkNewWord(col, dir, 1)) {
-                col.at(brdC) = saveBoardPos;
-                return false;
+            if (!checkNewWord(col, dir, 'V')) {
+                validNewWord = false;
             }
             col.at(brdC) = saveBoardPos;
         }
-    } else if (dir == 'V') {
+    }
+    else if (dir == 'V') {
         for (size_t i = brdL; i < vLimit; i++) {
             std::vector<char> line = getLine(i);
             char saveBoardPos = line.at(brdC);   //this char saves the board in a certain position
-            line.at(brdC) = word.at(i - brdL);
+            line.at(brdC) = word.at(i - brdL);  //the board is updated with the letter of the word
 
-            if (!checkNewWord(line, dir, 1)) {
-                line.at(brdC) = saveBoardPos;
-                return false;
+            if (!checkNewWord(line, dir, 'H')) {
+                validNewWord = false;
             }
             line.at(brdC) = saveBoardPos;
         }
@@ -607,11 +610,11 @@ std::vector<char> Board::getCol(size_t col) {
 
 
 /**
- * @brief
- * @param line
- * @param coords
- * @param word
- * @return
+ * @brief checks if there is already a word in the word's width range
+ * @param line - line to check
+ * @param coords - word starting positions
+ * @param word - word entered by the user
+ * @return false if there is already a word in the word's width range, otherwise true
  */
 bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, const std::string &word) const {
     unsigned int wLen = word.size(), brdC = coords.second;
@@ -632,11 +635,11 @@ bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, cons
 
 
 /**
- * @brief
- * @param col
- * @param coords
- * @param word
- * @return
+ * @brief checks if there is already a word in the word's width range
+ * @param col - column to check
+ * @param coords - word starting positions
+ * @param word - word entered by the user
+ * @return false if there is already a word in the word's width range, otherwise true
  */
 bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const std::string &word) const {
     unsigned int wLen = word.size(), brdL = coords.first;
@@ -657,24 +660,25 @@ bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const 
 
 
 /**
- * @brief
- * @param sequence
- * @param dir
- * @param flag
- * @return
+ * @brief checks if (due to crosses) new larger words are valid or not; this new words can have or not the same direction of the word (entered by the user)
+ * @param sequence - line/column to be tested
+ * @param dir - word's direction
+ * @param newDir - new word's direction (equal or not to the direction of the word entered by the user)
+ * @return false if the new word is not valid, otherwise true
  */
-bool Board::checkNewWord(std::vector<char> sequence, const char &dir, unsigned int flag) {
+bool Board::checkNewWord(std::vector<char> sequence, const char& dir, const char& newDir) {
 
-    int num{};
-    //Não fiques Noddy com estas flags; basta colocar um comentário a explicar qual a finalidade delas e acho que não há problema;
-    if ((dir == 'V' && flag == 1) || (dir == 'H' && flag == 0)) {
+    size_t num{};
+    
+    if ((dir == 'V' && newDir == 'H') || (dir == 'H' && newDir == 'H')) {
         num = _numCols;
-    } else if ((dir == 'H' && flag == 1) || (dir == 'V' && flag == 0)) {
+    }
+    else if ((dir == 'H' && newDir == 'V') || (dir == 'V' && newDir == 'V')) {
         num = _numLines;
     }
 
     for (size_t j = 0; j < num; j++) {
-        std::string newWord;
+        std::string newWord{};
         while (sequence.at(j) != '0') {
             newWord += sequence.at(j);
             if (j == num - 1) {
@@ -690,7 +694,6 @@ bool Board::checkNewWord(std::vector<char> sequence, const char &dir, unsigned i
     }
     return true;
 }
-
 
 /**
  * @brief scans the board and saves all of it's words
