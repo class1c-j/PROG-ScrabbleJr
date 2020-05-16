@@ -73,6 +73,20 @@ private:
     bool checkLine(std::vector<char> nextLine, std::pair<char, char> coords, const std::string& word) const;
 
     bool isInDictionary(const std::string &word);
+    
+    bool checkNewWord(std::vector<char> col, const char& orientation, unsigned int flag);
+
+    void deleteWord(std::pair<char, char> coords, const char& orientation, std::vector<char> col);
+
+    bool isInBoardLimits(const std::string& word, std::pair<char, char> coords, const char& dir);
+
+    bool badIntersection(const std::string& word, std::pair<char, char> coords, const char& dir);
+
+    bool checkWordLimits(const std::string& word, std::pair<char, char> coords, const char& dir);
+
+    bool checkWordNeighborhood(const std::string& word, std::pair<char, char> coords, const char& dir);
+
+    bool checkNewWords(const std::string& word, std::pair<char, char> coords, const char& dir);
 
     std::set<std::string> startingPoints;
 
