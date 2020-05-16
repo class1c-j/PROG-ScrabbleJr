@@ -666,7 +666,7 @@ bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const 
  * @param newDir - new word's direction (equal or not to the direction of the word entered by the user)
  * @return false if the new word is not valid, otherwise true
  */
-bool Board::checkNewWord(std::vector<char> sequence, const char& dir, const char& newDir) {
+bool Board::checkNewWord(std::vector<char> sequence, const char& dir, const char newDir) {
 
     size_t num{};
     
