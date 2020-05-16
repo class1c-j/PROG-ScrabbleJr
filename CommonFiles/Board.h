@@ -70,7 +70,7 @@ private:
 
     bool isInDictionary(const std::string &word);
     
-    bool checkNewWord(std::vector<char> col, const char& orientation, const char& newDir);
+    bool checkNewWord(std::vector<char> col, const char& orientation, const char newDir);
 
     void deleteTemporaryWord(std::pair<char, char> coords, const char& orientation, std::vector<char> col);
 
