@@ -170,175 +170,194 @@ void Board::removeWord(std::pair<char, char> coords, const char dir) {
     }
 }
 
-
-bool Board::verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir) {
-
-    bool check = true;
-    size_t wLen = word.size(), brdL = coords.first, brdC = coords.second;
-
+void Board::deleteWord(std::pair<char, char> coords, const char& dir, std::vector<char> sequence) {
+    
+    size_t brdL = coords.first, brdC = coords.second;
+    
     std::vector<char> line = getLine(brdL);
     std::vector<char> col = getCol(brdC);
 
-    std::cout << word << " " << isInDictionary(word) << '\n';
+    if (dir == 'H') {
+        for (size_t i = 0; i < numCols; i++) {
+            if (sequence.at(i) != line.at(i)) {
+                board.at(brdL).at(i) = '0';
+            }
+        }
+    }
+    else if (dir == 'V') {
+        for (size_t i = 0; i < numLines; i++) {
+            if (sequence.at(i) != col.at(i)) {
+                board.at(i).at(brdC) = '0';
+            }
+        }
+    }
+}
+
+/**
+Checks if it is valid to insert the word (entered by the user) in the board
+@param word - word entered by the user
+@param coords - the coordinates of the word's beginning
+@param dir - orientation of the word ('V' or 'H')
+@return false if word or word's place are not valid, otherwise true
+*/
+bool Board::verifyWord(const std::string & word, std::pair<char, char> coords, const char& dir) {
+
+    bool check = true;
 
     if (!isInDictionary(word)) {
         error = errors.at(3); // word is not in the dictionary
         check = false;
-
-    } else if ((dir == 'H' && (numCols - brdC) < wLen) || (dir == 'V' && (numLines - brdL) < wLen)) {
-        check = false;
+    }
+    else if (!isInBoardLimits(word, coords, dir)){
         error = errors.at(0);  // crosses board limits
+        check = false;
+    }
+    else if (badIntersection(word, coords, dir)) {
+        error = errors.at(1); // causes bad intersection
+        check = false;
+    }
+    else if ((!checkWordLimits(word, coords, dir)) || (!checkWordNeighborhood(word, coords, dir)) || (!checkNewWords(word, coords, dir))) {
+        error = errors.at(2);  // touches existing word
+        check = false;
+    }
+    return check;
+}
 
-    } else if (dir == 'H') {
+bool Board::isInBoardLimits(const std::string& word, std::pair<char, char> coords, const char& dir) {
+    if (dir == 'H' && (numCols - coords.second) < word.size() || (dir == 'V' && (numLines - coords.first) < word.size())) {
+        return false;
+    }
+    return true;
+}
 
-        for (size_t i = brdC; i < brdC + wLen; i++) {
-            if ((line.at(i) != '0') && (word.at(i - brdC) != line.at(i))) {
-                error = errors.at(1);  // causes bad intersection
-                check = false;
-                break;
-            }
-        }
+bool Board::badIntersection(const std::string& word, std::pair<char, char> coords, const char& dir) {
+    size_t wLen = word.size(), brdL = coords.first, brdC = coords.second;
+    size_t hLimit = (wLen + brdC); //position (column) next to the last horizontal word position
+    size_t vLimit = (wLen + brdL); //position (line) next to the last vertical word position
+    std::vector<char> line = getLine(brdL);
+    std::vector<char> col = getCol(brdC);
 
-        if (brdC != 0 || (brdC + wLen) != numCols) {
-
-            // check word's horizontal ends in the cases that they touch the board's boundaries
-            if ((brdC == 0 && line.at(brdC + wLen) != '0') || ((brdC + wLen) == numCols && line.at(brdC - 1) != '0')) {
-                error = errors.at(2);  // touches existing word
-                check = false;
-            }
-
-                // check word's horizontal ends in the cases that they don't touch the board's boundaries
-            else if ((brdC != 0 && (brdC + wLen) != numCols) &&
-                     (line.at(brdC + wLen) != '0' || line.at(brdC - 1) != '0')) {
-                error = errors.at(2);  // touches existing word
-                check = false;
-            }
-        }
-
-        // check superior and inferior neighborhoods
-        if ((brdL != 0 || (brdL + 1) != numLines) && check) {
-            if (brdL == 0) {
-                std::vector<char> nextLine = getLine(1);
-                check = checkLine(nextLine, coords, word);
-            } else if ((brdL + 1) == numLines) {
-                std::vector<char> prevLine = getLine(brdL - 1);
-                check = checkLine(prevLine, coords, word);
-            } else {
-                std::vector<char> nextLine = getLine(brdL + 1);
-                check = checkLine(nextLine, coords, word);
-                if (check) {
-                    std::vector<char> prevLine = getLine(brdL - 1);
-                    check = checkLine(prevLine, coords, word);
-                }
-            }
-            if (!check) {
-                error = errors.at(2);
-            }
-        }
-        for (size_t i = brdC; i < brdC + wLen; i++) {
-            std::vector<char> Col = getCol(i);
-            if (i < numLines && check) {
-                char a = Col.at(i);
-                Col.at(brdL) = word.at(i - brdC);
-                size_t j = 0;
-                while (j < numLines) {
-                    std::string newWord;
-                    while (Col.at(j) != '0') {
-                        newWord += Col.at(j);
-                        if (j == numLines - 1) {
-                            break;
-                        }
-                        j++;
-                    }
-                    if (newWord.size() > 1) { // word must have more than one character
-                        if (!(isInDictionary(newWord))) {
-                            check = false;
-                            break;
-                        }
-                    }
-                    j++;
-                }
-                Col.at(brdC) = a;
-                if (!check) {
-                    error = errors.at(2);
-                }
-            }
-        }
-
-    } else if (dir == 'V') {
-        for (size_t i = brdL; i < brdL + wLen; i++) {
-            if ((col.at(i) != '0') && (word.at(i - brdL) != col.at(i))) {
-                error = errors.at(1);  // causes bad intersection
-                check = false;
-                break;
-            }
-        }
-        if (brdL != 0 || (brdL + wLen) != numLines) {
-
-            // check word's vertical ends in the cases that they touch the board's boundaries
-            if ((brdL == 0 && col.at(brdL + wLen) != '0') || (brdL + wLen == numLines && col.at(brdL - 1) != '0')) {
-                error = errors.at(2);  // existing word next to this location
-                check = false;
-            }
-                // check word's vertical ends in the cases that they touch the board's boundaries
-            else if ((brdL != 0 && (brdL + wLen) != numLines) &&
-                     (col.at(brdL + wLen) != '0' || col.at(brdL - 1) != '0')) {
-                error = errors.at(2);  // existing word next to this location
-                check = false;
-            }
-        }
-
-        // check right and left neighborhoods
-        if ((brdC != 0 || ((brdC + 1) != numCols)) && check) {
-            if (brdC == 0) {
-                std::vector<char> nextCol = getCol(1);
-                check = checkCol(nextCol, coords, word);
-            } else if ((brdC + 1) == numCols) {
-                std::vector<char> prevCol = getCol(brdC - 1);
-                check = checkCol(prevCol, coords, word);
-            } else {
-                std::vector<char> nextCol = getCol(brdC + 1);
-                check = checkCol(nextCol, coords, word);
-                if (check) {
-                    std::vector<char> prevCol = getCol(brdC - 1);
-                    check = checkCol(prevCol, coords, word);
-                }
-            }
-            if (!check) {
-                error = errors.at(2);
-            }
-        }
-        for (size_t i = brdL; i < brdL + wLen; i++) {
-            std::vector<char> Line = getLine(i);
-            if (check) {
-                char a = Line.at(i);
-                Line.at(brdC) = word.at(i - brdL);
-                size_t j = 0;
-                while (j < numCols) {
-                    std::string newWord;
-                    while (line.at(j) != '0') {
-                        newWord += line.at(j);
-                        if (j == numCols - 1) {
-                            break;
-                        }
-                        j++;
-                    }
-                    if (newWord.size() > 1) { // word must have more than one character
-                        if (!(isInDictionary(newWord))) {
-                            check = false;
-                            break;
-                        }
-                    }
-                    j++;
-                }
-                Line.at(brdC) = a;
-                if (!check) {
-                    error = errors.at(2);
-                }
+    if (dir == 'H') {
+        for (size_t i = brdC; i < hLimit; i++) {
+            if ((line.at(i) != '0') && (word.at(i - brdC) != line.at(i))) { 
+                return true;
             }
         }
     }
+    else if (dir == 'V') {
+        for (unsigned i = brdL; i < vLimit; i++) {
+            if ((col.at(i) != '0') && (word.at(i - brdL) != col.at(i))) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Board::checkWordLimits(const std::string& word, std::pair<char, char> coords, const char& dir) {
+    size_t wLen = word.size(), brdL = coords.first, brdC = coords.second;
+    size_t hLimit = (wLen + brdC);
+    size_t vLimit = (wLen + brdL);
+    std::vector<char> line = getLine(brdL);
+    std::vector<char> col = getCol(brdC);
+
+    if (dir == 'H' && (brdC != 0 || (hLimit) != numCols)) {
+        if ((brdC == 0 && line.at(hLimit) != '0') || ((hLimit) == numCols && line.at(brdC - 1) != '0')
+            || ((brdC != 0 && (hLimit) != numCols) && (line.at(hLimit) != '0' || line.at(brdC - 1) != '0'))) {
+
+            insertWord(word, coords, dir);
+            std::vector<char> newLine = getLine(brdL);
+            if (!checkNewWord(newLine, dir, 0)) {
+                deleteWord(coords, dir, line);
+                return false;
+            }
+            deleteWord(coords, dir, line);
+        }
+    }
+    else if (dir == 'V' && (brdL != 0 || (vLimit) != numLines)) {
+        if ((brdL == 0 && col.at(vLimit) != '0') || (vLimit == numLines && col.at(brdL - 1) != '0')
+            || ((brdL != 0 && (vLimit) != numLines) && (col.at(vLimit) != '0' || col.at(brdL - 1) != '0'))) {
+            
+            insertWord(word, coords, dir);
+            std::vector<char> newCol = getCol(brdC);
+            if (!checkNewWord(newCol, dir, 0)) {
+                deleteWord(coords, dir, col);
+                return false;
+            }
+            deleteWord(coords, dir, col);
+        }
+    }
+    return true;
+}
+
+bool Board::checkWordNeighborhood(const std::string& word, std::pair<char, char> coords, const char& dir) {
+    
+    size_t wLen = word.size(), brdL = coords.first, brdC = coords.second;
+    bool check = true;
+
+    if (dir == 'H' && ((brdL != 0 || (brdL + 1) != numLines))) {
+        
+        if ((brdL + 1) != numLines) {
+            std::vector<char> nextLine = getLine(brdL + 1);
+            check = checkLine(nextLine, coords, word);   //if wordLine != lastLine checks the inferior nighborhood
+        }
+        if (brdL != 0 && check) {
+            std::vector<char> prevLine = getLine(brdL - 1);
+            check = checkLine(prevLine, coords, word);  //if wordLine != firstLine just checks the superior nighborhood
+        }
+    }
+
+    else if (dir == 'V' && (brdC != 0 || ((brdC + 1) != numCols))) {
+
+        if ((brdC + 1) != numCols){
+            std::vector<char> nextCol = getCol(brdC + 1);
+            check = checkCol(nextCol, coords, word);    //if wordColumn != lastColumn checks the right nighborhood
+        }
+        if (brdC != 0 && check) {
+            std::vector<char> prevCol = getCol(brdC - 1);
+            check = checkCol(prevCol, coords, word);    //if wordColumn != firsColumn checks the left nighborhood
+        }
+    }
     return check;
+}
+
+bool Board::checkNewWords(const std::string& word, std::pair<char, char> coords, const char& dir) {
+    
+    //checks if adding the new word an existing word is updated to a larger word and if this last is valid
+
+    size_t wLen = word.size(), brdL = coords.first, brdC = coords.second;
+    size_t hLimit = (wLen + brdC);
+    size_t vLimit = (wLen + brdL);
+    std::vector<char> line = getLine(brdL);
+    std::vector<char> col = getCol(brdC);
+
+    if (dir == 'H') {
+        for (size_t i = brdC; i < hLimit; i++) {
+            std::vector<char> col = getCol(i);
+            char saveBoardPos = col.at(brdL); //this char saves the board in a certain position
+            col.at(brdL) = word.at(i - brdC);
+
+            if (!checkNewWord(col, dir, 1)) {
+                col.at(brdC) = saveBoardPos;
+                return false;
+            }
+            col.at(brdC) = saveBoardPos;
+        }
+    }
+    else if (dir == 'V') {
+        for (size_t i = brdL; i < vLimit; i++) {
+            std::vector<char> line = getLine(i);
+            char saveBoardPos = line.at(brdC);   //this char saves the board in a certain position
+            line.at(brdC) = word.at(i - brdL);
+
+            if (!checkNewWord(line, dir, 1)) {
+                line.at(brdC) = saveBoardPos;
+                return false;
+            }
+            line.at(brdC) = saveBoardPos;
+        }
+    }
+    return true;
 }
 
 size_t Board::getnLines() const {
@@ -407,98 +426,117 @@ std::vector<char> Board::getCol(size_t col) {
 
 }
 
+bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, const std::string & word) const {
+    unsigned int wLen = word.size(), brdC = coords.second;
+    size_t hLimit = (wLen + brdC);
 
-bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, const std::string &word) const {
-    size_t wLen = word.size(), brdC = coords.second;
-    size_t i = brdC;
-    while (i <= (brdC + wLen)) {
+    for (size_t i = brdC-1; i <= hLimit; i++) {
         std::string newWord;
-        if (i >= 0 && i < numCols) {
-            while (line.at(i) != '0' && i <= (brdC + wLen)) {
-                newWord += line.at(i);
-                if (newWord.size() >= 2) {
-                    return false;
-                }
-                i++;
-            }
+        while (i < numCols && i>=0 && i <= hLimit && line.at(i) != '0') {
+             newWord += line.at(i);
+             if (newWord.size() >= 2) {
+                return false;
+             }
+             i++;
         }
-        i++;
     }
     return true;
 }
 
-bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const std::string &word) const {
-    size_t wLen = word.size(), brdL = coords.first;
-    size_t i = brdL - 1;
-    while (i <= (brdL + wLen)) {
+bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const std::string & word) const {
+    unsigned int wLen = word.size(), brdL = coords.first;
+    size_t vLimit = (wLen + brdL);
+ 
+    for (size_t i = brdL - 1; i <= vLimit; i++){
         std::string newWord;
-        if (i >= 0 && i < numLines) {
-            while (col.at(i) != '0' && i <= (brdL + wLen)) {
-                newWord += col.at(i);
-                if (newWord.size() >= 2) {
-                    return false;
-                }
-                i++;
+        while (i >= 0 && i < numLines && i <= vLimit && col.at(i) != '0') {
+            newWord += col.at(i);
+            if (newWord.size() >= 2) {
+                return false;
             }
+            i++;
         }
-        i++;
     }
     return true;
 }
 
+bool Board::checkNewWord(std::vector<char> sequence, const char& dir, unsigned int flag) {
+    
+    int num{};
+        //Não fiques Noddy com estas flags; basta colocar um comentário a explicar qual a finalidade delas e acho que não há problema;
+    if ((dir == 'V' && flag == 1) || (dir == 'H' && flag == 0)) {
+        num = numCols;
+    }
+    else if ((dir == 'H' && flag == 1) || (dir == 'V' && flag == 0)){
+        num = numLines;
+    }
+
+    for (size_t j = 0; j < num; j++) {
+        std::string newWord;
+        while (sequence.at(j) != '0') {
+            newWord += sequence.at(j);
+            if (j == num - 1) {
+                break;
+            }
+            j++;
+        }
+        if (newWord.size() > 1) { // word must have more than one character
+            if (!(isInDictionary(newWord))) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 std::vector<std::string> Board::getBoardWords() {
-    std::vector<std::string> BoardWords;
+    std::vector<std::string> BoardWords; //is going to contain all the words of the board
+    
     //get all words that are vertical
-    for (size_t k = 0; k < numCols; k++) {
-        std::vector<char> Col = getCol(k);
-        size_t i = 0, j = 0;
-        while (i < numLines) {
+    for (int k = 0; k < numCols; k++) { // iterate through all the columns
+        std::vector<char> col = getCol(k);
+        int startingLine{};
+        for(size_t i=0; i < numLines; i++) { // iterate through the column
             std::string newWord;
-            while (Col.at(i) != '0') {
+            while (col.at(i) != '0') { //while loop to get a word
                 if (newWord.empty()) {
-                    j = i;
+                    startingLine = i;
                 }
-                newWord += Col.at(i);
+                newWord += col.at(i);
                 if (i == numLines - 1) {
                     break;
                 }
-                else {
-                    i++;
-                }
+                i++;
             }
             if (newWord.size() > 1) { // word must have more than one character
                 BoardWords.push_back(newWord);
-                auto newCoords = std::make_pair((char)j, (char)k);
+                auto newCoords = std::make_pair((char)startingLine, (char)k);
                 saveWord(newWord, newCoords, 'V');
             }
-            i++;
         }
     }
+
     //get all words that are horizontal
-    for (size_t k = 0; k < numLines; k++) {
-        std::vector<char> Line = getLine(k);
-        size_t i = 0, j = 0;
-        while (i < numCols) {
+    for (size_t k = 0; k < numLines; k++) { //iterate through all the lines
+        std::vector<char> line = getLine(k);
+        int startingCol{};
+        for(size_t i = 0; i < numCols; i++){ //iterate through the line
             std::string newWord;
-            while (Line.at(i) != '0') {
+            while (line.at(i) != '0') { //while loop to get a word
                 if (newWord.empty()) {
-                    j = i;
+                    startingCol = i;
                 }
-                newWord += Line.at(i);
+                newWord += line.at(i);
                 if (i == numCols - 1) {
                     break;
                 }
-                else {
-                    i++;
-                }
+                i++;
             }
             if (newWord.size() > 1) { // word must have more than one character
                 BoardWords.push_back(newWord);
-                auto newCoords = std::make_pair((char)k, (char)j);
+                auto newCoords = std::make_pair((char)k, (char)startingCol);
                 saveWord(newWord, newCoords, 'H');
             }
-            i++;
         }
     }
     return BoardWords;
