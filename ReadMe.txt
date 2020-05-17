@@ -4,7 +4,7 @@
 #  Projeto 2 - Scrabble Junior                                          #
 #                                                                       #
 #  TURMA 6 - GRUPO 5                                                    #
-#  Kat (up2019piças)                                                    # 
+#  Adelaide Miranda Santos (up201907487)                                # 
 #  Rita Miguel Matos Mendes (up201907877)                               #
 #                                                                       #
 =========================================================================
@@ -73,11 +73,31 @@ of simple and robust program interfaces are also present.
    -> A menu was implemented to make it easier for the user to interact
    with the programme.
 
-   -> The ability to edit an existing board file was added
+   -> The ability to edit an existing board file was added.
+   
+   -> The ability to remove a word already inserted in the board was added.
 
 =========================================================================
    (3) - Known issues (to do)
 =========================================================================
+
+=========================================================================
+   (4) - Remarks
+=========================================================================
+
+Due to the lack of clear specification of the conditions of
+intersection of words in the project specification, we considered that:
+
+	-> words with the same orientation cannot be next to each other:
+
+	   - horizontal words cannot be inserted if there is already a
+	   word in the previous or next lines in the word's width range.
+	   - vertical words cannot be inserted if there is already a word
+	   in the previous or next columns in the word's width range.
+
+	-> when inserting a word a new larger word is allowed to be formed,
+	either vertically or horizontally if it is valid.
+
 
 =========================================================================
 || SCRABBLE JR                                                         ||
