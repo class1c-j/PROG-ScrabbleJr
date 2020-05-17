@@ -2,6 +2,7 @@
 #include "editIO.h"
 #include <limits>
 #include <iostream>
+#include <ios>
 #define NOMINMAX
 
 #ifdef _WIN32  // Windows compatibility
@@ -15,7 +16,7 @@
  * @param lines - the number of lines chosen
  * @param cols  - the number of columns chosen
  */
-void readDimensions(unsigned &lines, unsigned &cols) {
+void readDimensions(unsigned& lines, unsigned& cols) {
 
     std::cout << "Number of lines ? ";
     std::cin >> lines;
@@ -25,16 +26,18 @@ void readDimensions(unsigned &lines, unsigned &cols) {
         if (std::cin.fail() || std::cin.peek() != '\n') {
             if (std::cin.eof()) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "User chose to close the input.\n";
-            } else {
+                std::cout << "Please enter the number of lines again: ";
+            }
+            else {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Failed to read number. Try again: ";
-                std::cin >> lines;
             }
+            std::cin >> lines;
 
-        } else {
+        }
+        else {
 
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -51,17 +54,17 @@ void readDimensions(unsigned &lines, unsigned &cols) {
         if (std::cin.fail() || std::cin.peek() != '\n') {
             if (std::cin.eof()) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "User chose to close the input.\n";
-                break;
-            } else {
+                std::cout << "Please enter the number of columns again: ";
+            }
+            else {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Failed to read number. Try again: ";
-                std::cin >> cols;
             }
-
-        } else {
+            std::cin >> cols;
+        }
+        else {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "That is not a valid number of columns. Remember, maximum allowed is 20. Try again: ";
@@ -69,44 +72,46 @@ void readDimensions(unsigned &lines, unsigned &cols) {
         }
     }
 }
-
 /**
  * @brief reads and validates the starting position of the word
  * @param coords - the coordinates of the starting position
  * @param board - the board (used to validate according to the dimensions)
  */
-void readCoordinates(std::pair<char, char> &coords, const Board &board) {
+void readCoordinates(std::pair<char, char>& coords, const Board& board) {
 
     std::cout << "Starting position line ? ";
     std::cin >> coords.first;
 
     while (std::cin.fail() || !isalpha(coords.first) || coords.first - 65 >= board.getNumLines() ||
-           std::cin.peek() != '\n') {
+        std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "User chose to close input.\n";
-            break;
-        } else {
-            std::cout << "Invalid line choice. Try again: ";
-            std::cin >> coords.first;
+            std::cout << "Please enter the starting position line again: ";
         }
+        else {
+            std::cout << "Invalid line choice. Try again: ";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        std::cin >> coords.first;
     }
 
     std::cout << "Starting position column ? ";
     std::cin >> coords.second;
     while (std::cin.fail() || !isalpha(coords.second) || coords.second - 97 >= board.getNumCols() ||
-           std::cin.peek() != '\n') {
+        std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "User chose to close input.\n";
-            break;
-        } else {
-            std::cout << "Invalid column choice. Try again: ";
-            std::cin >> coords.second;
+            std::cout << "Please enter the starting position column again: ";
         }
-
+        else {
+            std::cout << "Invalid column choice. Try again: ";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        std::cin >> coords.second;
     }
 
     coords.first -= 'A';
@@ -115,37 +120,35 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
 
 }
 
-
 /**
  * @brief reads and validates the direction of the word
  * @param orientation the direction of the word
  */
-void readOrientation(char &orientation) {
+void readOrientation(char& orientation) {
 
     std::cout << "Orientation ? ";
     std::cin >> orientation;
     while (std::cin.fail() || (orientation != 'V' && orientation != 'H') || std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "User chose to close input.\n";
-            break;
-        } else {
+            std::cout << "Please enter the orientation again: ";
+        }
+        else {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid orientation. Insert V for vertical or H for horizontal. Try again: ";
-            std::cin >> orientation;
         }
+        std::cin >> orientation;
     }
 
 }
-
 
 /**
  * @brief reads and validates the word introduced by the user
  * @param word - the word
  */
-void readWord(std::string &word) {
+void readWord(std::string& word) {
     std::cout << "Word ? ";
     std::cin >> word;
 
@@ -154,15 +157,15 @@ void readWord(std::string &word) {
         while (std::cin.fail() || std::cin.peek() != '\n') {
             if (std::cin.eof()) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "User chose to close input.\n";
-                break;
-            } else {
+                std::cout << "Please enter the word again: ";
+            }
+            else {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Invalid input. Remember, your word must not have any spaces. Try again: ";
-                std::cin >> word;
             }
+            std::cin >> word;
         }
         for (const char i : word) {
             if (!isalpha(i)) {
@@ -173,11 +176,12 @@ void readWord(std::string &word) {
         break;
     }
 
-    for (char &i : word) {
+    for (char& i : word) {
         i = tolower(i);
     }
 
 }
+
 
 
 /**
