@@ -11,104 +11,125 @@
 
 class Board {
 public:
+
+    // constructors
+
     Board();
 
     Board(unsigned lines, unsigned cols);
 
     explicit Board(std::ifstream &file);
 
-    void readDictionary();
+    // get (and other methods that transmit information about the board's state)
 
-    void save(const std::string &name);
+    size_t getNumberLines() const;
 
-    void show(std::ostream& stream);
+    size_t getNumberCols() const;
+
+    char getLetter(std::pair<char, char> coords);
+
+    bool isFinished();
+
+    int getNumberOfCompletedWordsByPlay(std::pair<char, char> coords);
+
+    bool isPlayed(std::pair<char, char> coords);
+
+    std::pair<char, char> getFirstFreeHorizontal(std::pair<char, char> coords);
+
+    std::pair<char, char> getFirstFreeVertical(std::pair<char, char> coords);
+
+    std::vector<std::pair<char, char>> getStartOfWordsInPoint(std::pair<char, char> coords);
+
+    std::vector<char> getAllLetters();
+
+    unsigned getMaxPlayersAllowed();
+
+    // set (and other methods that alter the board's state)
+
+    void setPlayed(std::pair<char, char> coords);
 
     void insertWord(const std::string &word, std::pair<char, char> coords, const char &orientation);
 
     void removeWord(std::pair<char, char>, char dir);
 
+    void readDictionary();
+
+    // show (and other methods related to representations of the board)
+
+    void save(const std::string &name);
+
+    void show(std::ostream& stream);
+
+    // processing
+
     bool verifyWord(const std::string &word, std::pair<char, char> coords, const char &dir);
 
-    size_t getNumLines() const;
-
-    size_t getNumCols() const;
-
-    std::string getWordToRemove(std::pair<char, char> coords, const char &dir);
+    // data
 
     std::string _error{};
 
-    std::vector<std::vector<char> > getContent();
+private:
 
-    bool isPlayed(std::pair<char, char> coords);
-
-    void setPlayed(std::pair<char, char> coords);
+    // get (and other methods that transmit information about the board's state)
 
     std::vector<char> getLine(size_t line);
 
-    std::vector<char> getCol(size_t col);
+    std::vector<char> getCol(size_t column);
 
-    std::vector<std::pair<char, char>> getWordsInPointStart(std::pair<char, char> coords);
+    std::string getWordToRemove(std::pair<char, char> coords, const char &dir);
 
-    bool isFinished();
+    std::string searchWord(std::pair<char, char> coords, const char &direction);
 
-    int finishedWord(std::pair<char, char> coords);
+    // set (and other methods that alter the board's state)
 
     void saveAllWords();
 
-    std::vector<char> getBoardLetters();
-
-    unsigned maxPlayersAllowed();
-
-    std::pair<char, char> getFirstNotPlayedH(std::pair<char, char> coords);
-
-    std::pair<char, char> getFirstNotPlayedV(std::pair<char, char> coords);
-
-private:
-
     void saveWord(const std::string &word, std::pair<char, char>, const char &orientation);
 
-    bool checkCol(std::vector<char> col, std::pair<char, char> coords, const std::string& word) const;
+    // processing
 
-    bool checkLine(std::vector<char> nextLine, std::pair<char, char> coords, const std::string& word) const;
+    bool isValidVerticalNeighborhood(std::vector<char> col, std::pair<char, char> coords, const std::string& word) const;
+
+    bool isValidHorizontalNeighborhood(std::vector<char> line, std::pair<char, char> coords, const std::string& word) const;
 
     bool isInDictionary(const std::string &word);
     
-    bool checkNewWord(std::vector<char> col, const char& orientation, const char newDir);
+    bool isValidAddition(std::vector<char> sequence, const char& existingWordDirection, char newWordDirection);
 
-    void deleteTemporaryWord(std::pair<char, char> coords, const char& orientation, std::vector<char> col);
+    void removeTemporaryWord(std::pair<char, char> coords, const char& dir, std::vector<char> sequence);
 
     bool isInBoardLimits(const std::string& word, std::pair<char, char> coords, const char& dir) const;
 
     bool badIntersection(const std::string& word, std::pair<char, char> coords, const char& dir);
 
-    bool checkWordLimits(const std::string& word, std::pair<char, char> coords, const char& dir);
+    bool validWordLimits(const std::string& word, std::pair<char, char> coords, const char& dir);
 
-    bool checkWordNeighborhood(const std::string& word, std::pair<char, char> coords, const char& dir);
+    bool validWordNeighborhood(const std::string& word, std::pair<char, char> coords, const char& dir);
 
-    bool checkNewWords(const std::string& word, std::pair<char, char> coords, const char& dir);
+    bool causesValidWordAdditions(const std::string& word, std::pair<char, char> coords, const char& dir);
 
-    std::string searchWord(std::pair<char, char> coords, const char &dir);
+    // data
 
-    std::vector<char> _allLetters;
+    std::vector<char> m_allLetters;
 
-    std::set<std::string> _startingPoints;
+    std::set<std::string> m_startingPoints;
 
-    std::vector<std::string> _errors = {
+    std::vector<std::string> m_errors = {
             "ERROR: Out of board limits\n", "ERROR: Bad intersection\n", "ERROR: Word already next to this word\n",
             "ERROR: Word not on dictionary\n", "ERROR: No word to be removed\n", "ERROR: Dictionary not found.",
             "WARNING: Number of existing _letters is not enough to play a game with the maximum number of players\n",
             "ERROR: Board does not have enough tiles for the desired number of players\n"
     };
 
-    size_t _numLines{}, _numCols{};
+    size_t m_numLines{}, m_numCols{};
 
-    std::set<std::string> _wordsInfo;
+    std::set<std::string> m_wordsInfo;
 
-    std::vector<std::string> _dictionary;
+    std::vector<std::string> m_dictionary;
 
-    std::vector<std::vector<char> > _board;
+    std::vector<std::vector<char> > m_board;
 
-    std::vector<std::vector<char> > _played;
+    std::vector<std::vector<char> > m_played;
 
 };
 
