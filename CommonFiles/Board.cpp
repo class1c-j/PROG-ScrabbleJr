@@ -477,7 +477,7 @@ bool Board::checkNewWords(const std::string & word, std::pair<char, char> coords
             line.at(brdC) = saveBoardPos;
         }
     }
-    return true;
+    return validNewWord;
 }
 
 
