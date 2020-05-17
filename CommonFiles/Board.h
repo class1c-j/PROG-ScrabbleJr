@@ -2,6 +2,9 @@
 #ifndef PROGT2_BOARD_H
 #define PROGT2_BOARD_H
 
+#define _ENGINEERING "\033[48;2;140;45;25m"
+#define _DEFAULT "\033[39;49m"
+
 #include <fstream>
 #include <vector>
 #include <set>
@@ -107,9 +110,6 @@ private:
 
     std::vector<std::vector<char> > _played;
 
-    std::string _playedColour = "\033[48;2;140;45;25m";
-
-    std::string _noColour = "\033[39;49m";
 };
 
 #endif //PROGT2_BOARD_H

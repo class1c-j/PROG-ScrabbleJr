@@ -139,17 +139,22 @@ void showMainMenu(Game &game) {
     const Menu mainMenu{"Welcome to Scrabble Jr. Here you can play this game alone or with friends.\n",
                         "Invalid choice! ",
                         {{"New game", [&game] {
+
                             game = setup();
                             clearScreen();
                             game.showBoard();
-                            game.showAllHands();
+                            game.showAllPlayersInfo();
+
                             while (!game.isFinished()) {
+
                                 goToXY(game.getSize() + 30, game.getSize() + 5);
                                 game.makePlay();
                                 game.nextPlayer();
                             }
+
                             game.showLeaderboard();
                             std::cin.ignore();
+
                         }}, {"Show Instructions", [] {
                             showInstructions();
                             std::cin.ignore();

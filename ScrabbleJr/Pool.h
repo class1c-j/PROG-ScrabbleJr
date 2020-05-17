@@ -15,23 +15,30 @@
 class Pool {
 public:
 
+    // constructors
+
     Pool();
 
     explicit Pool(Board board);
 
-    void dealHand(unsigned tiles, Player &player);
-
-    void addTile(char tile);
+    // gets
 
     bool isEmpty();
 
     size_t getSize();
 
+    // sets and methods that change the object
+
+    void dealHand(unsigned tiles, Player &player);
+
+    void addTile(char tile);
+
+
 private:
 
     void shuffle();
 
-    std::vector<char> _letters;
+    std::vector<char> m_letters;
 };
 
 

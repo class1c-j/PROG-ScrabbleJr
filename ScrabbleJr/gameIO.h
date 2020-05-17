@@ -16,7 +16,7 @@
 #include "../CommonFiles/Board.h"
 #include "../CommonFiles/utility.h"
 
-void readLetter(std::string &c);
+void readLetter(std::string &c, size_t horizontalPadding, size_t verticalPadding);
 
 void readCoordinates(std::pair<char, char> &coords, const Board &board);
 

@@ -1,67 +1,103 @@
 
 #include "Game.h"
 
-#include <utility>
-
 Game::Game() = default;
 
-Game::Game(const std::vector<Player>& players, const Board& board, Pool pool)
-
-        : _playerList(players), _board(board), _pool(std::move(pool)), _currentN(0),
-          _currentP(_playerList.at(_currentN)), _nPlayers(players.size()), _WIDTH(board.getNumCols() + 30),
-          _HEIGHT(board.getNumLines() + 3) {
+Game::Game(const std::vector<Player> &players, const Board &board, Pool pool)
+        : m_playerList(players), m_board(board), m_pool(std::move(pool)), m_currentN(0),
+          m_currentP(m_playerList.at(m_currentN)), m_nPlayers(players.size()), m_width(board.getNumCols() + 30),
+          m_height(board.getNumLines() + 3) {
 
 }
 
+//======================================================================================================================
+/**
+ * @brief get the width needed for padding
+ * @return the width of the board
+ */
+size_t Game::getSize() {
+    return m_board.getNumLines();
+}
 
+//======================================================================================================================
+/**
+ * @brief check is the game is finished
+ * @return true if the game has ended, false otherwise
+ */
+bool Game::isFinished() {
+    return m_board.isFinished();
+}
+
+//======================================================================================================================
 /**
  * @brief calculates and sets the next player to play
  */
 void Game::nextPlayer() {
 
-    _currentN = (_currentN + 1) % _nPlayers;
-    _currentP = _playerList.at(_currentN);
+    m_currentN = (m_currentN + 1) % m_nPlayers;
+    m_currentP = m_playerList.at(m_currentN);
 
     // in case one player goes out of tiles, his turn is skipped
-    while (_currentP.getHand().empty() && !isFinished()) {
+    while (m_currentP.getHand().empty() && !isFinished()) {
 
-        goToXY(_WIDTH, 15);
+        goToXY(m_width, 15);
         clearLineAndGoUp();
-        printMessage(_currentP.getName() + " has no tiles. Press ENTER to pass ...", 0);
+        printMessage(m_currentP.getName() + " has no tiles. Press ENTER to pass ...", 0);
 
-        _currentN = (_currentN + 1) % _nPlayers;
-        _currentP = _playerList.at(_currentN);
+        std::cin.ignore();
+
+        m_currentN = (m_currentN + 1) % m_nPlayers;
+        m_currentP = m_playerList.at(m_currentN);
 
     }
 
 }
 
+//======================================================================================================================
+/**
+ * @brief gets a vector with all the winners
+ * @return all of the winners of a scrabble game
+ */
+std::vector<Player> Game::getWinners() {
 
+    size_t bestScore = m_playerList.at(0).getScore();
+
+    std::vector<Player> winners{};
+
+    for (const auto &player : m_playerList) {
+        if (player.getScore() == bestScore) winners.push_back(player);
+    }
+
+    return winners;
+
+}
+
+//======================================================================================================================
 /**
  * @brief makes a play taking into consideration how many tiles can be played and updates the player state
  */
 void Game::makePlay() {
 
-    size_t playable = _currentP.getPlayable(_board).size();  // count with the possible plays
+    size_t playable = m_currentP.getPlayable(m_board).size();  // count with the possible plays
 
 
     if (playable == 0) {
 
-        goToXY(_WIDTH, 15);
+        goToXY(m_width, 15);
         clearLineAndGoUp();
 
-        if (!_pool.isEmpty()) {
+        if (!m_pool.isEmpty()) {
 
-            if (_pool.getSize() == 1) {  // if there is only one tile in the pool, exchange it
+            if (m_pool.getSize() == 1) {  // if there is only one tile in the pool, exchange it
 
-                printMessage(_currentP.getName() + ", Exchange 2 tiles", 0);
+                printMessage(m_currentP.getName() + ", exchange 2 tiles", 0);
                 exchangeTiles();
 
             } else {  // exchange 2 tiles
 
                 for (int i = 0; i < 2; i++) {
 
-                    printMessage(_currentP.getName() + ", Exchange 2 tiles", 0);
+                    printMessage(m_currentP.getName() + ", exchange 2 tiles", 0);
                     exchangeTiles();
 
                 }
@@ -71,18 +107,18 @@ void Game::makePlay() {
     }
 
     // after the exchange, the player might be able to play, so the count is updated
-    playable = _currentP.getPlayable(_board).size();
+    playable = m_currentP.getPlayable(m_board).size();
 
     if (playable == 1) {
 
-        goToXY(_WIDTH, 15);
+        goToXY(m_width, 15);
         clearLineAndGoUp();
 
-        printMessage("It's your turn, " + _currentP.getName() + ", play 1 tile.", 0);
+        printMessage("It's your turn, " + m_currentP.getName() + ", play 1 tile.", 0);
 
         // place 1 tile, take 1 tile
         playTile();
-        _pool.dealHand(1, _currentP);
+        m_pool.dealHand(1, m_currentP);
 
     } else if (playable >= 2) {
 
@@ -90,33 +126,33 @@ void Game::makePlay() {
         // place 2 tiles, take 2 tiles
         for (int i = 0; i < 2; i++) {
 
-            goToXY(_WIDTH, 15);
+            goToXY(m_width, 15);
             clearLineAndGoUp();
 
-            printMessage("It's your turn, " + _currentP.getName() + ", play 2 tiles.", 0);
+            printMessage("It's your turn, " + m_currentP.getName() + ", play 2 tiles.", 0);
             playTile();
 
         }
 
-        _pool.dealHand(2, _currentP);
+        m_pool.dealHand(2, m_currentP);
 
     } else {
 
-        goToXY(_WIDTH, 15);
+        goToXY(m_width, 15);
         clearLineAndGoUp();
 
         // There are no possible plays, the player must pass
-        printMessage("It's your turn, " + _currentP.getName() + ", press ENTER to pass.", 0);
+        printMessage("It's your turn, " + m_currentP.getName() + ", press ENTER to pass.", 0);
         std::cin.ignore();
 
     }
 
     // update player state
-    _playerList.at(_currentN) = _currentP;
+    m_playerList.at(m_currentN) = m_currentP;
 
 }
 
-
+//======================================================================================================================
 /**
  * @brief exchanges a player's tile for a new one in case he has no possible plays and the pool is not empty
  * and updates the player state
@@ -127,26 +163,25 @@ void Game::exchangeTiles() {
     char tile{};
 
     showBoard();
-    showAllHands();
+    showAllPlayersInfo();
 
-    while (!_currentP.hasTile(tile) || input.size() > 1) {
+    while (!m_currentP.hasTile(tile) || input.size() > 1) {
 
-        goToXY(_WIDTH, _HEIGHT + 3);
-        clearLineAndGoUp();  // TODO: SYSTEM AGNOSTIC
+        goToXY(m_width, m_height + 3);
+        clearLineAndGoUp();
 
-        readLetter(input);
+        readLetter(input, m_width, m_height + 3);
         while (input == "hint") {
 
-            readLetter(input); // hints are not allowed in this phase
+            readLetter(input, m_width, m_height + 3); // hints are not allowed in this phase
 
         }
 
         tile = input.front();
 
-        if (!_currentP.hasTile(tile)) {
+        if (!m_currentP.hasTile(tile)) {
 
-            // FIXME: aaaaaaa
-            printMessage("You do not have that tile", 1);
+            showPlayerError();
 
         } else {
 
@@ -156,21 +191,21 @@ void Game::exchangeTiles() {
 
     }
 
-    _currentP.removeTile(tile);  // take the tile from the player
-    _pool.addTile(tile);        // add the tile to the pool
+    m_currentP.removeTile(tile);  // take the tile from the player
+    m_pool.addTile(tile);        // add the tile to the pool
 
-    _pool.dealHand(1, _currentP);  // give a new tile to the player
+    m_pool.dealHand(1, m_currentP);  // give a new tile to the player
 
     clearScreen();
     showBoard();
-    showAllHands();
+    showAllPlayersInfo();
 
     // update player state
-    _playerList.at(_currentN) = _currentP;
+    m_playerList.at(m_currentN) = m_currentP;
 
 }
 
-
+//======================================================================================================================
 /**
  * @brief plays a tile
  */
@@ -180,33 +215,35 @@ void Game::playTile() {
     char tile{};
     std::pair<char, char> coords{};
 
-    while (!_currentP.isValidMove(tile, coords, _board)) {
+    while (!m_currentP.isValidMove(tile, coords, m_board)) {
 
         showBoard();
-        showAllHands();
+        showAllPlayersInfo();
 
-        goToXY(_WIDTH, getSize() + 6);
+        goToXY(m_width, getSize() + 6);
         clearLineAndGoUp();
 
-        readLetter(input);
+        readLetter(input, m_width, m_height + 3);
 
         while (input == "hint") {
 
-            giveHint();
+            showHint();
 
-            goToXY(_WIDTH, getSize() + 6);
+            goToXY(m_width, getSize() + 6);
             clearLineAndGoUp();
 
-            readLetter(input);
+            readLetter(input, m_width, m_height + 3);
 
         }
 
-        readCoordinates(coords, _board);
+        readCoordinates(coords, m_board);
 
         tile = input.at(0);
 
-        if (!_currentP.isValidMove(tile, coords, _board)) {
-            showPlayerError();  // FIXME make this better
+        if (!m_currentP.isValidMove(tile, coords, m_board)) {
+
+            showPlayerError();
+
         } else {
             break;
         }
@@ -214,40 +251,114 @@ void Game::playTile() {
     }
 
 
-    _currentP.play(tile, coords, _board);
+    m_currentP.play(tile, coords, m_board);
 
     // check if the played scored
-    for (int i = 0; i < _board.finishedWord(coords); i++) {
-        _currentP.incrementScore();
+    for (int i = 0; i < m_board.finishedWord(coords); i++) {
+        m_currentP.incrementScore();
     }
-
 
     clearScreen();
     showBoard();
-    showAllHands();
+    showAllPlayersInfo();
 
     // update player state
-    _playerList.at(_currentN) = _currentP;
+    m_playerList.at(m_currentN) = m_currentP;
 
 }
 
-
+//======================================================================================================================
 /**
- * @brief check is the game is finished
- * @return true if the game has ended, false otherwise
+ * @brief shows the board on the intended position
  */
-bool Game::isFinished() {
-    return _board.isFinished();
+void Game::showBoard() {
+
+    goToXY(0, 0);
+    m_board.show(std::cout);
+
 }
 
+//======================================================================================================================
+/**
+ * @brief shows all hands, scores and names
+ */
+void Game::showAllPlayersInfo() {
 
+    std::vector<Player> notPlaying{};
+    for (unsigned long i = 0; i < m_nPlayers; i++) {
+        if (i != m_currentN) notPlaying.push_back(m_playerList.at(i));
+    }
+    while (notPlaying.size() != 3) {
+        notPlaying.emplace_back();
+    }
+
+    goToXY(m_width, 2);
+    std::cout << notPlaying.at(0).getName();
+    goToXY(m_width, 3);
+    if (m_nPlayers >= 2) std::cout << "Score: " << notPlaying.at(0).getScore();
+    goToXY(m_width, 4);
+    notPlaying.at(0).showHand();
+
+    goToXY(m_width, 6);
+    std::cout << notPlaying.at(1).getName();
+    goToXY(m_width, 7);
+    if (m_nPlayers >= 3) std::cout << "Score: " << notPlaying.at(1).getScore();
+    goToXY(m_width, 8);
+    notPlaying.at(1).showHand();
+
+    goToXY(m_width, 10);
+    std::cout << notPlaying.at(2).getName();
+    goToXY(m_width, 11);
+    if (m_nPlayers == 4) std::cout << "Score: " << notPlaying.at(2).getScore();
+    goToXY(m_width, 12);
+    notPlaying.at(2).showHand();
+
+    goToXY(2, m_height + 3);
+    m_currentP.showHand();
+    goToXY(2, m_height + 4);
+    std::cout << "You (" << m_currentP.getScore() << " points)";
+
+}
+
+//======================================================================================================================
+/**
+ * @brief shows a Player's error (bad move) in the reserved place for that
+ */
+void Game::showPlayerError() {
+
+    goToXY(m_width, 15);
+    clearLineAndGoUp();  // in case there is any other message there
+
+    printMessage(m_currentP.error, 1);
+    m_currentP.error = "";  // the error was shown, so it's state is reset
+
+    showBoard();  // clearing the line may clear part of the board
+
+}
+
+//======================================================================================================================
+/**
+ * @brief gives a hint
+ */
+void Game::showHint() {
+
+    goToXY(m_width, 15);
+    clearLineAndGoUp();  // in case there is any other message there
+
+    printMessage(m_currentP.getHint(m_board), 3);
+
+    showBoard();  // clearing the line may clear part of the board
+
+}
+
+//======================================================================================================================
 /**
  * @brief show a leaderboard and som ascii art as an end screen after the board is finished
  */
 void Game::showLeaderboard() {
 
     clearScreen();
-    std::sort(_playerList.begin(), _playerList.end(), std::greater<>());
+    std::sort(m_playerList.begin(), m_playerList.end(), std::greater<>());
 
     std::cout << " __| |____________________________________________| |__\n"
                  "(__   ____________________________________________   __)\n"
@@ -256,40 +367,40 @@ void Game::showLeaderboard() {
                  "   | |                                            | |\n";
     std::cout << "   | |  ";
 
-    if (_nPlayers >= 1)
-        std::cout << std::setw(37) << std::left << _playerList.at(0).getName() << std::setfill('0') << std::right
+    if (m_nPlayers >= 1)
+        std::cout << std::setw(37) << std::left << m_playerList.at(0).getName() << std::setfill('0') << std::right
                   << std::setw(2)
-                  << _playerList.at(0).getScore() << std::setfill(' ');
+                  << m_playerList.at(0).getScore() << std::setfill(' ');
 
     else std::cout << std::setw(39) << " ";
 
     std::cout << "   | |\n";
     std::cout << "   | |  ";
 
-    if (_nPlayers >= 2)
-        std::cout << std::setw(37) << std::left << _playerList.at(1).getName() << std::setfill('0') << std::right
+    if (m_nPlayers >= 2)
+        std::cout << std::setw(37) << std::left << m_playerList.at(1).getName() << std::setfill('0') << std::right
                   << std::setw(2)
-                  << _playerList.at(1).getScore() << std::setfill(' ');
+                  << m_playerList.at(1).getScore() << std::setfill(' ');
 
     else std::cout << std::setw(39) << " ";
 
     std::cout << "   | |\n";
     std::cout << "   | |  ";
 
-    if (_nPlayers >= 3)
-        std::cout << std::setw(37) << std::left << _playerList.at(2).getName() << std::setfill('0') << std::right
+    if (m_nPlayers >= 3)
+        std::cout << std::setw(37) << std::left << m_playerList.at(2).getName() << std::setfill('0') << std::right
                   << std::setw(2)
-                  << _playerList.at(2).getScore() << std::setfill(' ');
+                  << m_playerList.at(2).getScore() << std::setfill(' ');
 
     else std::cout << std::setw(39) << " ";
 
     std::cout << "   | |\n";
     std::cout << "   | |  ";
 
-    if (_nPlayers >= 4)
-        std::cout << std::setw(37) << std::left << _playerList.at(3).getName() << std::setfill('0') << std::right
+    if (m_nPlayers >= 4)
+        std::cout << std::setw(37) << std::left << m_playerList.at(3).getName() << std::setfill('0') << std::right
                   << std::setw(2)
-                  << _playerList.at(3).getScore() << std::setfill(' ');
+                  << m_playerList.at(3).getScore() << std::setfill(' ');
 
     else std::cout << std::setw(39) << " ";
 
@@ -301,109 +412,20 @@ void Game::showLeaderboard() {
                  "(__   ____________________________________________   __)\n"
                  "   | |                                            | |\n\n";
 
+    if (getWinners().size() == 1) std::cout << getWinners().at(0).getName() << " won. Congrats!\n";
+
+    else {
+
+        std::cout << "This game ended in a tie. Congrats to ";
+        for (const auto &winner : getWinners()) {
+            std::cout << winner.getName() << " ";
+        }
+        std::cout << "!\n";
+    }
 
     std::cout << "Thanks for playing this game. Press ENTER to go back to the main menu\n";
     std::cin.ignore();
 
 }
 
-/**
- * @brief shows the board on the intended position
- */
-void Game::showBoard() {
-
-    goToXY(0, 0);
-    _board.show(std::cout);
-
-}
-
-/**
- * @brief shows info about the players who are not currently playing on the side
- */
-void Game::showOthersHands() {
-
-
-    std::vector<Player> notPlaying{};
-    for (unsigned long i = 0; i < _nPlayers; i++) {
-        if (i != _currentN) notPlaying.push_back(_playerList.at(i));
-    }
-    while (notPlaying.size() != 3) {
-        notPlaying.emplace_back();
-    }
-
-    goToXY(_WIDTH, 2);
-    std::cout << notPlaying.at(0).getName();
-    goToXY(_WIDTH, 3);
-    if (_nPlayers >= 2) std::cout << "Score: " << notPlaying.at(0).getScore();
-    goToXY(_WIDTH, 4);
-    notPlaying.at(0).showHand();
-
-    goToXY(_WIDTH, 6);
-    std::cout << notPlaying.at(1).getName();
-    goToXY(_WIDTH, 7);
-    if (_nPlayers >= 3) std::cout << "Score: " << notPlaying.at(1).getScore();
-    goToXY(_WIDTH, 8);
-    notPlaying.at(1).showHand();
-
-    goToXY(_WIDTH, 10);
-    std::cout << notPlaying.at(2).getName();
-    goToXY(_WIDTH, 11);
-    if (_nPlayers == 4) std::cout << "Score: " << notPlaying.at(2).getScore();
-    goToXY(_WIDTH, 12);
-    notPlaying.at(2).showHand();
-
-}
-
-/**
- * @brief shows all hands
- */
-void Game::showAllHands() {
-
-    showOthersHands();
-
-    goToXY(2, _HEIGHT + 3);
-    _currentP.showHand();
-    goToXY(2, _HEIGHT + 4);
-    std::cout << "You (" << _currentP.getScore() << " points)";
-
-}
-
-/**
- * @brief get the width needed for padding
- * @return the width of the board
- */
-size_t Game::getSize() {
-    return _board.getNumLines();
-}
-
-
-/**
- * @brief shows a Player's error (bad move) in the reserved place for that
- */
-void Game::showPlayerError() {
-
-    goToXY(_WIDTH, 15);
-    clearLineAndGoUp();  // in case there is any other message there
-
-    printMessage(_currentP.error, 1);
-    _currentP.error = "";  // the error was shown, so it's state is reset
-
-    showBoard();  // clearing the line may clear part of the board
-
-}
-
-
-
-/**
- * @brief gives a hint
- */
-void Game::giveHint() {
-
-    goToXY(_WIDTH, 15);
-    clearLineAndGoUp();  // in case there is any other message there
-
-    printMessage(_currentP.getHint(_board), 3);
-
-    showBoard();  // clearing the line may clear part of the board
-
-}
+//======================================================================================================================

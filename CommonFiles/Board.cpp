@@ -130,6 +130,7 @@ void Board::show(std::ostream &stream) {
 
     // column _letters
     stream << "\n    ";
+
     for (size_t i = 0; i < _numCols; i++) {
         stream << std::left << std::setw(W) << char(i + 97) << " ";
     }
@@ -138,13 +139,12 @@ void Board::show(std::ostream &stream) {
     stream << std::setfill('-') << std::setw(_numCols * W + _numCols + 4) << std::left << "    " << "\n";
 
     for (unsigned i = 0; i < _numLines; i++) {
-
-        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) << " |"; // uppercase _letters
+        stream << std::setfill(' ') << std::right << std::setw(2) << char(i + 65) <<" |";
 
         for (size_t j = 0; j < _numCols; j++) {
             if (_played.at(i).at(j) == '1') {
                 _board.at(i).at(j) == '0' ? stream << std::left << std::setw(W + 1) << " " : stream << std::left
-                << std::setw(W) << _playedColour << (char) toupper(_board.at(i).at(j)) << _noColour << ' ';
+                << std::setw(W) << _ENGINEERING << (char) toupper(_board.at(i).at(j)) << _DEFAULT << ' ';
             } else {
                 _board.at(i).at(j) == '0' ? stream << std::left << std::setw(W + 1) << " " : stream << std::left
                 << std::setw(W) << (char) toupper(_board.at(i).at(j)) << ' ';

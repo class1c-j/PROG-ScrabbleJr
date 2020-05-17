@@ -4,8 +4,10 @@
 /**
  * @brief reads a letter to play or exchange but also detects if the player asked for a hint
  * @param c - the input
+ * @param horizontalPadding - the column where the text should be shown
+ * @param verticalPadding - the line where the text should be shown
  */
-void readLetter(std::string &c) {
+void readLetter(std::string &c, size_t horizontalPadding, size_t verticalPadding) {
 
     std::transform(c.begin(), c.end(), c.begin(), ::tolower);
 
@@ -13,6 +15,8 @@ void readLetter(std::string &c) {
     std::cin >> c;
 
     while (std::cin.fail() || (c.size() > 1 && c != "hint")) {
+
+        goToXY(horizontalPadding, verticalPadding);
 
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
