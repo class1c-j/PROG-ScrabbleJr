@@ -462,7 +462,7 @@ bool Board::checkNewWords(const std::string & word, std::pair<char, char> coords
             if (!checkNewWord(col, dir, 'V')) {
                 validNewWord = false;
             }
-            col.at(brdC) = saveBoardPos;
+            col.at(brdL) = saveBoardPos;
         }
     }
     else if (dir == 'V') {
@@ -617,10 +617,10 @@ std::vector<char> Board::getCol(size_t col) {
  * @return false if there is already a word in the word's width range, otherwise true
  */
 bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, const std::string &word) const {
-    unsigned int wLen = word.size(), brdC = coords.second;
-    size_t hLimit = (wLen + brdC);
+    signed int wLen = word.size(), brdC = coords.second;
+    signed int hLimit = (wLen + brdC);
 
-    for (size_t i = brdC - 1; i <= hLimit; i++) {
+    for (signed int i = brdC - 1; i <= hLimit; i++) {
         std::string newWord;
         while (i < _numCols && i >= 0 && i <= hLimit && line.at(i) != '0') {
             newWord += line.at(i);
@@ -642,10 +642,10 @@ bool Board::checkLine(std::vector<char> line, std::pair<char, char> coords, cons
  * @return false if there is already a word in the word's width range, otherwise true
  */
 bool Board::checkCol(std::vector<char> col, std::pair<char, char> coords, const std::string &word) const {
-    unsigned int wLen = word.size(), brdL = coords.first;
-    size_t vLimit = (wLen + brdL);
+    signed int wLen = word.size(), brdL = coords.first;
+    signed int vLimit = (wLen + brdL);
 
-    for (size_t i = brdL - 1; i <= vLimit; i++) {
+    for (signed int i = brdL - 1; i <= vLimit; i++) {
         std::string newWord;
         while (i >= 0 && i < _numLines && i <= vLimit && col.at(i) != '0') {
             newWord += col.at(i);
