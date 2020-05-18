@@ -337,23 +337,6 @@ std::vector<char> Board::getAllLetters() {
 
 //======================================================================================================================
 /**
- * @brief calculates the minimum amount of players required considering a hand of 7 tiles per player
- * @return the number of players
- */
-unsigned Board::getMaxPlayersAllowed() {
-
-    size_t tiles = getAllLetters().size();
-
-    if (tiles == 0) return 0;
-    else if (tiles < 14) return 1;
-    else if (tiles < 21) return 2;
-    else if (tiles < 28) return 3;
-    else return 4;
-
-}
-
-//======================================================================================================================
-/**
  * @brief place a tile
  * @param coords the coordinates of the place where the tile was placed
  */

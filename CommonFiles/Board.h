@@ -47,8 +47,6 @@ public:
 
     std::vector<char> getAllLetters();
 
-    unsigned getMaxPlayersAllowed();
-
     // set (and other methods that alter the board's state)
 
     void setPlayed(std::pair<char, char> coords);

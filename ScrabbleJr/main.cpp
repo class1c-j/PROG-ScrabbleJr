@@ -56,17 +56,19 @@ Game setup() {
     const int STARTING_TILES = 7;
 
 
-    size_t number;
-    readNumberPlayers(number);
+    size_t numberOfPlayers;
+    size_t maxPlayersAllowed = pool.getSize() / STARTING_TILES;
 
-    while (number > board.getMaxPlayersAllowed()) {
+    readNumberPlayers(numberOfPlayers);
+
+    while (numberOfPlayers > maxPlayersAllowed) {
 
         std::cout << "The selected board does not have enough tiles.\n";
-        readNumberPlayers(number);
+        readNumberPlayers(numberOfPlayers);
 
     }
 
-    std::vector<std::string> names = readPlayersNames(number);
+    std::vector<std::string> names = readPlayersNames(numberOfPlayers);
 
     std::vector<Player> players;
 
