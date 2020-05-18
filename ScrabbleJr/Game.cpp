@@ -43,7 +43,9 @@ void Game::nextPlayer() {
         goToXY(m_width, 15);
         clearLineAndGoUp();
         printMessage(m_currentP.getName() + " has no tiles. Press ENTER to pass ...", 0);
+        showBoard();
 
+        goToXY(m_width, 16);
         std::cin.ignore();
 
         m_currentN = (m_currentN + 1) % m_nPlayers;
@@ -89,16 +91,18 @@ void Game::makePlay() {
 
             if (m_pool.getSize() == 1) {  // if there is only one tile in the pool, exchange it
 
-                printMessage(m_currentP.getName() + ", exchange 1 tile", 0);
+                if (!m_currentP.isBot()) printMessage(m_currentP.getName() + ", exchange 1 tile", 0);
+                else showBotMessage(0);  // bot will exchange 1 tile
                 exchangeTile();
 
             } else {  // exchange 2 tiles
 
+                if(m_currentP.isBot()) showBotMessage(1);  // bot will exchange 2 tiles
+
                 for (int i = 0; i < 2; i++) {
 
-                    printMessage(m_currentP.getName() + ", exchange 2 tiles", 0);
+                    if (!m_currentP.isBot()) printMessage(m_currentP.getName() + ", exchange 2 tiles", 0);
                     exchangeTile();
-
                 }
             }
 
@@ -113,7 +117,8 @@ void Game::makePlay() {
         goToXY(m_width, 15);
         clearLineAndGoUp();
 
-        printMessage("It's your turn, " + m_currentP.getName() + ", play 1 tile.", 0);
+        if (!m_currentP.isBot()) printMessage("It's your turn, " + m_currentP.getName() + ", play 1 tile.", 0);
+        else showBotMessage(2);  // bot will play 1 tile
 
         // place 1 tile, take 1 tile
         playTile();
@@ -121,14 +126,14 @@ void Game::makePlay() {
 
     } else if (playable >= 2) {
 
+        if(m_currentP.isBot()) showBotMessage(3);  // bot will play 2 tiles
 
         // place 2 tiles, take 2 tiles
         for (int i = 0; i < 2; i++) {
 
             goToXY(m_width, 15);
             clearLineAndGoUp();
-
-            printMessage("It's your turn, " + m_currentP.getName() + ", play 2 tiles.", 0);
+            if (!m_currentP.isBot()) printMessage("It's your turn, " + m_currentP.getName() + ", play 2 tiles.", 0);
             playTile();
 
         }
@@ -141,7 +146,8 @@ void Game::makePlay() {
         clearLineAndGoUp();
 
         // There are no possible plays, the player must pass
-        printMessage("It's your turn, " + m_currentP.getName() + ", press ENTER to pass.", 0);
+        if (!m_currentP.isBot()) printMessage("It's your turn, " + m_currentP.getName() + ", press ENTER to pass.", 0);
+        else showBotMessage(4);
         showBoard();
         std::cin.ignore();
 
@@ -164,6 +170,8 @@ void Game::exchangeTile() {
 
     showBoard();
     showAllPlayersInfo();
+
+    if (m_currentP.isBot()) tile = m_currentP.getHand().front();
 
     while (!m_currentP.hasTile(tile) || input.size() > 1) {
 
@@ -217,6 +225,12 @@ void Game::playTile() {
     std::string input{};
     char tile{};
     std::pair<char, char> coords{};
+
+    if (m_currentP.isBot()) {
+
+        coords = m_currentP.getPlayable(m_board).front();
+        tile = m_board.getLetter(coords);
+    }
 
     while (!m_currentP.isValidMove(tile, coords, m_board)) {
 
@@ -340,6 +354,21 @@ void Game::showPlayerError() {
 }
 
 //======================================================================================================================
+
+void Game::showBotMessage(size_t messageCode) {
+
+    std::string message = "BOT " + m_currentP.getName() + m_botMessages.at(messageCode);
+
+    goToXY(m_width, 15);
+    clearLineAndGoUp();
+    goToXY(m_width, 15);
+    printMessage(message, 0);
+    showBoard();
+    goToXY(m_width, 16);
+    std::cin.ignore();
+}
+
+//======================================================================================================================
 /**
  * @brief gives a hint
  */
@@ -419,7 +448,7 @@ void Game::showLeaderboard() {
 
     else {
 
-        std::cout << "This game ended in a tie. Congrats to: |";
+        std::cout << "This game ended in a tie. Congrats to: | ";
         for (const auto &winner : getWinners()) {
             std::cout << winner.getName() << " | ";
         }
@@ -427,7 +456,6 @@ void Game::showLeaderboard() {
     }
 
     std::cout << "Thanks for playing this game. Press ENTER to go back to the main menu\n";
-    std::cin.ignore();
 
 }
 

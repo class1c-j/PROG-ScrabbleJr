@@ -63,6 +63,12 @@ private:
 
     // data
 
+    std::vector<std::string> m_botMessages = {
+            " will exchange 1 tile. Press ENTER to continue", " will exchange 2 tiles. Press ENTER to continue",
+            " will play 1 tile. Press ENTER to continue", " will play 2 tiles. Press ENTER to continue",
+            " will pass. Press ENTER to continue"
+    };
+
     std::vector<Player> m_playerList;
 
     Board m_board;
@@ -80,6 +86,7 @@ private:
     size_t m_height{};
 
 
+    void showBotMessage(size_t messageCode);
 };
 
 

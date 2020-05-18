@@ -21,7 +21,7 @@ public:
 
     Player();
 
-    explicit Player(std::string name);
+    explicit Player(const std::string& name);
 
     // get
 
@@ -30,6 +30,11 @@ public:
     unsigned getScore() const;
 
     std::vector<char> getHand();
+
+    bool hasTile(char tile);
+
+
+    bool isBot();
 
     std::vector<std::pair<char, char> > getPlayable(const Board &board);
 
@@ -40,8 +45,6 @@ public:
     void addTiles(const std::vector<char> &tiles);
 
     void removeTile(char tile);
-
-    bool hasTile(char tile);
 
     void incrementScore();
 
@@ -64,6 +67,8 @@ public:
     bool operator >(const Player &otherPlayer) const;
 
 private:
+
+    bool m_bot{};
 
     std::string m_name;
 

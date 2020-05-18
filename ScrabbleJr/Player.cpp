@@ -4,8 +4,10 @@
 Player::Player() = default;
 
 
-Player::Player(std::string name)
-        : m_name(std::move(name)) {
+Player::Player(const std::string& name)  {
+
+    m_name = name.substr(0, 4) == ".bot" ? name.substr(5) : m_name = name;
+    m_bot = name.substr(0, 4) == ".bot";
 }
 
 //=====================================================================================================================
@@ -64,6 +66,16 @@ bool Player::hasTile(char tile) {
     return !(it == m_hand.end() && tile != m_hand.back());
 
 }
+
+//======================================================================================================================
+/**
+ * @brief checks if the player is a bot
+ * @return true if the player is a bot, false otherwise
+ */
+bool Player::isBot() {
+    return m_bot;
+}
+
 
 //=====================================================================================================================
 /**
@@ -161,7 +173,6 @@ void Player::incrementScore() {
 }
 
 //=====================================================================================================================
-
 /**
  * @brief validates a move
  * @param letter - the tile chosen
@@ -220,6 +231,7 @@ void Player::play(char letter, std::pair<char, char> coords, Board &board) {
     // place it on the board
     board.setPlayed(coords);
 }
+
 
 //=====================================================================================================================
 /**

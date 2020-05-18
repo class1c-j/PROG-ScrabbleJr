@@ -10,17 +10,18 @@
 void readLetter(std::string& c, size_t horizontalPadding, size_t verticalPadding) {
 
     std::transform(c.begin(), c.end(), c.begin(), ::tolower);
-    
+
     std::cout << "Choose letter ? ";
     std::cin >> c;
 
     while (std::cin.fail() || (c.size() > 1 && c != "hint")) {
 
         goToXY(horizontalPadding, verticalPadding);
+
         if (std::cin.eof()) {
             std::cin.clear();
             clearLineAndGoUp();
-            std::cout << "User chose to close input. Please enter the letter again : ";
+            std::cout << "Input closed by the user. Try again : ";
         }
         else {
             std::cin.clear();
@@ -32,7 +33,6 @@ void readLetter(std::string& c, size_t horizontalPadding, size_t verticalPadding
     }
     clearLineAndGoUp();
 }
-
 
 
 
@@ -48,13 +48,13 @@ void readCoordinates(std::pair<char, char>& coords, const Board& board) {
     std::cin >> coords.first;
 
     while (std::cin.fail() || !isalpha(coords.first) || static_cast<size_t>(coords.first - 'A') >= board.getNumberLines() ||
-        std::cin.peek() != '\n') {
+           std::cin.peek() != '\n') {
 
         if (std::cin.eof()) {
             std::cin.clear();
             clearLineAndGoUp();
             goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
-            std::cout << "User chose to close input. Please enter the line again: ";
+            std::cout << "Input closed by the user. Please enter the line again: ";
         }
         else {
             std::cin.clear();
@@ -72,12 +72,12 @@ void readCoordinates(std::pair<char, char>& coords, const Board& board) {
     std::cout << "Column ? ";
     std::cin >> coords.second;
     while (std::cin.fail() || !isalpha(coords.second) || static_cast<size_t>(coords.second - 'a') >= board.getNumberCols() ||
-        std::cin.peek() != '\n') {
+           std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
             clearLineAndGoUp();
             goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
-            std::cout << "User chose to close input. Please enter the column again: ";
+            std::cout << "Input closed by the user. Please enter the column again: ";
         }
         else {
             std::cin.clear();
@@ -90,9 +90,10 @@ void readCoordinates(std::pair<char, char>& coords, const Board& board) {
 
     }
 
-    coords.first -= 65;
-    coords.second -= 97;
+    coords.first -= 'A';
+    coords.second -= 'a';
 }
+
 
 
 /**
@@ -108,7 +109,7 @@ void readNumberPlayers(size_t& number) {
             if (std::cin.eof()) {
                 std::cin.clear();
                 std::cout << "User chose to close the input.\n";
-                std::cout << "Please enter the number of players again: ";
+                std::cout << "Input closed by the user. Try again: ";
             }
             else {
                 std::cin.clear();
@@ -126,7 +127,6 @@ void readNumberPlayers(size_t& number) {
 }
 
 
-
 /**
  * @brief reads the names of the players
  * @param number - the number of players to be read
@@ -139,9 +139,18 @@ std::vector<std::string> readPlayersNames(size_t number) {
     std::vector<std::string> players(number);
 
     for (size_t i = 0; i < number; ++i) {
+
         std::string temp;
-        std::cout << "Player " << i << ", name ? ";
+        std::cout << "Player " << i + 1 << ", name ? ";
         std::getline(std::cin, temp);
+
+        while (temp.empty() || temp == ".bot " || temp == ".bot") {
+
+            std::cout << "Name cannot be empty. Try again\n";
+            std::cout << "Player " << i + 1 << ", name ? ";
+            std::getline(std::cin, temp);
+        }
+
         players.at(i) = temp;
     }
 
