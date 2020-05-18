@@ -7,7 +7,7 @@ Pool::Pool() = default;
 Pool::Pool(Board board) {
 
     // get the _letters from the board used
-    for (const char &i : board.getBoardLetters()) {
+    for (const char &i : board.getAllLetters()) {
         m_letters.push_back(i);
     }
 

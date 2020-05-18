@@ -5,8 +5,8 @@ Game::Game() = default;
 
 Game::Game(const std::vector<Player> &players, const Board &board, Pool pool)
         : m_playerList(players), m_board(board), m_pool(std::move(pool)), m_currentN(0),
-          m_currentP(m_playerList.at(m_currentN)), m_nPlayers(players.size()), m_width(board.getNumCols() + 30),
-          m_height(board.getNumLines() + 3) {
+          m_currentP(m_playerList.at(m_currentN)), m_nPlayers(players.size()), m_width(board.getNumberCols() + 30),
+          m_height(board.getNumberLines() + 3) {
 
 }
 
@@ -16,7 +16,7 @@ Game::Game(const std::vector<Player> &players, const Board &board, Pool pool)
  * @return the width of the board
  */
 size_t Game::getSize() {
-    return m_board.getNumLines();
+    return m_board.getNumberLines();
 }
 
 //======================================================================================================================
@@ -80,7 +80,6 @@ void Game::makePlay() {
 
     size_t playable = m_currentP.getPlayable(m_board).size();  // count with the possible plays
 
-
     if (playable == 0) {
 
         goToXY(m_width, 15);
@@ -90,15 +89,15 @@ void Game::makePlay() {
 
             if (m_pool.getSize() == 1) {  // if there is only one tile in the pool, exchange it
 
-                printMessage(m_currentP.getName() + ", exchange 2 tiles", 0);
-                exchangeTiles();
+                printMessage(m_currentP.getName() + ", exchange 1 tile", 0);
+                exchangeTile();
 
             } else {  // exchange 2 tiles
 
                 for (int i = 0; i < 2; i++) {
 
                     printMessage(m_currentP.getName() + ", exchange 2 tiles", 0);
-                    exchangeTiles();
+                    exchangeTile();
 
                 }
             }
@@ -143,6 +142,7 @@ void Game::makePlay() {
 
         // There are no possible plays, the player must pass
         printMessage("It's your turn, " + m_currentP.getName() + ", press ENTER to pass.", 0);
+        showBoard();
         std::cin.ignore();
 
     }
@@ -157,7 +157,7 @@ void Game::makePlay() {
  * @brief exchanges a player's tile for a new one in case he has no possible plays and the pool is not empty
  * and updates the player state
  */
-void Game::exchangeTiles() {
+void Game::exchangeTile() {
 
     std::string input{};
     char tile{};
@@ -167,7 +167,10 @@ void Game::exchangeTiles() {
 
     while (!m_currentP.hasTile(tile) || input.size() > 1) {
 
-        goToXY(m_width, m_height + 3);
+        showBoard();
+        showAllPlayersInfo();
+
+        goToXY(m_width, getSize() + 6);
         clearLineAndGoUp();
 
         readLetter(input, m_width, m_height + 3);
@@ -254,7 +257,7 @@ void Game::playTile() {
     m_currentP.play(tile, coords, m_board);
 
     // check if the played scored
-    for (int i = 0; i < m_board.finishedWord(coords); i++) {
+    for (int i = 0; i < m_board.getNumberOfCompletedWordsByPlay(coords); i++) {
         m_currentP.incrementScore();
     }
 
@@ -416,9 +419,9 @@ void Game::showLeaderboard() {
 
     else {
 
-        std::cout << "This game ended in a tie. Congrats to ";
+        std::cout << "This game ended in a tie. Congrats to: |";
         for (const auto &winner : getWinners()) {
-            std::cout << winner.getName() << " ";
+            std::cout << winner.getName() << " | ";
         }
         std::cout << "!\n";
     }

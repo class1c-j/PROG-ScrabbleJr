@@ -60,7 +60,7 @@ Game setup() {
     size_t number;
     readNumberPlayers(number);
 
-    while (number > board.maxPlayersAllowed()) {
+    while (number > board.getMaxPlayersAllowed()) {
 
         std::cout << "The selected board does not have enough tiles.\n";
         readNumberPlayers(number);

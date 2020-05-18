@@ -51,7 +51,7 @@ private:
 
     // process
 
-    void exchangeTiles();
+    void exchangeTile();
 
     void playTile();
 

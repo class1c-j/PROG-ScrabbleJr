@@ -61,10 +61,10 @@ bool Player::hasTile(char tile) {
     tile = tolower(tile);  // it doesn't make sense to have the tiles be case sensitive
     auto it = std::find(m_hand.begin(), m_hand.end(), tile);
 
-    if (it == m_hand.end()) error = m_errors.at(0);
+    if (it == m_hand.end() && tile != m_hand.back()) error = m_errors.at(0);
 
     // if std::find does not find the tile, it returns the iterator _hand.end()
-    return !(it == m_hand.end());
+    return !(it == m_hand.end() && tile != m_hand.back());
 
 }
 
@@ -82,8 +82,8 @@ std::vector<std::pair<char, char> > Player::getPlayable(const Board &board) {
 
     for (const auto &tile : m_hand) {
 
-        for (size_t i = 0; i < board.getNumLines(); i++) {
-            for (size_t j = 0; j < board.getNumCols(); j++) {
+        for (size_t i = 0; i < board.getNumberLines(); i++) {
+            for (size_t j = 0; j < board.getNumberCols(); j++) {
 
                 std::pair<char, char> pair = {i, j};
 
@@ -184,17 +184,17 @@ bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board)
     if (!hasTile(letter)) {
 
         check = false;
-        error = m_errors.at(0);  // tell user he does not have the tile
+        error = m_errors.at(0);  // tell user they do not have the selected tile
 
-    } else if (board.getContent().at(line).at(col) != letter || board.isPlayed(coords)) {
+    } else if (board.getLetter({line, col}) != letter || board.isPlayed(coords)) {
 
         check = false;
         error = m_errors.at(1);  // tell user that he can't play the selected tile on selected place
 
     } else {
 
-        std::pair<char, char> firstNPlayedV = board.getFirstNotPlayedV(coords);
-        std::pair<char, char> firstNPlayedH = board.getFirstNotPlayedH(coords);
+        std::pair<char, char> firstNPlayedV = board.getFirstFreeVertical(coords);
+        std::pair<char, char> firstNPlayedH = board.getFirstFreeHorizontal(coords);
 
         // check if the chosen place is the first free place for the words that pass there
         check = (coords == firstNPlayedH) || (coords == firstNPlayedV);

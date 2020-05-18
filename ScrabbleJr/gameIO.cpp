@@ -38,11 +38,11 @@ void readLetter(std::string &c, size_t horizontalPadding, size_t verticalPadding
  */
 void readCoordinates(std::pair<char, char> &coords, const Board &board) {
 
-    goToXY(board.getNumCols() + 30, board.getNumLines() + 5);
+    goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
     std::cout << "Line ? ";
     std::cin >> coords.first;
 
-    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 'A' >= board.getNumLines() ||
+    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 'A' >= board.getNumberLines() ||
            std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
@@ -53,7 +53,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             clearLineAndGoUp();
-            goToXY(board.getNumCols() + 30, board.getNumLines() + 5);
+            goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
             std::cout << "Invalid line choice. Try again: ";
             std::cin >> coords.first;
         }
@@ -61,10 +61,10 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     
     clearLineAndGoUp();
 
-    goToXY(board.getNumCols() + 30, board.getNumLines() + 5);
+    goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
     std::cout << "Column ? ";
     std::cin >> coords.second;
-    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 'a'>= board.getNumCols() ||
+    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 'a'>= board.getNumberCols() ||
            std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
@@ -74,7 +74,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
         } else {
             clearLineAndGoUp();
             std::cin.clear();
-            goToXY(board.getNumCols() + 30, board.getNumLines() + 5);
+            goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid column choice. Try again: ";
             std::cin >> coords.second;
