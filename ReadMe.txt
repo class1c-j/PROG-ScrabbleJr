@@ -11,61 +11,59 @@
 
   (1) - Project description
 
-This project was developed for the 1st Year - 2nd Semester MIEIC course
-of Programming and it includes 2 programmes - BoardBuilder and ScrabbleJr.
+This project was developed for the 1st Year 2nd Semester MIEIC course
+of Programming and it includes 2 programs - BoardBuilder and ScrabbleJr.
 
   (2) - Project objectives (adapted from the assignment statement)
 
-The main objectives of this work were practincing creating a project
+The main objectives of this work were practicing creating a project
 following the "object oriented" programming paradigm, selecting data
 structures and algorithms suitable for the implementation of the game
 and taking advantage of the data structures and algorithms available
-in the C++ STL. Other objectives like the use of files and thedevelopment
+in the C++ STL. Other objectives like the use of files and the development
 of simple and robust program interfaces are also present.
-
-  (3) ?
 
 =========================================================================
 || BOARD BUILDER                                                       ||
 =========================================================================
-  (1) - Pruposed objectives and development state
+
+    a b c d e f g h i j k l m n o 
+    ------------------------------
+ A |  F           D     E G G S   
+ B |  R   B     B U Z Z     O     
+ C |M U S I C     C   E     A R M 
+ D |  I   C       K   B O A T   O 
+ E |  T O Y   S       R         N 
+ F |      C   H       A R C A D E 
+ G |      L   E   T       A     Y 
+ H |    T E L E V I S I O N       
+ I |          P   G       D O G   
+ J |        J     E       Y   R   
+ K |      W A T E R           A X 
+ L |        C             B   P   
+ M |    S   K         A   A   E   
+ N |  Q U E E N     A P P L E S   
+ O |    N   T         E   L       
+
+This is edit mode. Choose from the options below to create your board.
+(1) - Add new word
+(2) - Erase existing word
+(3) - Quit to main menu
+(4) - Save current board
+
+
+=========================================================================
+   (1) - Proposed objectives and development state
 =========================================================================
 
-  -> The programme must allow to select the size of the game board:
-  ---- ACHIEVED: the programme prompts the user to choose the desired
-  number of lines and the desired number of columns, validating it
-  according to the maximum of 20x20.
-
-  -> The programme must allow to create the game board, selecting a set of
-  words, from the words available in a dictionary provided in the WORDS.TXT
-  file, and positioning those words on the board, so that they intersect
-  correctly. The position of the words must be specified by the user,
-  indicating the of the first letter of the word and it's orientation,
-  horizontal or vertical. It is up to the program to verify that the
-  words are valid, that they can be placed in the selected position and
-  that they intersect correctly.
-   
-  ---- ACHIEVED: the programme asks the user to insert the word, the
-  starting line and the starting column, validating all of them. After
-  that, the programme checks if the insertion causes a problematic
-  situation and shows an error in that case, not allowing the user
-  to create invalid boards.
-
-   -> The programme must allow to save the contents of the board to a
-  text file
-  ---- ACHIEVED: When the player chooses to save the board, the programme
-  saves all of its words and respective information on a text file
-  (that also includes a representation of the board)
-
-   -> This programme mus be implemented using at least one classe defined
-   by the programmer: class Board, to represent a board.
-  ---- ACHIEVED
+  -> We were able to achieve every objective that was proposed.
+ 
 =========================================================================
    (2) - Added features
 =========================================================================
 
   -> A menu was implemented to make it easier for the user to interact
-   with the programme.
+   with the program.
 
   -> The ability to edit an existing board file was added.
    
@@ -92,59 +90,37 @@ intersection of words in the project specification, we considered that:
 
 =========================================================================
 || SCRABBLE JR                                                         ||
+========================================================================
+
+
+    a b c d e f g h i j k l m n o           mafarrico
+    ------------------------------          Score: 0
+ A |  F           D     E G G S             E H S S A G P 
+ B |  R   B     B U Z Z     O     
+ C |M U S I C     C   E     A R M           egas
+ D |  I   C       K   B O A T   O           Score: 0
+ E |  T O Y   S       R         N           O L S O A L C 
+ F |      C   H       A R C A D E 
+ G |      L   E   T       A     Y           becas
+ H |    T E L E V I S I O N                 Score: 0
+ I |          P   G       D O G             G E M R Z O A 
+ J |        J     E       Y   R   
+ K |      W A T E R           A X 
+ L |        C             B   P             BOT Sonso will play 2 tiles. Press ENTER to continue
+ M |    S   K         A   A   E   
+ N |  Q U E E N     A P P L E S   
+ O |    N   T         E   L       
+
+
+ E R T C E O A 
+ You (0 points)
+
+
 =========================================================================
-  (1) - Pruposed objectives and development state
+   (1) - Proposed objectives and development state
 =========================================================================
 
-  -> This program must allow 2 to 4 players to play the game, detect the
-  end of the game and announce the winner.
-  ---- ACHIEVED (ADAPTED): The game allows for 1 to 4 players (number
-  chosen in the start of the game), checks if the board is all played and
-  in the end shows the score of all players, sorted, as well as a
-  congratulations message to the winners.
-
-  -> The program must be implemented using some "classes" defined by the
-  programmer, for example, to represent the board (Board), a player
-  (Player), and the "bag" of letters (Pool); others may be useful or
-  convenient.
-  ---- ACHIEVED: All the suggested classes were implemented. The pool is
-  generated according to all the letters that are in each board.
-
-
-  -> The code must be structured in order to separate the definition of
-  each class and the implementation of its methods, in files with the
-  extension .hpp(or .h) and .cpp, respectively.
-  ---- ACHIEVED
-
-  -> The game board must be read from a text file, previously created.
-  See the specification of the "Board Builder" program for the format of
-  that file.
-  ---- ACHIEVED
-
-  -> The number of players and the name of the board file must be asked to
-  the user at the beginning of the program.
-  ---- ACHIEVED: The user is prompted to choose those when they start a new game
-
-  -> The game board must be shown with an aspect similar to that illustrated
-  in figure 2. To specify the position of the letter to be played, users must
-  use an uppercase letter to specify the line and a lowercase letter to
-  specify the column. The range of the letters depends on the size of the board).
-  ---- ACHIEVED
-
-  -> The program must prevent the playing of invalid letters (letters that
-  are not in the player's hand) or at invalid positions(the played letter
-  does not match with the letter in the chosen position).
-  ---- ACHIEVED: The game will show the adequate error messages and will not
-  allow the user to preform those moves.
-
-  -> The way to indicate that a letter has been played on the board is to
-  change the color of the letter on the screen.
-  ---- ACHIEVED: When a tile is placed, that place in the board will become
-  highlighted in "engineering colour".
-    Note: taking into account the possibility of building your own boards,
-  using the Board Builder program, the number of letter tiles may be
-  different from those specified in reference; the letter tiles in the
-  pool must be the ones necessary to build the words in the board.
+  -> We were able to achieve every objective that was proposed.
 
 =========================================================================
    (2) - Added features
@@ -154,7 +130,7 @@ intersection of words in the project specification, we considered that:
   user may type "hint" and the game will suggest a valid place where they
   can play.
 
-  -> The menu was also used here, though only at the begining.
+  -> The menu was also used here, though only at the beginning.
 
   -> The game's interface will adapt itself according to the size of the
   board chosen
