@@ -494,7 +494,7 @@ void Board::save(const std::string &name) {
  */
 void Board::show(std::ostream &stream) {
 
-    const size_t W = 1;  // edit to change how close together the _letters are in the board
+    const int W = 1;  // edit to change how close together the _letters are in the board
 
     // show column indicating letters
     stream << "\n    ";
@@ -503,10 +503,12 @@ void Board::show(std::ostream &stream) {
         stream << std::left << std::setw(W) << char(i + 97) << " ";
     }
 
+    auto columns = static_cast<int> (m_numCols);
+    int width = columns * W + columns + 4;   // casting outside of the setw to silence a vs compiler warning
+
     stream << '\n';
     // show line separating the column indicator letters from the board itself
-    stream << std::setfill('-') << std::setw(static_cast<int>(m_numCols * W + m_numCols + 4)) << std::left
-           << "    " << "\n";
+    stream << std::setfill('-') << std::setw(width) << std::left << "    " << "\n";
 
     for (unsigned i = 0; i < m_numLines; i++) {
 
@@ -525,7 +527,7 @@ void Board::show(std::ostream &stream) {
 
         }
 
-        stream << "\n\n";
+        stream << "\n";
     }
 }
 

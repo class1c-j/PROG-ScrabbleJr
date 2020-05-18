@@ -75,6 +75,8 @@ int windowsSetup() {
         return GetLastError();
     }
 
+    return 0;
+
 }
 
 #endif
