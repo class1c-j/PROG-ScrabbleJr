@@ -1,7 +1,6 @@
-#include "editIO.h"
-
 #define NOMINMAX
 
+#include "editIO.h"
 
 /**
  * @brief reads and validates (showing the appropriate errors) the chosen dimensions for the board
