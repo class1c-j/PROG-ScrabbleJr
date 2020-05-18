@@ -5,7 +5,6 @@
 #include "Pool.h"
 #include "Game.h"
 #include "../CommonFiles/Menu.h"
-#include "../CommonFiles/utility.h"
 
 
 void showName();
@@ -103,7 +102,7 @@ void showInstructions() {
                  " in the places that have a corresponding letter only if it is the\nfirst open letter in spelling order."
                  "\n\nThe game ends when every word in the board has been finished and the winner is the player\n who "
                  "has the highest score from completing words\n\nTo play with this implementation, every time you get"
-                 "proped to insert a letter, you can select\na letter from you hand to place, or you can ask for a hint"
+                 "prompted to insert a letter, you can select\na letter from you hand to place, or you can ask for a hint"
                  "by writing \"hint\".\nNext, you will be prompted for the line and column of the place you want to play your"
                  "piece in.\n\nPress ENTER to go back to menu ...";
 

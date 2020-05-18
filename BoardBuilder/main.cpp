@@ -1,10 +1,8 @@
 #include <iostream>
-#include <fstream>
 #include <vector>
 #include "../CommonFiles/Board.h"
 #include "../CommonFiles/Menu.h"
 #include "editIO.h"
-#include "../CommonFiles/utility.h"
 
 /**
  * @brief shows a menu with options to select between starting a board or editing an existing one
@@ -114,6 +112,10 @@ void editBoard(Board &board) {
     while (running) {
         clearScreen();
         board.show(std::cout);
+        if (!board._error.empty()) {  // show any error that might exist
+            printMessage(board._error, 1);
+            board._error = "";
+        }
         showEditMenu(board, running);
     }
 

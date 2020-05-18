@@ -1,9 +1,5 @@
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <algorithm>
-#include "../CommonFiles/utility.h"
+
 #include "Board.h"
 
 Board::Board() = default;
@@ -529,7 +525,7 @@ void Board::show(std::ostream &stream) {
 
         }
 
-        stream << '\n';
+        stream << "\n\n";
     }
 }
 
@@ -769,7 +765,7 @@ bool Board::isValidHorizontalNeighborhood(std::vector<char> line, std::pair<char
 
         std::string lettersInNeighborhood{};  // temporary string to hold every letter in the neighborhood
 
-        while (currColumn < m_numCols && currColumn >= 0 && currColumn <= horizontalLimit
+        while (currColumn < static_cast<int>(m_numCols) && currColumn >= 0 && currColumn <= horizontalLimit
                && line.at(static_cast<size_t>(currColumn)) != '0') {
 
             // found a letter in the neighborhood
@@ -805,8 +801,8 @@ Board::isValidVerticalNeighborhood(std::vector<char> col, std::pair<char, char> 
 
         std::string lettersInNeighborhood;  // temporary string to hold every letter in the neighborhood
 
-        while (currLine >= 0 && currLine < m_numLines && currLine <= verticalLimit && col.at(
-                static_cast<size_t>(currLine)) != '0') {
+        while (currLine >= 0 && currLine < static_cast<int>(m_numLines) && currLine <= verticalLimit
+        && col.at(static_cast<size_t>(currLine)) != '0') {
 
             // found a letter in the neighborhood
 
@@ -836,12 +832,11 @@ bool Board::isInDictionary(const std::string &word) {
 /**
  * @brief checks if a new larger word caused by crossing or superposition of words is valid
  * @param sequence - line/column to be checked
- * @param existingWordDirection - the existing word's direction
  * @param newWordDirection - the new word's direction
  * @return true if the addition is valid, otherwise false
  */
 bool
-Board::isValidAddition(std::vector<char> sequence, const char &existingWordDirection, const char newWordDirection) {
+Board::isValidAddition(std::vector<char> sequence, const char newWordDirection) {
 
     // the number of places to be checked depend on the direction of the newly inserted word
     size_t toCheck = newWordDirection == 'H' ? m_numCols : m_numLines;
@@ -1006,7 +1001,7 @@ bool Board::validWordLimits(const std::string &word, std::pair<char, char> coord
 
             std::vector<char> tempLine = getLine(startLine);  // get the line updated with the temporary word
 
-            if (!isValidAddition(tempLine, dir, 'H')) {
+            if (!isValidAddition(tempLine, 'H')) {
 
                 validLimits = false;
             }
@@ -1024,7 +1019,7 @@ bool Board::validWordLimits(const std::string &word, std::pair<char, char> coord
 
             std::vector<char> tempColumn = getCol(startCol); // get the column updated with the temporary word
 
-            if (!isValidAddition(tempColumn, dir, 'V')) {
+            if (!isValidAddition(tempColumn,'V')) {
 
                 validLimits = false;
             }
@@ -1105,7 +1100,7 @@ bool Board::causesValidWordAdditions(const std::string &word, std::pair<char, ch
             char saveBoardPos = col.at(startLine);          // save the state of that place in the board
             col.at(startLine) = word.at(i - startCol);   // changes it temporally to the new inserted letter
 
-            if (!isValidAddition(col, dir, 'V')) {      // check if any problem raises, and set valid accordingly
+            if (!isValidAddition(col, 'V')) {      // check if any problem raises, and set valid accordingly
                 valid = false;
             }
 
@@ -1120,7 +1115,7 @@ bool Board::causesValidWordAdditions(const std::string &word, std::pair<char, ch
             char saveBoardPos = line.at(startCol);          // save the state of that place in the board
             line.at(startCol) = word.at(i - startLine);  // changes it temporally to the new inserted letter
 
-            if (!isValidAddition(line, dir, 'H')) {     // check if any problem raises, and set valid accordingly
+            if (!isValidAddition(line, 'H')) {     // check if any problem raises, and set valid accordingly
                 valid = false;
             }
 

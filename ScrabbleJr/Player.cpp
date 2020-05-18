@@ -1,8 +1,5 @@
 
 #include "Player.h"
-#include <iostream>
-#include <utility>
-
 
 Player::Player() = default;
 
@@ -58,7 +55,7 @@ std::vector<char> Player::getHand() {
  */
 bool Player::hasTile(char tile) {
 
-    tile = tolower(tile);  // it doesn't make sense to have the tiles be case sensitive
+    tile = static_cast<char>(tolower(tile));  // it doesn't make sense to have the tiles be case sensitive
     auto it = std::find(m_hand.begin(), m_hand.end(), tile);
 
     if (it == m_hand.end() && tile != m_hand.back()) error = m_errors.at(0);
@@ -118,7 +115,7 @@ std::string Player::getHint(const Board &board) {
     char col = coords.second;
 
     std::stringstream hint;
-    hint << "HINT: Do you have any tile to play on " << char(line + 'A') << char(col + 'a') << "? ";
+    hint << "HINT: Do you have any tile to play on " << static_cast<char>(line + 'A') << static_cast<char>(col + 'a') << "? ";
 
     return hint.str();
 }
@@ -176,7 +173,7 @@ bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board)
 
     bool check{};
 
-    letter = tolower(letter);
+    letter = static_cast<char>(tolower(letter));
 
     auto col = static_cast<size_t> (coords.second);
     auto line = static_cast<size_t> (coords.first);
@@ -214,7 +211,7 @@ bool Player::isValidMove(char letter, std::pair<char, char> coords, Board board)
  */
 void Player::play(char letter, std::pair<char, char> coords, Board &board) {
 
-    letter = tolower(letter);
+    letter = static_cast<char>(tolower(letter));
 
     // take tile from player's hand
     auto it = std::find(m_hand.begin(), m_hand.end(), letter);

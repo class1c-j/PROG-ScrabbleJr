@@ -3,6 +3,13 @@
 #define PROGT2_EDITIO
 
 #include <vector>
+#ifdef _WIN32  // Windows compatibility
+#include <windows.h>
+#include <cstdlib>
+#endif
+#include <limits>
+#include <iostream>
+#include <ios>
 #include "../CommonFiles/Board.h"
 
 void readDimensions(unsigned &lines, unsigned &cols);

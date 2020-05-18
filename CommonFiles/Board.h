@@ -8,6 +8,11 @@
 #include <fstream>
 #include <vector>
 #include <set>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <algorithm>
+#include "../CommonFiles/utility.h"
 
 class Board {
 public:
@@ -94,7 +99,7 @@ private:
 
     bool isInDictionary(const std::string &word);
     
-    bool isValidAddition(std::vector<char> sequence, const char& existingWordDirection, char newWordDirection);
+    bool isValidAddition(std::vector<char> sequence, char newWordDirection);
 
     void removeTemporaryWord(std::pair<char, char> coords, const char& dir, std::vector<char> sequence);
 

@@ -42,7 +42,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     std::cout << "Line ? ";
     std::cin >> coords.first;
 
-    while (std::cin.fail() || !isalpha(coords.first) || coords.first - 'A' >= board.getNumberLines() ||
+    while (std::cin.fail() || !isalpha(coords.first) || static_cast<size_t>(coords.first - 'A') >= board.getNumberLines() ||
            std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
@@ -64,7 +64,7 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
     goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
     std::cout << "Column ? ";
     std::cin >> coords.second;
-    while (std::cin.fail() || !isalpha(coords.second) || coords.second - 'a'>= board.getNumberCols() ||
+    while (std::cin.fail() || !isalpha(coords.second) || static_cast<size_t>(coords.second - 'a') >= board.getNumberCols() ||
            std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
@@ -96,7 +96,7 @@ void readNumberPlayers(size_t &number) {
     std::cout << "Number of players ? ";
     std::cin >> number;
 
-    while (std::cin.fail() || number < 0 || number > 4 || (std::cin.peek() != '\n' && !isdigit(std::cin.peek()))) {
+    while (std::cin.fail() || number > 4 || (std::cin.peek() != '\n' && !isdigit(std::cin.peek()))) {
         if (std::cin.fail() || std::cin.peek() != '\n') {
             if (std::cin.eof()) {
                 std::cin.clear();

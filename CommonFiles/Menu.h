@@ -9,8 +9,8 @@
 
 class Menu {
 public:
-    Menu(const std::string &msg, const std::string &invalid,
-         const std::map<std::string, std::function<void()>> &commands);
+    Menu(std::string msg, std::string invalid,
+         std::map<std::string, std::function<void()>> commands);
 
     void operator()() const;
 
