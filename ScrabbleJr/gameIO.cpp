@@ -7,27 +7,32 @@
  * @param horizontalPadding - the column where the text should be shown
  * @param verticalPadding - the line where the text should be shown
  */
-void readLetter(std::string &c, size_t horizontalPadding, size_t verticalPadding) {
+void readLetter(std::string& c, size_t horizontalPadding, size_t verticalPadding) {
 
     std::transform(c.begin(), c.end(), c.begin(), ::tolower);
-
+    
     std::cout << "Choose letter ? ";
     std::cin >> c;
 
     while (std::cin.fail() || (c.size() > 1 && c != "hint")) {
 
         goToXY(horizontalPadding, verticalPadding);
-
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        clearLineAndGoUp();
-        std::cout << "Invalid tile. Try again: ";
+        if (std::cin.eof()) {
+            std::cin.clear();
+            clearLineAndGoUp();
+            std::cout << "User chose to close input. Please enter the letter again : ";
+        }
+        else {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            clearLineAndGoUp();
+            std::cout << "Invalid tile. Try again: ";
+        }
         std::cin >> c;
-
     }
-
     clearLineAndGoUp();
 }
+
 
 
 
@@ -36,49 +41,52 @@ void readLetter(std::string &c, size_t horizontalPadding, size_t verticalPadding
  * @param coords - the coordinates
  * @param board  - the board (used for placing the messages in the right place and checking if the coords are valid)
  */
-void readCoordinates(std::pair<char, char> &coords, const Board &board) {
+void readCoordinates(std::pair<char, char>& coords, const Board& board) {
 
     goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
     std::cout << "Line ? ";
     std::cin >> coords.first;
 
     while (std::cin.fail() || !isalpha(coords.first) || static_cast<size_t>(coords.first - 'A') >= board.getNumberLines() ||
-           std::cin.peek() != '\n') {
+        std::cin.peek() != '\n') {
+
         if (std::cin.eof()) {
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "User chose to close input.\n";
-            break;
-        } else {
+            clearLineAndGoUp();
+            goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
+            std::cout << "User chose to close input. Please enter the line again: ";
+        }
+        else {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             clearLineAndGoUp();
             goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
             std::cout << "Invalid line choice. Try again: ";
-            std::cin >> coords.first;
         }
+        std::cin >> coords.first;
     }
-    
+
     clearLineAndGoUp();
 
     goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
     std::cout << "Column ? ";
     std::cin >> coords.second;
     while (std::cin.fail() || !isalpha(coords.second) || static_cast<size_t>(coords.second - 'a') >= board.getNumberCols() ||
-           std::cin.peek() != '\n') {
+        std::cin.peek() != '\n') {
         if (std::cin.eof()) {
             std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "User chose to close input.\n";
-            break;
-        } else {
             clearLineAndGoUp();
-            std::cin.clear();
             goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid column choice. Try again: ";
-            std::cin >> coords.second;
+            std::cout << "User chose to close input. Please enter the column again: ";
         }
+        else {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            clearLineAndGoUp();
+            goToXY(board.getNumberCols() + 30, board.getNumberLines() + 5);
+            std::cout << "Invalid column choice. Try again: ";
+        }
+        std::cin >> coords.second;
 
     }
 
@@ -87,12 +95,11 @@ void readCoordinates(std::pair<char, char> &coords, const Board &board) {
 }
 
 
-
 /**
  * @brief reads the number of players
  * @param number - the number of players
  */
-void readNumberPlayers(size_t &number) {
+void readNumberPlayers(size_t& number) {
     std::cout << "Number of players ? ";
     std::cin >> number;
 
@@ -100,22 +107,24 @@ void readNumberPlayers(size_t &number) {
         if (std::cin.fail() || std::cin.peek() != '\n') {
             if (std::cin.eof()) {
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "User chose to close the input.\n";
-            } else {
+                std::cout << "Please enter the number of players again: ";
+            }
+            else {
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Failed to read number. Try again: ";
-                std::cin >> number;
             }
-        } else {
+        }
+        else {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Must choose between 1 and 4 players. Try again: ";
-            std::cin >> number;
         }
+        std::cin >> number;
     }
 }
+
 
 
 /**
