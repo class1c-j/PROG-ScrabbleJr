@@ -525,7 +525,7 @@ void Board::show(std::ostream &stream) {
 
         }
 
-        stream << "\n\n";
+        stream << "\n";
     }
 }
 
