@@ -1,4 +1,4 @@
-
+#define NOMINMAX
 #include "Game.h"
 
 Game::Game() = default;
@@ -365,7 +365,13 @@ void Game::showBotMessage(size_t messageCode) {
     printMessage(message, 0);
     showBoard();
     goToXY(m_width, 16);
-    std::cin.ignore();
+   
+    while (std::cin.rdbuf()->in_avail()) {  // sometimes the last human play will leave the input buffer behaving in a 
+        std::string tempFromBuffer{};       // problematic way, this fixes it
+        std::getline(std::cin, tempFromBuffer);
+    }
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 //======================================================================================================================
