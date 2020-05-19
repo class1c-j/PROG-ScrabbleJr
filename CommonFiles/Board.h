@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
-#include "../CommonFiles/utility.h"
+#include "../CommonFiles/utils.h"
 
 class Board {
 public:

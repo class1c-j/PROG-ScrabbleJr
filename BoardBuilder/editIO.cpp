@@ -186,8 +186,7 @@ void readFileName(std::string &fileName) {
 
     std::cout << "File name (without extension) ? ";
     std::cin >> fileName;
-    fileName += "../UserBoards/" + fileName +".txt";
-
+    fileName = "../UserBoards/" + fileName +".txt";
 
     while (true) {
 

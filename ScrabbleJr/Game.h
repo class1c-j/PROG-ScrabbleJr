@@ -6,7 +6,7 @@
 
 #include "Player.h"
 #include "../CommonFiles/Board.h"
-#include "../CommonFiles/utility.h"
+#include "../CommonFiles/utils.h"
 #include "Pool.h"
 #include <sstream>
 #include <iomanip>

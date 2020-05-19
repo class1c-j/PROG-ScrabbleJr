@@ -50,7 +50,10 @@ void showName() {
 Game setup() {
 
     Board board;
+
+    printMessage("\nCHOOSING THE BOARD\n", 4);
     loadBoard(board);
+
     Pool pool(board);
 
     const int STARTING_TILES = 7;
@@ -59,6 +62,7 @@ Game setup() {
     size_t numberOfPlayers;
     size_t maxPlayersAllowed = pool.getSize() / STARTING_TILES;
 
+    printMessage("\nCHOOSING THE NUMBER OF PLAYERS\n", 4);
     readNumberPlayers(numberOfPlayers);
 
     while (numberOfPlayers > maxPlayersAllowed) {
@@ -68,6 +72,7 @@ Game setup() {
 
     }
 
+    printMessage("\nCHOOSING THE NAMES\n", 4);
     std::vector<std::string> names = readPlayersNames(numberOfPlayers);
 
     std::vector<Player> players;
@@ -120,7 +125,7 @@ void showInstructions() {
 void loadBoard(Board &board) {
 
     std::string boardName;
-    searchFile(boardName);
+    searchBoard(boardName);
     std::ifstream boardFile(boardName);
     board = Board(boardFile);
 

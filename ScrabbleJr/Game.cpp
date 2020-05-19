@@ -1,4 +1,4 @@
-
+#define NOMINMAX
 #include "Game.h"
 
 Game::Game() = default;
@@ -88,7 +88,6 @@ void Game::makePlay() {
         clearLineAndGoUp();
 
         if (!m_pool.isEmpty()) {
-
             if (m_pool.getSize() == 1) {  // if there is only one tile in the pool, exchange it
 
                 if (!m_currentP.isBot()) printMessage(m_currentP.getName() + ", exchange 1 tile", 0);
@@ -98,10 +97,12 @@ void Game::makePlay() {
             } else {  // exchange 2 tiles
 
                 if(m_currentP.isBot()) showBotMessage(1);  // bot will exchange 2 tiles
-
                 for (int i = 0; i < 2; i++) {
 
-                    if (!m_currentP.isBot()) printMessage(m_currentP.getName() + ", exchange 2 tiles", 0);
+                    std::stringstream msgStream{};
+                    msgStream << m_currentP.getName() << ", exchange " << 2 - i << " tiles";
+
+                    if (!m_currentP.isBot()) printMessage(msgStream.str(), 0);
                     exchangeTile();
                 }
             }
@@ -131,9 +132,11 @@ void Game::makePlay() {
         // place 2 tiles, take 2 tiles
         for (int i = 0; i < 2; i++) {
 
+            std::stringstream msgStream{};
+            msgStream << m_currentP.getName() << ", play " << 2 - i << " tiles";
             goToXY(m_width, 15);
             clearLineAndGoUp();
-            if (!m_currentP.isBot()) printMessage("It's your turn, " + m_currentP.getName() + ", play 2 tiles.", 0);
+            if (!m_currentP.isBot()) printMessage(msgStream.str(), 0);
             playTile();
 
         }
@@ -182,10 +185,9 @@ void Game::exchangeTile() {
         clearLineAndGoUp();
 
         readLetter(input, m_width, m_height + 3);
+
         while (input == "hint") {
-
             readLetter(input, m_width, m_height + 3); // hints are not allowed in this phase
-
         }
 
         tile = input.front();
@@ -194,11 +196,7 @@ void Game::exchangeTile() {
 
             showPlayerError();
 
-        } else {
-
-            break;
-
-        }
+        } else break;
 
     }
 
@@ -309,21 +307,21 @@ void Game::showAllPlayersInfo() {
         notPlaying.emplace_back();
     }
 
-    goToXY(m_width, 2);
+    goToXY(m_width, 2); clearFromCursor();
     std::cout << notPlaying.at(0).getName();
     goToXY(m_width, 3);
     if (m_nPlayers >= 2) std::cout << "Score: " << notPlaying.at(0).getScore();
     goToXY(m_width, 4);
     notPlaying.at(0).showHand();
 
-    goToXY(m_width, 6);
+    goToXY(m_width, 6); clearFromCursor();
     std::cout << notPlaying.at(1).getName();
     goToXY(m_width, 7);
     if (m_nPlayers >= 3) std::cout << "Score: " << notPlaying.at(1).getScore();
     goToXY(m_width, 8);
     notPlaying.at(1).showHand();
 
-    goToXY(m_width, 10);
+    goToXY(m_width, 10); clearFromCursor();
     std::cout << notPlaying.at(2).getName();
     goToXY(m_width, 11);
     if (m_nPlayers == 4) std::cout << "Score: " << notPlaying.at(2).getScore();
@@ -333,7 +331,7 @@ void Game::showAllPlayersInfo() {
     goToXY(2, m_height + 3);
     m_currentP.showHand();
     goToXY(2, m_height + 4);
-    std::cout << "You (" << m_currentP.getScore() << " points)";
+    std::cout << m_currentP.getName() << " (" << m_currentP.getScore() << " points)";
 
 }
 
@@ -365,7 +363,12 @@ void Game::showBotMessage(size_t messageCode) {
     printMessage(message, 0);
     showBoard();
     goToXY(m_width, 16);
-    std::cin.ignore();
+
+    while (std::cin.rdbuf()->in_avail()) {
+        std::string fromBuffer{};  // sometimes the last user play will leave things in the buffer, so to make
+        std::getline(std::cin, fromBuffer);  // sure that the ignore will work, it is emptied
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 //======================================================================================================================
@@ -376,9 +379,7 @@ void Game::showHint() {
 
     goToXY(m_width, 15);
     clearLineAndGoUp();  // in case there is any other message there
-
     printMessage(m_currentP.getHint(m_board), 3);
-
     showBoard();  // clearing the line may clear part of the board
 
 }

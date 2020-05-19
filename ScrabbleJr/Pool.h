@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
-#include "../CommonFiles/utility.h"
+#include "../CommonFiles/utils.h"
 #include "../CommonFiles/Board.h"
 #include "Player.h"
 

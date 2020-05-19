@@ -1,4 +1,0 @@
-13 x 13
-Dc V testing
-Ie V honk
-Jc H goose

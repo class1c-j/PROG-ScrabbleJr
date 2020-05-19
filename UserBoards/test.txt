@@ -1,0 +1,46 @@
+15 x 17
+Ac H too
+Am H ease
+De H eat
+Dm H much
+Fh H fitter
+Ga H token
+Ie H tire
+Ke H productive
+Ma H careful
+Np H on
+Oa H with
+Oh H at
+Aa V comfortable
+Ak V your
+Bi V happier
+Cc V drinking
+Ce V me
+Dg V to
+Dm V more
+Do V credit
+Fq V getting
+Ge V not
+Il V animals
+Jn V better
+Kf V reuse
+Kj V car
+Nq V no
+
+    a b c d e f g h i j k l m n o p q 
+    ----------------------------------
+ A |C   T O O           Y   E A S E   
+ B |O               H   O             
+ C |M   D   M       A   U             
+ D |F   R   E A T   P   R   M U C H   
+ E |O   I       O   P       O   R     
+ F |R   N         F I T T E R   E   G 
+ G |T O K E N       E       E   D   E 
+ H |A   I   O       R           I   T 
+ I |B   N   T I R E       A     T   T 
+ J |L   G                 N   B     I 
+ K |E       P R O D U C T I V E     N 
+ L |          E       A   M   T     G 
+ M |C A R E F U L     R   A   T       
+ N |          S           L   E   O N 
+ O |W I T H   E   A T     S   R     O 

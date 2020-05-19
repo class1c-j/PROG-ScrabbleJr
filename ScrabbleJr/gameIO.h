@@ -14,7 +14,7 @@
 #include <algorithm>
 #include <string>
 #include "../CommonFiles/Board.h"
-#include "../CommonFiles/utility.h"
+#include "../CommonFiles/utils.h"
 
 void readLetter(std::string &c, size_t horizontalPadding, size_t verticalPadding);
 

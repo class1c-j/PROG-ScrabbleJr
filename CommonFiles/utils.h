@@ -1,6 +1,6 @@
 
-#ifndef PROGT2_UTILITY_H
-#define PROGT2_UTILITY_H
+#ifndef PROGT2_UTILS_H
+#define PROGT2_UTILS_H
 
 #include <iostream>
 #include <string>
@@ -17,7 +17,7 @@ int windowsSetup();
 
 void clearScreen();
 
-void searchFile(std::string &fileName);
+void searchBoard(std::string &fileName);
 
 void printMessage(const std::string& message, unsigned colour);
 
@@ -25,6 +25,7 @@ void goToXY(size_t x, size_t y);
 
 void clearLineAndGoUp();
 
+void clearFromCursor();
 
 
-#endif //PROGT2_UTILITY_H
+#endif //PROGT2_UTILS_H
