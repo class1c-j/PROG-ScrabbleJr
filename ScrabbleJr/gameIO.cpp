@@ -136,7 +136,7 @@ std::vector<std::string> readPlayersNames(size_t number) {
 
     std::cin.ignore();  // getline will be used, so we have to remove the \n that could be in the buffer
 
-    std::cout << "Typing '.bot <name>' will create a bot called name.\nTry it, or just write the name to make "
+    std::cout << "Typing '.bot name' will create a bot called name.\nTry it, or just write the name to make "
                  "a human player.\n\n";
 
     std::vector<std::string> players(number);
