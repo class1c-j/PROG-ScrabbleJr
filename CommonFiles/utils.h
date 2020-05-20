@@ -27,5 +27,7 @@ void clearLineAndGoUp();
 
 void clearFromCursor();
 
+void removeCarriageReturn(std::string &string);
+
 
 #endif //PROGT2_UTILS_H

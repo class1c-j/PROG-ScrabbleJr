@@ -79,6 +79,14 @@ void clearFromCursor() {
     std::cout << "\033[0K";
 }
 
+void removeCarriageReturn(std::string &string) {
+
+    if (!string.empty() && string.back() == '\r') {
+        string.erase(string.size() - 1);
+    }
+
+}
+
 #ifdef _WIN32
 
 int windowsSetup() {

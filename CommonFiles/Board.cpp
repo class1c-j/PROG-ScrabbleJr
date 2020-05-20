@@ -38,6 +38,7 @@ Board::Board(std::ifstream &f_in) {
     // create a board with the chosen dimensions
     while (std::getline(f_in, line)) {
         if (line.empty()) break;
+        removeCarriageReturn(line);  // windows systems will add an extra \r that can cause problems if not removed
         m_wordsInfo.insert(line);
     }
 
@@ -67,6 +68,7 @@ Board::Board(std::ifstream &f_in) {
         std::string word;
 
         str_stream >> x >> y >> d >> word;
+        std::transform(word.begin(), word.end(), word.begin(),::tolower);
         insertWord(word, {x - 65, y - 97}, d);
 
     }
@@ -133,11 +135,11 @@ bool Board::isFinished() {
  */
 int Board::getNumberOfCompletedWordsByPlay(std::pair<char, char> coords) {
 
-    bool finishedH = true, finishedV = true;
-
     // search vertically
     std::pair<char, char> startV = getStartOfWordsInPoint(coords).at(1);
     size_t sizeV = searchWord(startV, 'V').size();
+
+    bool finishedV = startV.first != -1;
 
     if (sizeV == 0) finishedV = false;
     auto startVLine = static_cast<size_t>(startV.first);
@@ -155,6 +157,7 @@ int Board::getNumberOfCompletedWordsByPlay(std::pair<char, char> coords) {
 
     // search horizontally
     std::pair<char, char> startH = getStartOfWordsInPoint(coords).at(0);
+    bool finishedH = startH.second != -1;
     size_t sizeH = searchWord(startH, 'H').size();
 
     if (sizeH == 0) finishedH = false;
