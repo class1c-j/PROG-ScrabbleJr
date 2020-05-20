@@ -4,6 +4,10 @@
 #define _ENGINEERING "\033[48;2;140;45;25m"
 #define _DEFAULT "\033[39;49m"
 
+#define _SIDEPLAYER1 2 
+#define _SIDEPLAYER2 6
+#define _SIDEPLAYER3 10
+
 #include "Player.h"
 #include "../CommonFiles/Board.h"
 #include "../CommonFiles/utils.h"

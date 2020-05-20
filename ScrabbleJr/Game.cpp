@@ -307,25 +307,25 @@ void Game::showAllPlayersInfo() {
         notPlaying.emplace_back();
     }
 
-    goToXY(m_width, 2);
+    goToXY(m_width, _SIDEPLAYER1);
     std::cout << notPlaying.at(0).getName();
-    goToXY(m_width, 3);
+    goToXY(m_width, _SIDEPLAYER1 + 1);
     if (m_nPlayers >= 2) std::cout << "Score: " << notPlaying.at(0).getScore();
-    goToXY(m_width, 4);
+    goToXY(m_width, _SIDEPLAYER1 + 2);
     notPlaying.at(0).showHand();
 
-    goToXY(m_width, 6);
+    goToXY(m_width, _SIDEPLAYER2);
     std::cout << notPlaying.at(1).getName();
-    goToXY(m_width, 7);
+    goToXY(m_width, _SIDEPLAYER2 + 1);
     if (m_nPlayers >= 3) std::cout << "Score: " << notPlaying.at(1).getScore();
-    goToXY(m_width, 8);
+    goToXY(m_width, _SIDEPLAYER2 + 2);
     notPlaying.at(1).showHand();
 
-    goToXY(m_width, 10);
+    goToXY(m_width, _SIDEPLAYER3);
     std::cout << notPlaying.at(2).getName();
-    goToXY(m_width, 11);
+    goToXY(m_width, _SIDEPLAYER3 + 1);
     if (m_nPlayers == 4) std::cout << "Score: " << notPlaying.at(2).getScore();
-    goToXY(m_width, 12);
+    goToXY(m_width, _SIDEPLAYER3 + 2);
     notPlaying.at(2).showHand();
 
     goToXY(2, m_height + 3);
@@ -341,7 +341,7 @@ void Game::showAllPlayersInfo() {
  */
 void Game::showPlayerError() {
 
-    goToXY(m_width, 15);
+    goToXY(m_width, m_height);
     clearLineAndGoUp();  // in case there is any other message there
 
     printMessage(m_currentP.error, 1);
@@ -377,7 +377,7 @@ void Game::showBotMessage(size_t messageCode) {
  */
 void Game::showHint() {
 
-    goToXY(m_width, 15);
+    goToXY(m_width, m_height - 1);
     clearLineAndGoUp();  // in case there is any other message there
     printMessage(m_currentP.getHint(m_board), 3);
     showBoard();  // clearing the line may clear part of the board

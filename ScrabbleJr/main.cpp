@@ -152,14 +152,12 @@ void showMainMenu(Game &game) {
 
                             while (!game.isFinished()) {
 
-                                clearScreen();
                                 goToXY(game.getSize() + 30, game.getSize() + 5);
                                 game.makePlay();
                                 game.nextPlayer();
                             }
 
                             game.showLeaderboard();
-                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
                         }}, {"Show Instructions", [] {
                             showInstructions();
