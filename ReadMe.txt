@@ -4,8 +4,8 @@
 #  Projeto 2 - Scrabble Junior                                          #
 #                                                                       #
 #  TURMA 6 - GRUPO 5                                                    #
-#  Adelaide Miranda Santos (up201907487)                                # 
-#  Rita Miguel Matos Mendes (up201907877)                               #
+#  Adelaide Miranda Santos (up201907487)   (50%)                        # 
+#  Rita Miguel Matos Mendes (up201907877)  (50%)                        #
 #                                                                       #
 =========================================================================
 
