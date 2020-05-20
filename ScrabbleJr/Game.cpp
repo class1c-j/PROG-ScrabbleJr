@@ -40,7 +40,7 @@ void Game::nextPlayer() {
     // in case one player goes out of tiles, his turn is skipped
     while (m_currentP.getHand().empty() && !isFinished()) {
 
-        goToXY(m_width, 15);
+        goToXY(m_width, m_height);
         clearLineAndGoUp();
         printMessage(m_currentP.getName() + " has no tiles. Press ENTER to pass ...", 0);
         showBoard();
@@ -84,7 +84,7 @@ void Game::makePlay() {
 
     if (playable == 0) {
 
-        goToXY(m_width, 15);
+        goToXY(m_width, m_height);
         clearLineAndGoUp();
 
         if (!m_pool.isEmpty()) {
@@ -115,7 +115,7 @@ void Game::makePlay() {
 
     if (playable == 1) {
 
-        goToXY(m_width, 15);
+        goToXY(m_width, m_height);
         clearLineAndGoUp();
 
         if (!m_currentP.isBot()) printMessage("It's your turn, " + m_currentP.getName() + ", play 1 tile.", 0);
@@ -134,7 +134,7 @@ void Game::makePlay() {
 
             std::stringstream msgStream{};
             msgStream << m_currentP.getName() << ", play " << 2 - i << " tiles";
-            goToXY(m_width, 15);
+            goToXY(m_width, m_height);
             clearLineAndGoUp();
             if (!m_currentP.isBot()) printMessage(msgStream.str(), 0);
             playTile();
@@ -145,7 +145,7 @@ void Game::makePlay() {
 
     } else {
 
-        goToXY(m_width, 15);
+        goToXY(m_width, m_height);
         clearLineAndGoUp();
 
         // There are no possible plays, the player must pass
@@ -181,7 +181,7 @@ void Game::exchangeTile() {
         showBoard();
         showAllPlayersInfo();
 
-        goToXY(m_width, getSize() + 6);
+        goToXY(m_width, m_height + 3);
         clearLineAndGoUp();
 
         readLetter(input, m_width, m_height + 3);
@@ -235,7 +235,7 @@ void Game::playTile() {
         showBoard();
         showAllPlayersInfo();
 
-        goToXY(m_width, getSize() + 6);
+        goToXY(m_width, m_height + 3);
         clearLineAndGoUp();
 
         readLetter(input, m_width, m_height + 3);
@@ -244,7 +244,7 @@ void Game::playTile() {
 
             showHint();
 
-            goToXY(m_width, getSize() + 6);
+            goToXY(m_width, m_height + 3);
             clearLineAndGoUp();
 
             readLetter(input, m_width, m_height + 3);
@@ -307,21 +307,21 @@ void Game::showAllPlayersInfo() {
         notPlaying.emplace_back();
     }
 
-    goToXY(m_width, 2); clearFromCursor();
+    goToXY(m_width, 2);
     std::cout << notPlaying.at(0).getName();
     goToXY(m_width, 3);
     if (m_nPlayers >= 2) std::cout << "Score: " << notPlaying.at(0).getScore();
     goToXY(m_width, 4);
     notPlaying.at(0).showHand();
 
-    goToXY(m_width, 6); clearFromCursor();
+    goToXY(m_width, 6);
     std::cout << notPlaying.at(1).getName();
     goToXY(m_width, 7);
     if (m_nPlayers >= 3) std::cout << "Score: " << notPlaying.at(1).getScore();
     goToXY(m_width, 8);
     notPlaying.at(1).showHand();
 
-    goToXY(m_width, 10); clearFromCursor();
+    goToXY(m_width, 10);
     std::cout << notPlaying.at(2).getName();
     goToXY(m_width, 11);
     if (m_nPlayers == 4) std::cout << "Score: " << notPlaying.at(2).getScore();
@@ -357,12 +357,12 @@ void Game::showBotMessage(size_t messageCode) {
 
     std::string message = "BOT " + m_currentP.getName() + m_botMessages.at(messageCode);
 
-    goToXY(m_width, 15);
+    goToXY(m_width, m_height);
     clearLineAndGoUp();
-    goToXY(m_width, 15);
+    goToXY(m_width, m_height);
     printMessage(message, 0);
     showBoard();
-    goToXY(m_width, 16);
+    goToXY(m_width, m_height + 1);
 
     while (std::cin.rdbuf()->in_avail()) {
         std::string fromBuffer{};  // sometimes the last user play will leave things in the buffer, so to make
@@ -457,6 +457,12 @@ void Game::showLeaderboard() {
     }
 
     std::cout << "Thanks for playing this game. Press ENTER to go back to the main menu\n";
+
+    while (std::cin.rdbuf()->in_avail()) {
+        std::string fromBuffer{};  // sometimes the last user play will leave things in the buffer, so to make
+        std::getline(std::cin, fromBuffer);  // sure that the ignore will work, it is emptied
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 }
 

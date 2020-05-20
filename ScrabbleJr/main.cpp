@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include <iostream>
 #include "../CommonFiles/Board.h"
 #include "gameIO.h"
@@ -8,8 +9,6 @@
 
 
 void showName();
-
-void showMainMenu(Game &game);
 
 void showMainMenu(Game &game);
 
@@ -113,7 +112,7 @@ void showInstructions() {
                  "by writing \"hint\".\nNext, you will be prompted for the line and column of the place you want to play your"
                  "piece in.\n\nPress ENTER to go back to menu ...";
 
-    std::cin.ignore(1);
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 
@@ -153,13 +152,14 @@ void showMainMenu(Game &game) {
 
                             while (!game.isFinished()) {
 
+                                clearScreen();
                                 goToXY(game.getSize() + 30, game.getSize() + 5);
                                 game.makePlay();
                                 game.nextPlayer();
                             }
 
                             game.showLeaderboard();
-                            std::cin.ignore();
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
                         }}, {"Show Instructions", [] {
                             showInstructions();

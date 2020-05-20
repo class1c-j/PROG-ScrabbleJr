@@ -60,7 +60,10 @@ bool Player::hasTile(char tile) {
     tile = static_cast<char>(tolower(tile));  // it doesn't make sense to have the tiles be case sensitive
     auto it = std::find(m_hand.begin(), m_hand.end(), tile);
 
-    if (it == m_hand.end() && tile != m_hand.back()) error = m_errors.at(0);
+
+    bool temp = it == m_hand.end();
+
+    if (temp) error = m_errors.at(0);
 
     // if std::find does not find the tile, it returns the iterator _hand.end()
     return !(it == m_hand.end() && tile != m_hand.back());
@@ -72,7 +75,7 @@ bool Player::hasTile(char tile) {
  * @brief checks if the player is a bot
  * @return true if the player is a bot, false otherwise
  */
-bool Player::isBot() {
+bool Player::isBot() const {
     return m_bot;
 }
 

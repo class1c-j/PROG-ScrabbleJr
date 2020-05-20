@@ -8,7 +8,7 @@ Pool::Pool(Board board) {
 
     // get the _letters from the board used
     for (const char &i : board.getAllLetters()) {
-        m_letters.push_back(i);
+        m_letters.push_back(static_cast<char>(tolower(i)));
     }
 
     shuffle();

@@ -34,7 +34,7 @@ public:
     bool hasTile(char tile);
 
 
-    bool isBot();
+    bool isBot() const;
 
     std::vector<std::pair<char, char> > getPlayable(const Board &board);
 
