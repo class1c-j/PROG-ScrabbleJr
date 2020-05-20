@@ -23,6 +23,17 @@ and taking advantage of the data structures and algorithms available
 in the C++ STL. Other objectives like the use of files and the development
 of simple and robust program interfaces are also present.
 
+   (3) - Information on how to run the programs correctly
+   
+To run a program, you should compile it's specific files as well as the 
+files placed in the CommonFiles directory. For example, to compile
+ScrabbleJr using g++ from the ScrabbleJr directory, the command would
+look like g++ ./*.cpp ./../CommonFiles/*.cpp.
+
+The paths to the boards are hardcoded, so in order to detect the boards
+correctly, please keep the project structure as it is and the program 
+should be run from it's directory.
+
 =========================================================================
 || BOARD BUILDER                                                       ||
 =========================================================================
@@ -88,8 +99,8 @@ intersection of words in the project specification, we considered that:
   either vertically or horizontally if it is valid.
 
 
-=========================================================================
-|| SCRABBLE JR                                                         ||
+========================================================================
+|| SCRABBLE JR                                                        ||
 ========================================================================
 
 
@@ -139,4 +150,9 @@ intersection of words in the project specification, we considered that:
   To do so, when prompted to write a player's name, write
   ".bot <name>".
 
+========================================================================
+   (3) - Known issues
+========================================================================
+
+   -> When the bots play, some fickering may be experienced on Windows.
 ========================================================================
